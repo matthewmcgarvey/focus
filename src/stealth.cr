@@ -1,4 +1,8 @@
-# TODO: Write documentation for `Stealth`
+require "db"
+
+require "./stealth/*"
+require "./stealth/sql_expressions/*"
+
 module Stealth
   VERSION = "0.1.0"
 
