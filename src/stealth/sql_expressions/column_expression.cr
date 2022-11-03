@@ -1,4 +1,4 @@
-class Stealth::ColumnExpression
+class Stealth::ColumnExpression < Stealth::SqlExpression
   getter table : Stealth::TableExpression
   getter name : String
 

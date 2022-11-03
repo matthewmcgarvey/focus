@@ -21,14 +21,18 @@ class Stealth::Database
   end
 
   def execute_query(expression : Stealth::SqlExpression) : DB::ResultSet
-    visitor = Stealth::SqlExpressionVisitor.new
-    expression.accept(visitor)
-    raw_db.query(visitor.to_sql)
+    raw_db.query(to_sql(expression))
   end
 
   def with_connection
     raw_db.using_connection do |conn|
       yield conn
     end
+  end
+
+  def to_sql(expression : Stealth::SqlExpression) : String
+    visitor = Stealth::SqlVisitor.new
+    expression.accept(visitor)
+    visitor.to_sql
   end
 end

@@ -29,4 +29,8 @@ class Stealth::Query
       rows
     end
   end
+
+  def to_sql : String
+    database.to_sql(expression)
+  end
 end
