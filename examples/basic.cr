@@ -24,13 +24,17 @@ end
 database.with_connection do |conn|
   conn.exec("create table if not exists users(id INTEGER PRIMARY KEY AUTOINCREMENT, name varchar(128));")
   conn.exec("INSERT INTO users(name) VALUES('bobby');")
+  conn.exec("INSERT INTO users(name) VALUES('billy');")
 end
 
-database.from(Users)
+query = database.from(Users)
   .select(Users.id, Users.name)
-  .each do |row|
-    val = {id: row.get_int32(0)}
-    pp val
-  end
+  .where(Users.name.eq("billy"))
+
+# puts query.to_sql
+query.each do |row|
+  val = {id: row.get_int32(0)}
+  pp val
+end
 
 database.close

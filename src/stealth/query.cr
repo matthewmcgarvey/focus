@@ -2,9 +2,9 @@ class Stealth::Query
   include Enumerable(Stealth::CachedRow)
 
   getter database : Stealth::Database
-  getter expression : Stealth::QueryExpression
+  getter expression : Stealth::SelectExpression
 
-  def initialize(@database : Stealth::Database, @expression : Stealth::QueryExpression)
+  def initialize(@database : Stealth::Database, @expression : Stealth::SelectExpression)
   end
 
   def each(&block : Stealth::CachedRow -> Nil)
@@ -31,6 +31,11 @@ class Stealth::Query
   end
 
   def to_sql : String
-    database.to_sql(expression)
+    database.format_expression(expression).first
+  end
+
+  def where(condition : Stealth::ScalarExpression(Bool)) : Stealth::Query
+    new_expression = Stealth::SelectExpression.new(expression.columns, expression.from, where: condition)
+    Stealth::Query.new(database, new_expression)
   end
 end

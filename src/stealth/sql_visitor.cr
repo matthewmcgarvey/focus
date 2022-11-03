@@ -2,11 +2,16 @@ class Stealth::SqlVisitor
   WHITESPACE_BYTE = 32_u8
 
   private getter sql_string_builder = String::Builder.new
+  getter parameters = [] of Stealth::BaseArgumentExpression
 
   def visit(expression : Stealth::SelectExpression)
     write "SELECT "
     visit_list(expression.columns)
     expression.from.accept(self)
+    if where = expression.where
+      write "WHERE "
+      where.accept(self)
+    end
     remove_last_blank
     write ";"
   end
@@ -17,6 +22,17 @@ class Stealth::SqlVisitor
 
   def visit(expression : Stealth::TableExpression)
     write "FROM #{expression.name} "
+  end
+
+  def visit(expression : Stealth::BinaryExpression(_))
+    expression.left.accept(self)
+    write "#{expression.operator} "
+    expression.right.accept(self)
+  end
+
+  def visit(expression : Stealth::ArgumentExpression(_))
+    write "? "
+    parameters << expression
   end
 
   def visit_list(expressions : Array(Stealth::SqlExpression))

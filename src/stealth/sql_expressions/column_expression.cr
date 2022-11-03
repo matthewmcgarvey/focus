@@ -1,7 +1,6 @@
-struct Stealth::ColumnExpression(T)
+class Stealth::ColumnExpression(T)
   include Stealth::BaseColumnExpression
-
-  getter sql_type : T.class
+  include Stealth::ScalarExpression(T)
 
   def initialize(@table : Stealth::TableExpression, @name : String, @sql_type : T.class)
   end

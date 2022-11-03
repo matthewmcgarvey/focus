@@ -21,7 +21,8 @@ class Stealth::Database
   end
 
   def execute_query(expression : Stealth::SqlExpression) : DB::ResultSet
-    raw_db.query(to_sql(expression))
+    sql, args = format_expression(expression)
+    raw_db.query(sql, args: args.map(&.value))
   end
 
   def with_connection
@@ -30,9 +31,9 @@ class Stealth::Database
     end
   end
 
-  def to_sql(expression : Stealth::SqlExpression) : String
+  def format_expression(expression : Stealth::SqlExpression) : Tuple(String, Array(Stealth::BaseArgumentExpression))
     visitor = Stealth::SqlVisitor.new
     expression.accept(visitor)
-    visitor.to_sql
+    {visitor.to_sql, visitor.parameters}
   end
 end

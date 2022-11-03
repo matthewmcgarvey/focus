@@ -1,7 +1,10 @@
-struct Stealth::SelectExpression < Stealth::QueryExpression
-  getter columns : Array(Stealth::BaseColumnExpression)
-  getter from : Stealth::QuerySourceExpression
+class Stealth::SelectExpression
+  include Stealth::SqlExpression
 
-  def initialize(@columns : Array(Stealth::BaseColumnExpression), @from : Stealth::QuerySourceExpression)
+  getter columns : Array(Stealth::BaseColumnExpression)
+  getter from : Stealth::TableExpression
+  getter where : Stealth::ScalarExpression(Bool)?
+
+  def initialize(@columns, @from, @where = nil)
   end
 end
