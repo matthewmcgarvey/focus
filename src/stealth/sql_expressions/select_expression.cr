@@ -1,4 +1,4 @@
-class Stealth::SelectExpression < Stealth::QueryExpression
+struct Stealth::SelectExpression < Stealth::QueryExpression
   getter columns : Array(Stealth::BaseColumnExpression)
   getter from : Stealth::QuerySourceExpression
 

@@ -1,2 +1,3 @@
-abstract class Stealth::QueryExpression < Stealth::SqlExpression
+abstract struct Stealth::QueryExpression
+  include Stealth::SqlExpression
 end

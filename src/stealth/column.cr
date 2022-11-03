@@ -1,4 +1,6 @@
-class Stealth::Column(T) < Stealth::BaseColumn
+class Stealth::Column(T)
+  include Stealth::BaseColumn
+
   getter sql_type : T.class
 
   def initialize(@table : Stealth::Table, @name : String, @sql_type : T.class)
