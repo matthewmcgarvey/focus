@@ -33,3 +33,9 @@ In this case, I will limit it to classes that implement `SqlExpression` by putti
 I did verify that it still works with the "accept" method implemented in `SqlExpression` so I don't have to have the same method implemented in every subclass.
 
 All of this to say, I want to use the visitor pattern, but I'm going to implement it correctly whereas I don't think ktorm did.
+
+## Generics
+
+Frustrating trying to work with generics in this library.
+Had to add the BaseColumn and BaseColumnExpression classes to cope with the need for arrays of these things.
+**NOTE** The code works as it is right now with the `abstract def as_expression` commented out in `Stealth::BaseColumn` which seems... broken?

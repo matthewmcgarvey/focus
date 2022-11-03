@@ -11,7 +11,7 @@ class Stealth::SqlVisitor
     write ";"
   end
 
-  def visit(expression : Stealth::ColumnExpression)
+  def visit(expression : Stealth::BaseColumnExpression)
     write "#{expression.name} "
   end
 

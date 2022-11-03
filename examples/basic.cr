@@ -13,11 +13,11 @@ class Users
       name,
     ]
   end
-  class_getter id : Stealth::Column do
-    Stealth::Column.new(table: self, name: "id")
+  class_getter id : Stealth::Column(Int32) do
+    Stealth::Column.new(table: self, name: "id", sql_type: Int32)
   end
-  class_getter name : Stealth::Column do
-    Stealth::Column.new(table: self, name: "name")
+  class_getter name : Stealth::Column(String) do
+    Stealth::Column.new(table: self, name: "name", sql_type: String)
   end
 end
 

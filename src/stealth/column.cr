@@ -1,11 +1,10 @@
-class Stealth::Column
-  getter table : Stealth::Table
-  getter name : String
+class Stealth::Column(T) < Stealth::BaseColumn
+  getter sql_type : T.class
 
-  def initialize(@table : Stealth::Table, @name : String)
+  def initialize(@table : Stealth::Table, @name : String, @sql_type : T.class)
   end
 
-  def as_expression : Stealth::ColumnExpression
-    Stealth::ColumnExpression.new(table.as_expression, name)
+  def as_expression : Stealth::ColumnExpression(T)
+    Stealth::ColumnExpression.new(table.as_expression, name, sql_type)
   end
 end
