@@ -7,9 +7,11 @@ class Stealth::QuerySource
   end
 
   def select(*columns : Stealth::BaseColumn) : Stealth::Query
-    columns = columns.map(&.as_expression)
-      .to_a
-      .select(Stealth::BaseColumnExpression) # cuz generics
+    self.select(columns.to_a)
+  end
+
+  def select(columns : Enumerable(Stealth::BaseColumn)) : Stealth::Query
+    columns = columns.map(&.as_expression).select(Stealth::BaseColumnExpression) # cuz generics
     select_expression = Stealth::SelectExpression.new(columns: columns, from: expression)
     Stealth::Query.new(database: database, expression: select_expression)
   end

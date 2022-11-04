@@ -25,7 +25,7 @@ class Stealth::CachedRow
   end
 
   def get_str(column_index : Int32) : String?
-    val = columns[column_index]
+    val = columns[column_index].value
     case val
     when String
       val

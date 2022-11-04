@@ -7,11 +7,11 @@ class Users
   extend Stealth::Table
 
   class_getter table_name : String = "users"
-  class_getter _columns : Array(Stealth::Column) do
+  class_getter _columns : Array(Stealth::BaseColumn) do
     [
       id,
       name,
-    ]
+    ] of Stealth::BaseColumn
   end
   class_getter id : Stealth::Column(Int32) do
     Stealth::Column.new(table: self, name: "id", sql_type: Int32)
@@ -28,12 +28,12 @@ database.with_connection do |conn|
 end
 
 query = database.from(Users)
-  .select(Users.id, Users.name)
+  .select(Users.columns)
   .where(Users.name.eq("billy"))
 
 # puts query.to_sql
 query.each do |row|
-  val = {id: row.get_int32(0)}
+  val = {id: row.get_int32(0), name: row.get_str(1)}
   pp val
 end
 
