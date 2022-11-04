@@ -19,6 +19,10 @@ class Stealth::Column(T)
     )
   end
 
+  def between(range : Range(T, T)) : BetweenExpression(T)
+    BetweenExpression.new(as_expression, wrap_argument(range.begin), wrap_argument(range.end))
+  end
+
   protected def wrap_argument(argument : V) : ArgumentExpression(V) forall V
     ArgumentExpression.new(argument, sql_type)
   end

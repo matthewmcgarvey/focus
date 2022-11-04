@@ -29,7 +29,7 @@ end
 
 query = database.from(Users)
   .select(Users.columns)
-  .where(Users.name.eq("billy"))
+  .where(Users.id.between(1..10))
 
 # puts query.to_sql
 query.each do |row|

@@ -35,6 +35,14 @@ class Stealth::SqlVisitor
     parameters << expression
   end
 
+  def visit(expression : Stealth::BetweenExpression(_))
+    expression.expression.accept(self)
+    write "between "
+    expression.lower.accept(self)
+    write "and "
+    expression.upper.accept(self)
+  end
+
   def visit_list(expressions : Array(Stealth::SqlExpression))
     expressions.each_with_index do |expression, idx|
       if idx > 0
