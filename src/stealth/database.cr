@@ -8,8 +8,10 @@ class Stealth::Database
   end
 
   private getter raw_db : DB::Database
+  private getter transaction_manager : Stealth::TransactionManager
 
   def initialize(@raw_db : DB::Database)
+    @transaction_manager = Stealth::TransactionManager.new(raw_db)
   end
 
   def from(table : Stealth::Table) : Stealth::QuerySource
@@ -22,12 +24,20 @@ class Stealth::Database
 
   def execute_query(expression : Stealth::SqlExpression) : DB::ResultSet
     sql, args = format_expression(expression)
-    raw_db.query(sql, args: args.map(&.value))
+    with_connection do |conn|
+      conn.query(sql, args: args.map(&.value))
+    end
   end
 
-  def with_connection
-    raw_db.using_connection do |conn|
+  def with_connection(&block : DB::Connection -> T) : T forall T
+    transaction_manager.with_connection do |conn|
       yield conn
+    end
+  end
+
+  def with_transaction(&block : DB::Transaction -> T) : T? forall T
+    transaction_manager.with_transaction do |txn|
+      yield txn
     end
   end
 
