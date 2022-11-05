@@ -39,3 +39,14 @@ All of this to say, I want to use the visitor pattern, but I'm going to implemen
 Frustrating trying to work with generics in this library.
 Had to add the BaseColumn and BaseColumnExpression classes to cope with the need for arrays of these things.
 **NOTE** The code works as it is right now with the `abstract def as_expression` commented out in `Stealth::BaseColumn` which seems... broken?
+
+One thing I just realized with Ktorm's generics usage is that Kotlin is able to conditionally add methods to an object based on generics
+
+```kotlin
+public operator fun ColumnDeclaring<Boolean>.not(): UnaryExpression<Boolean> {
+    return UnaryExpression(UnaryExpressionType.NOT, asExpression(), BooleanSqlType)
+}
+```
+
+This means that only boolean columns (`ColumnDeclaring` is a bit more than just columns but w/e) have access to the `not` method.
+I don't think there is an equivalent in Crystal
