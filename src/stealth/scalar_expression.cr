@@ -17,7 +17,7 @@ module Stealth::ScalarExpression(T)
   end
 
   def aliased(label : String? = nil) : Stealth::ColumnDeclaringExpression(T)
-    Stealth::ColumnDeclaringExpression.new(this, label)
+    Stealth::ColumnDeclaringExpression.new(self, label)
   end
 
   def as_declaring_expression : Stealth::ColumnDeclaringExpression(T)

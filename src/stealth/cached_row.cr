@@ -33,4 +33,16 @@ class Stealth::CachedRow
       val.try(&.to_s)
     end
   end
+
+  def get_float64(column_index : Int32) : Float64?
+    val = columns[column_index].value
+    case val
+    when Int32, Int64, Float32, Float64
+      val.to_f
+    when Bool
+      val ? 1.0 : 0.0
+    else
+      val.try(&.to_s.to_f)
+    end
+  end
 end

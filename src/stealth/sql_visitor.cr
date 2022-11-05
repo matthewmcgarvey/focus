@@ -63,6 +63,22 @@ class Stealth::SqlVisitor
     end
   end
 
+  def visit(expression : Stealth::AggregateExpression(_))
+    write "#{expression.method}("
+    if expression.is_distinct
+      write "distinct "
+    end
+
+    if arg = expression.argument
+      arg.accept(self)
+    else
+      write "*"
+    end
+
+    remove_last_blank
+    write ") "
+  end
+
   def visit_list(expressions : Array(Stealth::SqlExpression))
     expressions.each_with_index do |expression, idx|
       if idx > 0

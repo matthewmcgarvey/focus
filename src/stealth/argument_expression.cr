@@ -10,6 +10,6 @@ class Stealth::ArgumentExpression(T)
 
   getter value : DB::Any
 
-  def initialize(@value, @sql_type : DB::Any.class)
+  def initialize(@value, @sql_type)
   end
 end

@@ -1,7 +1,7 @@
 module Stealth::BaseColumnDeclaringExpression
   include Stealth::SqlExpression
 
-  getter declared_name : String
+  getter declared_name : String?
 end
 
 class Stealth::ColumnDeclaringExpression(T)

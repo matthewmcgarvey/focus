@@ -28,13 +28,14 @@ database.with_connection do |conn|
 end
 
 query = database.from(Users)
-  .select(Users.columns)
-  .where(Users.name.is_not_null)
+  .select(Stealth.avg(Users.id))
+  .where(Users.name.eq("billy"))
 
 # puts query.to_sql
 query.each do |row|
-  val = {id: row.get_int32(0), name: row.get_str(1)}
+  # val = {id: row.get_int32(0)}
   # val = {name: row.get_str(0)}
+  val = {count: row.get_float64(0)}
   pp val
 end
 
