@@ -19,9 +19,10 @@ class Stealth::Query
     @rows ||= begin
       rows = [] of Stealth::CachedRow
       result_set = database.execute_query(expression)
+      row_metadata = Stealth::RowMetadata.new
       begin
         result_set.each do
-          rows << Stealth::CachedRow.from_result_set(result_set)
+          rows << Stealth::CachedRow.build(result_set, row_metadata)
         end
       ensure
         result_set.close

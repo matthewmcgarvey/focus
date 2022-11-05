@@ -1,15 +1,16 @@
 class Stealth::CachedRow
-  def self.from_result_set(result_set : DB::ResultSet) : Stealth::CachedRow
+  def self.build(result_set : DB::ResultSet, row_metadata : Stealth::RowMetadata) : Stealth::CachedRow
     columns = [] of Stealth::CachedColumn
     result_set.column_count.times do
       columns << Stealth::CachedColumn.new(value: result_set.read)
     end
-    new(columns)
+    new(columns, row_metadata)
   end
 
   private getter columns : Array(Stealth::CachedColumn)
+  private getter row_metadata : Stealth::RowMetadata
 
-  def initialize(@columns : Array(Stealth::CachedColumn))
+  def initialize(@columns, @row_metadata)
   end
 
   def get_int32(column_index : Int32) : Int32?

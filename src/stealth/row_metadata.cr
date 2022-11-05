@@ -1,0 +1,2 @@
+class Stealth::RowMetadata
+end
