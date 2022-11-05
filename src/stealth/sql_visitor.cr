@@ -30,7 +30,18 @@ class Stealth::SqlVisitor
     expression.right.accept(self)
   end
 
-  def visit(expression : Stealth::ArgumentExpression(_))
+  def visit(expression : Stealth::UnaryExpression(_))
+    case expression.type
+    when Stealth::UnaryExpressionType::IS_NULL, Stealth::UnaryExpressionType::IS_NOT_NULL
+      expression.operand.accept(self)
+      write "#{expression.operator} "
+    else
+      write "#{expression.operator} "
+      expression.operand.accept(self)
+    end
+  end
+
+  def visit(expression : Stealth::ArgumentExpression)
     write "? "
     parameters << expression
   end

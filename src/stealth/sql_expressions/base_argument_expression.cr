@@ -1,3 +1,3 @@
 module Stealth::BaseArgumentExpression
-  abstract def value
+  abstract def value : DB::Any
 end

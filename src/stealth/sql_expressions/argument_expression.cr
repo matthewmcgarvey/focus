@@ -1,9 +1,10 @@
-class Stealth::ArgumentExpression(T)
-  include Stealth::ScalarExpression(T)
+class Stealth::ArgumentExpression
+  include Stealth::ScalarExpression(DB::Any)
   include Stealth::BaseArgumentExpression
 
-  getter value : T
+  getter value : DB::Any
 
-  def initialize(@value, @sql_type)
+  def initialize(@value)
+    @sql_type = DB::Any
   end
 end
