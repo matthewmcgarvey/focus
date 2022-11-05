@@ -67,3 +67,12 @@ end
 The macro `raise` call means that it fails at compile time if you call the method and the generic isn't `Bool`.
 I'm not going to do it right now because there's so much more important work to do right now.
 This only keeps devs from building incorrect sql, so we're going to go without this safety feature until later on.
+
+### Query results by field
+
+Traced back java's postgres library and java's sqlite library.
+The sqlite one seems to do some sort of interaction with the native library to get a column name from the result set.
+Postgres, on the other hand, passes the fields from the query to the result set.
+I think the postgres implementation is exactly what I was thinking I could do, so I'm glad to find an example.
+
+Side note... tracing java libraries (and especially ones as complicated as SQL integrations) is ridiculously difficult.
