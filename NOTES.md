@@ -50,3 +50,20 @@ public operator fun ColumnDeclaring<Boolean>.not(): UnaryExpression<Boolean> {
 
 This means that only boolean columns (`ColumnDeclaring` is a bit more than just columns but w/e) have access to the `not` method.
 I don't think there is an equivalent in Crystal
+
+UPDATE: After talking about it in the Discord, I found a hack solution for this.
+
+```crystal
+def not : UnaryExpression(Bool)
+  {% raise "#{@type.name}##{@def.name} may only be used with Bool columns" %}
+  UnaryExpression.new(
+    Stealth::UnaryExpressionType::NOT,
+    operand: as_expression,
+    sql_type: Bool
+  )
+end
+```
+
+The macro `raise` call means that it fails at compile time if you call the method and the generic isn't `Bool`.
+I'm not going to do it right now because there's so much more important work to do right now.
+This only keeps devs from building incorrect sql, so we're going to go without this safety feature until later on.
