@@ -51,8 +51,4 @@ module Stealth::Dsl::Operators(T)
       sql_type: Bool
     )
   end
-
-  protected def wrap_argument(argument : V) : ArgumentExpression(V) forall V
-    ArgumentExpression.new(argument, sql_type)
-  end
 end
