@@ -54,6 +54,15 @@ class Stealth::SqlVisitor
     expression.upper.accept(self)
   end
 
+  def visit(expression : Stealth::ColumnDeclaringExpression(_))
+    column_expression = expression.expression
+    column_expression.accept(self)
+    declared_name = expression.declared_name
+    if declared_name && !declared_name.blank? && (!column_expression.is_a?(Stealth::ColumnExpression) || column_expression.name != declared_name)
+      write "as #{quoted(declared_name)} "
+    end
+  end
+
   def visit_list(expressions : Array(Stealth::SqlExpression))
     expressions.each_with_index do |expression, idx|
       if idx > 0
@@ -75,5 +84,9 @@ class Stealth::SqlVisitor
 
   protected def write(str : String)
     sql_string_builder << str
+  end
+
+  protected def quoted(str : String)
+    "'#{str}'"
   end
 end

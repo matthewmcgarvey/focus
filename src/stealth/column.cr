@@ -1,10 +1,8 @@
 require "./column_declaring"
-require "./dsl/operators"
 
 class Stealth::Column(T)
   include Stealth::BaseColumn
   include Stealth::ColumnDeclaring(T)
-  include Stealth::Dsl::Operators(T)
 
   def initialize(@table : Stealth::Table, @name : String, @sql_type : T.class)
   end
@@ -15,5 +13,13 @@ class Stealth::Column(T)
 
   def wrap_argument(argument : T) : Stealth::ArgumentExpression(T)
     Stealth::ArgumentExpression.new(argument, sql_type)
+  end
+
+  def aliased(label : String? = nil) : Stealth::ColumnDeclaringExpression(T)
+    Stealth::ColumnDeclaringExpression.new(as_expression, label)
+  end
+
+  def as_declaring_expression : Stealth::ColumnDeclaringExpression(T)
+    aliased(label)
   end
 end

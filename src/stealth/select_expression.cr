@@ -1,7 +1,7 @@
 class Stealth::SelectExpression
   include Stealth::SqlExpression
 
-  getter columns : Array(Stealth::BaseColumnExpression)
+  getter columns : Array(Stealth::BaseColumnDeclaringExpression)
   getter from : Stealth::TableExpression
   getter where : Stealth::ScalarExpression(Bool)?
 

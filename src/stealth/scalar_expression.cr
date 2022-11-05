@@ -12,4 +12,12 @@ module Stealth::ScalarExpression(T)
   def wrap_argument(argument : T) : Stealth::ArgumentExpression(T)
     ArgumentExpression.new(argument, sql_type)
   end
+
+  def aliased(label : String? = nil) : Stealth::ColumnDeclaringExpression(T)
+    Stealth::ColumnDeclaringExpression.new(this, label)
+  end
+
+  def as_declaring_expression : Stealth::ColumnDeclaringExpression(T)
+    aliased(nil)
+  end
 end
