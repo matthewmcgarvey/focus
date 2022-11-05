@@ -29,7 +29,7 @@ end
 
 query = database.from(Users)
   .select(Users.columns)
-  .where(Users.name.is_null)
+  .where(Users.name.is_not_null)
 
 # puts query.to_sql
 query.each do |row|
