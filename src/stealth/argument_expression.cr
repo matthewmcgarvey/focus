@@ -1,5 +1,8 @@
-require "./base_argument_expression"
 require "./scalar_expression"
+
+module Stealth::BaseArgumentExpression
+  abstract def value : DB::Any
+end
 
 class Stealth::ArgumentExpression(T)
   include Stealth::ScalarExpression(T)

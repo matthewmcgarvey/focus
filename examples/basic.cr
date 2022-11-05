@@ -31,11 +31,11 @@ query = database.from(Users)
   .select(Users.columns)
   .where(Users.name.is_not_null)
 
-puts query.to_sql
-# query.each do |row|
-#   val = {id: row.get_int32(0), name: row.get_str(1)}
-#   # val = {name: row.get_str(0)}
-#   pp val
-# end
+# puts query.to_sql
+query.each do |row|
+  val = {id: row.get_int32(0), name: row.get_str(1)}
+  # val = {name: row.get_str(0)}
+  pp val
+end
 
 database.close

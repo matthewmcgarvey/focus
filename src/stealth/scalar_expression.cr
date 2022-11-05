@@ -1,5 +1,8 @@
 require "./column_declaring"
-require "./base_scalar_expression"
+
+module Stealth::BaseScalarExpression
+  include Stealth::SqlExpression
+end
 
 module Stealth::ScalarExpression(T)
   include Stealth::BaseScalarExpression

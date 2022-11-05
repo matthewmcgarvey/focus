@@ -1,5 +1,8 @@
 require "./dsl/operators"
-require "./base_column_declaring"
+
+module Stealth::BaseColumnDeclaring
+  abstract def as_declaring_expression : Stealth::BaseColumnDeclaringExpression
+end
 
 module Stealth::ColumnDeclaring(T)
   include Stealth::BaseColumnDeclaring

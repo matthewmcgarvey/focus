@@ -1,3 +1,9 @@
+module Stealth::BaseColumnDeclaringExpression
+  include Stealth::SqlExpression
+
+  getter declared_name : String
+end
+
 class Stealth::ColumnDeclaringExpression(T)
   include Stealth::BaseColumnDeclaringExpression
   include Stealth::ScalarExpression(T)
