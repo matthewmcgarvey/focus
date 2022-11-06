@@ -13,6 +13,29 @@ class Stealth::CachedRow
   def initialize(@columns, @row_metadata)
   end
 
+  def get(column : Column(C)) : C? forall C
+    index = -1
+    field = row_metadata.fields.find do |f|
+      index += 1
+      f.name == column.name
+    end
+    return nil if field.nil?
+
+    get(index, type: C)
+  end
+
+  def get(column_index : Int32, type : Int32.class) : Int32?
+    get_int32(column_index)
+  end
+
+  def get(column_index : Int32, type : String.class) : String?
+    get_str(column_index)
+  end
+
+  def get(column_index : Int32, type : Float64.class) : Float64?
+    get_float64(column_index)
+  end
+
   def get_int32(column_index : Int32) : Int32?
     val = columns[column_index].value
     case val

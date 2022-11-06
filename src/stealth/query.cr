@@ -18,8 +18,10 @@ class Stealth::Query
   def rows : Array(Stealth::CachedRow)
     @rows ||= begin
       rows = [] of Stealth::CachedRow
+      row_metadata_visitor = Stealth::RowMetadataVisitor.new
+      expression.accept(row_metadata_visitor)
+      row_metadata = row_metadata_visitor.build_metadata
       result_set = database.execute_query(expression)
-      row_metadata = Stealth::RowMetadata.new
       begin
         result_set.each do
           rows << Stealth::CachedRow.build(result_set, row_metadata)
