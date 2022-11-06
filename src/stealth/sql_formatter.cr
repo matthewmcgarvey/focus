@@ -7,6 +7,7 @@ class Stealth::SqlFormatter < Stealth::SqlVisitor
   def visit(expression : Stealth::SelectExpression)
     write "SELECT "
     visit_list(expression.columns)
+    write "FROM "
     expression.from.accept(self)
     if where = expression.where
       write "WHERE "
@@ -21,7 +22,7 @@ class Stealth::SqlFormatter < Stealth::SqlVisitor
   end
 
   def visit(expression : Stealth::TableExpression)
-    write "FROM #{expression.name} "
+    write "#{expression.name} "
   end
 
   def visit(expression : Stealth::BinaryExpression(_))
@@ -77,6 +78,27 @@ class Stealth::SqlFormatter < Stealth::SqlVisitor
 
     remove_last_blank
     write ") "
+  end
+
+  def visit(expression : Stealth::InsertExpression)
+    write "insert into "
+    expression.table.accept(self)
+    write "("
+    expression.assignments.each_with_index do |assignment, idx|
+      write ", " if idx > 0
+      # write quoted(assignment.column.name)
+      write assignment.column.name
+    end
+    write ") values ("
+    expression.assignments.each_with_index do |assignment, idx|
+      if idx > 0
+        remove_last_blank
+        write ", "
+      end
+      assignment.expression.accept(self)
+    end
+    remove_last_blank
+    write ");"
   end
 
   def to_sql : String

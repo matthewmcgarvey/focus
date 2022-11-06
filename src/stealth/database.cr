@@ -18,11 +18,29 @@ class Stealth::Database
     Stealth::QuerySource.new(self, table, table.as_expression)
   end
 
+  def insert(table : Stealth::Table)
+    builder = Stealth::AssignmentsBuilder.new
+    with builder yield
+    expression = InsertExpression.new(table.as_expression, builder.assignments)
+    execute_update(expression)
+  end
+
   def close : Nil
     raw_db.close
   end
 
   def execute_query(expression : Stealth::SqlExpression) : DB::ResultSet
+    execute_expression(expression)
+  end
+
+  def execute_update(expression : Stealth::SqlExpression)
+    sql, args = format_expression(expression)
+    with_connection do |conn|
+      conn.exec(sql, args: args.map(&.value))
+    end
+  end
+
+  def execute_expression(expression : Stealth::SqlExpression) : DB::ResultSet
     sql, args = format_expression(expression)
     with_connection do |conn|
       conn.query(sql, args: args.map(&.value))

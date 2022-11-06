@@ -23,19 +23,24 @@ end
 
 database.with_connection do |conn|
   conn.exec("create table if not exists users(id INTEGER PRIMARY KEY AUTOINCREMENT, name varchar(128));")
-  conn.exec("INSERT INTO users(name) VALUES('bobby');")
-  conn.exec("INSERT INTO users(name) VALUES('billy');")
+end
+
+database.insert(Users) do
+  set(Users.name, "bobby")
+end
+
+database.insert(Users) do
+  set(Users.name, "billy")
 end
 
 query = database.from(Users)
-  .select(Users.columns)
-  .where(Users.name.eq("billy"))
+  .select(Stealth.count(Users.id))
 
 # puts query.to_sql
 query.each do |row|
   # val = {id: row.get_int32(0)}
-  val = {name: row.get(Users.name), id: row.get(Users.id)}
-  # val = {count: row.get_float64(0)}
+  # val = {name: row.get(Users.name), id: row.get(Users.id)}
+  val = {count: row.get_int32(0)}
   pp val
 end
 
