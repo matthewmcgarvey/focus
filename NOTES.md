@@ -76,3 +76,7 @@ Postgres, on the other hand, passes the fields from the query to the result set.
 I think the postgres implementation is exactly what I was thinking I could do, so I'm glad to find an example.
 
 Side note... tracing java libraries (and especially ones as complicated as SQL integrations) is ridiculously difficult.
+
+I was happy with the current implementation of how you can get results by passing in the field...
+that is, until I tried to implement `SELECT * FROM users`. When you provide a way to select "*" then you aren't passed any of the column information.
+I don't really want to trace java code right now, so I'm making this note and removing that functionality.
