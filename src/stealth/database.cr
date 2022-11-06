@@ -25,6 +25,17 @@ class Stealth::Database
     execute_update(expression)
   end
 
+  def update(table : Stealth::Table)
+    builder = Stealth::UpdateStatementBuilder.new
+    with builder yield
+    expression = Stealth::UpdateExpression.new(
+      table.as_expression,
+      builder.assignments,
+      builder.where.try(&.as_expression)
+    )
+    execute_update(expression)
+  end
+
   def close : Nil
     raw_db.close
   end

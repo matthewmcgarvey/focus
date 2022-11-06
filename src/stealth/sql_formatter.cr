@@ -101,6 +101,26 @@ class Stealth::SqlFormatter < Stealth::SqlVisitor
     write ");"
   end
 
+  def visit(expression : Stealth::UpdateExpression)
+    write "update "
+    expression.table.accept(self)
+    write "set "
+    expression.assignments.each_with_index do |assignment, idx|
+      if idx > 0
+        remove_last_blank
+        write ", "
+      end
+
+      write "#{assignment.column.name} = "
+      assignment.expression.accept(self)
+    end
+
+    if where = expression.where
+      write "where "
+      where.accept(self)
+    end
+  end
+
   def to_sql : String
     sql_string_builder.to_s
   end

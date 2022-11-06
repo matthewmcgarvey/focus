@@ -33,14 +33,20 @@ database.insert(Users) do
   set(Users.name, "billy")
 end
 
+database.update(Users) do
+  set(Users.name, "sally")
+  where(Users.name.eq("billy"))
+end
+
 query = database.from(Users)
-  .select(Stealth.count(Users.id))
+  .select(Users.columns)
+  .where(Users.name.eq("sally"))
 
 # puts query.to_sql
 query.each do |row|
   # val = {id: row.get_int32(0)}
-  # val = {name: row.get(Users.name), id: row.get(Users.id)}
-  val = {count: row.get_int32(0)}
+  val = {name: row.get(Users.name), id: row.get(Users.id)}
+  # val = {count: row.get_int32(0)}
   pp val
 end
 
