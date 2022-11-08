@@ -173,6 +173,17 @@ class Stealth::SqlFormatter < Stealth::SqlVisitor
     end
   end
 
+  def visit(expression : Stealth::JoinExpression)
+    visit_query_source(expression.left)
+    write "#{expression.join_type} "
+    visit_query_source(expression.right)
+
+    if condition = expression.condition
+      write "on "
+      condition.accept(self)
+    end
+  end
+
   def to_sql : String
     sql_string_builder.to_s
   end
@@ -202,7 +213,7 @@ class Stealth::SqlFormatter < Stealth::SqlVisitor
 
   protected def visit_query_source(expression : QuerySourceExpression)
     case expression
-    when TableExpression
+    when TableExpression, JoinExpression
       expression.accept(self)
     when QueryExpression
       write "("

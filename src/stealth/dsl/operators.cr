@@ -3,7 +3,7 @@ module Stealth::Dsl::Operators(T)
     Stealth::BinaryExpression.new(
       Stealth::BinaryExpressionType::EQUAL,
       left: as_expression,
-      right: expr,
+      right: expr.as_expression,
       sql_type: Bool
     )
   end
@@ -16,7 +16,7 @@ module Stealth::Dsl::Operators(T)
     Stealth::BinaryExpression.new(
       Stealth::BinaryExpressionType::NOT_EQUAL,
       left: as_expression,
-      right: expr,
+      right: expr.as_expression,
       sql_type: Bool
     )
   end

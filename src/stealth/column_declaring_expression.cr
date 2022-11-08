@@ -9,8 +9,8 @@ module Stealth::BaseColumnDeclaringExpression
 end
 
 class Stealth::ColumnDeclaringExpression(T)
-  include Stealth::BaseColumnDeclaringExpression
   include Stealth::ScalarExpression(T)
+  include Stealth::BaseColumnDeclaringExpression
 
   getter expression : ScalarExpression(T)
 

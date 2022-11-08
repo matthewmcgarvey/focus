@@ -10,8 +10,8 @@ module Stealth::BaseColumnExpression
 end
 
 class Stealth::ColumnExpression(T)
-  include Stealth::BaseColumnExpression
   include Stealth::ScalarExpression(T)
+  include Stealth::BaseColumnExpression
 
   def initialize(@table, @name, @sql_type)
   end

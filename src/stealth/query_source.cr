@@ -15,4 +15,44 @@ class Stealth::QuerySource
     select_expression = Stealth::SelectExpression.new(columns: columns, from: expression)
     Stealth::Query.new(database: database, expression: select_expression)
   end
+
+  def cross_join(right : Stealth::Table, on : ColumnDeclaring(Bool)? = nil) : QuerySource
+    new_expression = JoinExpression.new(
+      type: JoinType::CROSS_JOIN,
+      left: expression,
+      right: right.as_expression,
+      condition: on.try(&.as_expression)
+    )
+    QuerySource.new(database, table, new_expression)
+  end
+
+  def inner_join(right : Stealth::Table, on : ColumnDeclaring(Bool)? = nil) : QuerySource
+    new_expression = JoinExpression.new(
+      type: JoinType::INNER_JOIN,
+      left: expression,
+      right: right.as_expression,
+      condition: on.try(&.as_expression)
+    )
+    QuerySource.new(database, table, new_expression)
+  end
+
+  def left_join(right : Stealth::Table, on : ColumnDeclaring(Bool)? = nil) : QuerySource
+    new_expression = JoinExpression.new(
+      type: JoinType::LEFT_JOIN,
+      left: expression,
+      right: right.as_expression,
+      condition: on.try(&.as_expression)
+    )
+    QuerySource.new(database, table, new_expression)
+  end
+
+  def right_join(right : Stealth::Table, on : ColumnDeclaring(Bool)? = nil) : QuerySource
+    new_expression = JoinExpression.new(
+      type: JoinType::RIGHT_JOIN,
+      left: expression,
+      right: right.as_expression,
+      condition: on.try(&.as_expression)
+    )
+    QuerySource.new(database, table, new_expression)
+  end
 end

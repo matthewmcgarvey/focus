@@ -25,8 +25,46 @@ class Users
   end
 end
 
+class Todos
+  extend Stealth::Table
+
+  class_getter table_name : String = "todos"
+  class_getter columns : Array(Stealth::BaseColumn) do
+    [
+      id,
+      name,
+      user_id,
+    ] of Stealth::BaseColumn
+  end
+  class_getter id : Stealth::Column(Int32) do
+    Stealth::Column.new(table: self, name: "id", sql_type: Int32)
+  end
+  class_getter name : Stealth::Column(String) do
+    Stealth::Column.new(table: self, name: "name", sql_type: String)
+  end
+  class_getter user_id : Stealth::Column(Int32) do
+    Stealth::Column.new(table: self, name: "user_id", sql_type: Int32)
+  end
+end
+
 database.with_connection do |conn|
-  conn.exec("create table if not exists users(id INTEGER PRIMARY KEY AUTOINCREMENT, name varchar(128), age INTEGER);")
+  conn.exec(<<-SQL)
+    create table if not exists
+      users(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name varchar(128),
+        age INTEGER
+      );
+  SQL
+
+  conn.exec(<<-SQL)
+    create table if not exists
+      todos(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name varchar(128),
+        user_id INTEGER
+      );
+  SQL
 end
 
 database.insert(Users) do
@@ -39,18 +77,22 @@ database.insert(Users) do
   set(Users.age, 24)
 end
 
-users_with_even_ids = database.from(Users)
-  .select(Users.id)
-  .where((Users.id % 2).eq(0))
-query = database.from(Users)
-  .select(Users.columns)
-  .where(Users.id.in_list(users_with_even_ids))
+database.insert(Todos) do
+  set(Todos.name, "Take out trash")
+  set(Todos.user_id, 2)
+end
+
+query = database.from(Todos)
+  .left_join(Users, on: Todos.user_id.eq Users.id)
+  .select(Todos.columns)
+  .where(Users.id.eq(2))
 
 # puts query.to_sql
 query.each do |row|
-  # val = {id: row.get_int32(0)}
-  val = {name: row.get(Users.name), id: row.get(Users.id), age: row.get(Users.age)}
-  # val = {count: row.get_int32(0)}
+  #   # val = {id: row.get_int32(0)}
+  #   # val = {name: row.get(Users.name), id: row.get(Users.id), age: row.get(Users.age)}
+  val = {name: row.get(Todos.name), id: row.get(Todos.id), user_id: row.get(Todos.user_id)}
+  #   # val = {count: row.get_int32(0)}
   pp val
 end
 
