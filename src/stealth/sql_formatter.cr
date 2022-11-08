@@ -8,13 +8,11 @@ class Stealth::SqlFormatter < Stealth::SqlVisitor
     write "SELECT "
     visit_list(expression.columns)
     write "FROM "
-    expression.from.accept(self)
+    visit_query_source(expression.from)
     if where = expression.where
       write "WHERE "
       where.accept(self)
     end
-    remove_last_blank
-    write ";"
   end
 
   def visit(expression : Stealth::BaseColumnExpression)
@@ -155,6 +153,26 @@ class Stealth::SqlFormatter < Stealth::SqlVisitor
     end
   end
 
+  def visit(expression : Stealth::InListExpression)
+    expression.left.accept(self)
+
+    if expression.not_in_list
+      write "not in "
+    else
+      write "in "
+    end
+
+    if query = expression.query
+      visit_query_source(query)
+    end
+    if values = expression.values
+      write "("
+      visit_list(values)
+      remove_last_blank
+      write ") "
+    end
+  end
+
   def to_sql : String
     sql_string_builder.to_s
   end
@@ -179,6 +197,19 @@ class Stealth::SqlFormatter < Stealth::SqlVisitor
 
       write "#{quoted(assignment.column.name)} = "
       assignment.expression.accept(self)
+    end
+  end
+
+  protected def visit_query_source(expression : QuerySourceExpression)
+    case expression
+    when TableExpression
+      expression.accept(self)
+    when QueryExpression
+      write "("
+      expression.accept(self)
+      remove_last_blank
+      write ")"
+      expression.table_alias.try { |it| write "#{quoted(it)} " }
     end
   end
 

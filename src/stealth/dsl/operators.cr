@@ -33,6 +33,34 @@ module Stealth::Dsl::Operators(T)
     BetweenExpression.new(as_expression, wrap_argument(range.begin), wrap_argument(range.end), not_between: true)
   end
 
+  def in_list(*list : T) : InListExpression(T)
+    values = list.map { |value| wrap_argument(value).as(Stealth::ScalarExpression(T)) }.to_a
+    InListExpression.new(left: as_expression, values: values)
+  end
+
+  def in_list(list : Array(T)) : InListExpression(T)
+    values = list.map { |value| wrap_argument(value) }
+    InListExpression.new(left: as_expression, values: values)
+  end
+
+  def in_list(query : Query) : InListExpression(T)
+    InListExpression.new(left: as_expression, query: query.expression)
+  end
+
+  def not_in_list(*list : T) : InListExpression(T)
+    values = list.map { |value| wrap_argument(value).as(Stealth::ScalarExpression(T)) }.to_a
+    InListExpression.new(left: as_expression, values: values, not_in_list: true)
+  end
+
+  def not_in_list(list : Array(T)) : InListExpression(T)
+    values = list.map { |value| wrap_argument(value) }
+    InListExpression.new(left: as_expression, values: values, not_in_list: true)
+  end
+
+  def not_in_list(query : Query) : InListExpression(T)
+    InListExpression.new(left: as_expression, query: query.expression, not_in_list: true)
+  end
+
   def is_null : UnaryExpression(Bool)
     UnaryExpression.new(
       Stealth::UnaryExpressionType::IS_NULL,

@@ -1,9 +1,9 @@
 class Stealth::QuerySource
   getter database : Stealth::Database
   getter table : Stealth::Table
-  getter expression : Stealth::TableExpression
+  getter expression : Stealth::QuerySourceExpression
 
-  def initialize(@database : Stealth::Database, @table : Stealth::Table, @expression : Stealth::TableExpression)
+  def initialize(@database, @table, @expression)
   end
 
   def select(*columns : Stealth::BaseColumnDeclaring) : Stealth::Query

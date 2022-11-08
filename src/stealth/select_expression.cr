@@ -1,8 +1,8 @@
 class Stealth::SelectExpression
-  include Stealth::SqlExpression
+  include Stealth::QueryExpression
 
   getter columns : Array(Stealth::BaseColumnDeclaringExpression)
-  getter from : Stealth::TableExpression
+  getter from : Stealth::QuerySourceExpression
   getter where : Stealth::ScalarExpression(Bool)?
 
   def initialize(@columns, @from, @where = nil)

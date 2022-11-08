@@ -7,10 +7,11 @@ class Users
   extend Stealth::Table
 
   class_getter table_name : String = "users"
-  class_getter _columns : Array(Stealth::BaseColumn) do
+  class_getter columns : Array(Stealth::BaseColumn) do
     [
       id,
       name,
+      age,
     ] of Stealth::BaseColumn
   end
   class_getter id : Stealth::Column(Int32) do
@@ -38,15 +39,18 @@ database.insert(Users) do
   set(Users.age, 24)
 end
 
+users_with_even_ids = database.from(Users)
+  .select(Users.id)
+  .where((Users.id % 2).eq(0))
 query = database.from(Users)
-  .select(Users.age)
-  .where(Users.age.not_eq 45)
+  .select(Users.columns)
+  .where(Users.id.in_list(users_with_even_ids))
 
 # puts query.to_sql
 query.each do |row|
   # val = {id: row.get_int32(0)}
-  # val = {name: row.get(Users.name), id: row.get(Users.id)}
-  val = {count: row.get_int32(0)}
+  val = {name: row.get(Users.name), id: row.get(Users.id), age: row.get(Users.age)}
+  # val = {count: row.get_int32(0)}
   pp val
 end
 

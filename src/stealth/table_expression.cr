@@ -1,5 +1,5 @@
 class Stealth::TableExpression
-  include Stealth::SqlExpression
+  include Stealth::QuerySourceExpression
 
   getter name : String
   getter table_alias : String?
