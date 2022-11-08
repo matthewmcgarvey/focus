@@ -80,3 +80,8 @@ Side note... tracing java libraries (and especially ones as complicated as SQL i
 I was happy with the current implementation of how you can get results by passing in the field...
 that is, until I tried to implement `SELECT * FROM users`. When you provide a way to select "*" then you aren't passed any of the column information.
 I don't really want to trace java code right now, so I'm making this note and removing that functionality.
+
+I was wrong about how the Java Postgres library gets the field name.
+https://github.com/pgjdbc/pgjdbc/blob/d5ed52ef391670e83ae5265af2f7301c615ce4ca/pgjdbc/src/main/java/org/postgresql/core/v3/QueryExecutorImpl.java#L2619-L2644
+
+How do they do it? Don't know
