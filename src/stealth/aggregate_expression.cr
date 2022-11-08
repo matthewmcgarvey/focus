@@ -13,6 +13,10 @@ class Stealth::AggregateExpression(T)
   def method : String
     type.method
   end
+
+  def wrap_in_parens? : Bool
+    false
+  end
 end
 
 enum Stealth::AggregateType

@@ -2,6 +2,10 @@ module Stealth::BaseColumnDeclaringExpression
   include Stealth::SqlExpression
 
   getter declared_name : String?
+
+  def wrap_in_parens? : Bool
+    false
+  end
 end
 
 class Stealth::ColumnDeclaringExpression(T)

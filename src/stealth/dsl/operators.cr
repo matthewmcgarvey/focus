@@ -29,6 +29,10 @@ module Stealth::Dsl::Operators(T)
     BetweenExpression.new(as_expression, wrap_argument(range.begin), wrap_argument(range.end))
   end
 
+  def not_between(range : Range(T, T)) : BetweenExpression(T)
+    BetweenExpression.new(as_expression, wrap_argument(range.begin), wrap_argument(range.end), not_between: true)
+  end
+
   def is_null : UnaryExpression(Bool)
     UnaryExpression.new(
       Stealth::UnaryExpressionType::IS_NULL,
