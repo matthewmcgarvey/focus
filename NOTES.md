@@ -85,3 +85,5 @@ I was wrong about how the Java Postgres library gets the field name.
 https://github.com/pgjdbc/pgjdbc/blob/d5ed52ef391670e83ae5265af2f7301c615ce4ca/pgjdbc/src/main/java/org/postgresql/core/v3/QueryExecutorImpl.java#L2619-L2644
 
 How do they do it? Don't know
+
+I'm...so...dumb. After finding out about ^ I looked at crystal-pg and crystal-sqlite and they both implemented stuff around column name... so I look at crystal-db. Right in front of my face the whole time is the column_name method.
