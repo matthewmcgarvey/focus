@@ -18,13 +18,10 @@ class Stealth::Query
   def rows : Array(Stealth::CachedRow)
     @rows ||= begin
       rows = [] of Stealth::CachedRow
-      row_metadata_visitor = Stealth::RowMetadataVisitor.new
-      expression.accept(row_metadata_visitor)
-      row_metadata = row_metadata_visitor.build_metadata
       result_set = database.execute_query(expression)
       begin
         result_set.each do
-          rows << Stealth::CachedRow.build(result_set, row_metadata)
+          rows << Stealth::CachedRow.build(result_set)
         end
       ensure
         result_set.close
@@ -38,7 +35,10 @@ class Stealth::Query
   end
 
   def where(condition : Stealth::ScalarExpression(Bool)) : Stealth::Query
-    new_expression = Stealth::SelectExpression.new(expression.columns, expression.from, where: condition)
+    new_expression = Stealth::SelectExpression.new(
+      columns: expression.columns,
+      from: expression.from,
+      where: condition)
     Stealth::Query.new(database, new_expression)
   end
 end

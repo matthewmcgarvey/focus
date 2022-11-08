@@ -1,25 +1,26 @@
 class Stealth::CachedRow
-  def self.build(result_set : DB::ResultSet, row_metadata : Stealth::RowMetadata) : Stealth::CachedRow
+  def self.build(result_set : DB::ResultSet) : Stealth::CachedRow
     columns = [] of Stealth::CachedColumn
     result_set.column_count.times do
-      columns << Stealth::CachedColumn.new(value: result_set.read)
+      index = result_set.next_column_index
+      name = result_set.column_name(index)
+      columns << Stealth::CachedColumn.new(value: result_set.read, name: name)
     end
-    new(columns, row_metadata)
+    new(columns)
   end
 
-  private getter columns : Array(Stealth::CachedColumn)
-  private getter row_metadata : Stealth::RowMetadata
+  getter columns : Array(Stealth::CachedColumn)
 
-  def initialize(@columns, @row_metadata)
+  def initialize(@columns)
   end
 
   def get(column : Column(C)) : C? forall C
     index = -1
-    field = row_metadata.fields.find do |f|
+    col = columns.find do |col|
       index += 1
-      f.name == column.name
+      col.name == column.name
     end
-    return nil if field.nil?
+    return nil if col.nil?
 
     get(index, type: C)
   end

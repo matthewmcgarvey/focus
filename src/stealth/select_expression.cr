@@ -5,6 +5,6 @@ class Stealth::SelectExpression
   getter from : Stealth::QuerySourceExpression
   getter where : Stealth::ScalarExpression(Bool)?
 
-  def initialize(@columns, @from, @where = nil)
+  def initialize(@from, @columns = [] of Stealth::BaseColumnDeclaringExpression, @where = nil)
   end
 end

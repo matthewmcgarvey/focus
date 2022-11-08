@@ -1,6 +1,7 @@
 class Stealth::CachedColumn
   getter value : DB::Any
+  getter name : String
 
-  def initialize(@value : DB::Any)
+  def initialize(@value, @name)
   end
 end

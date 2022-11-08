@@ -84,11 +84,12 @@ end
 
 query = database.from(Todos)
   .left_join(Users, on: Todos.user_id.eq Users.id)
-  .select(Todos.columns)
+  .select
   .where(Users.id.eq(2))
 
 # puts query.to_sql
 query.each do |row|
+  # pp row.columns.map { |col| {name: col.name, value: col.value} }
   #   # val = {id: row.get_int32(0)}
   #   # val = {name: row.get(Users.name), id: row.get(Users.id), age: row.get(Users.age)}
   val = {name: row.get(Todos.name), id: row.get(Todos.id), user_id: row.get(Todos.user_id)}

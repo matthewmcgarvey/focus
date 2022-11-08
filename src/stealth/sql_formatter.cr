@@ -1,3 +1,5 @@
+require "./sql_visitor"
+
 class Stealth::SqlFormatter < Stealth::SqlVisitor
   WHITESPACE_BYTE = 32_u8
 
@@ -6,7 +8,11 @@ class Stealth::SqlFormatter < Stealth::SqlVisitor
 
   def visit(expression : Stealth::SelectExpression)
     write "SELECT "
-    visit_list(expression.columns)
+    if expression.columns.empty?
+      write "* "
+    else
+      visit_list(expression.columns)
+    end
     write "FROM "
     visit_query_source(expression.from)
     if where = expression.where

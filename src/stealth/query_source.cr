@@ -16,6 +16,11 @@ class Stealth::QuerySource
     Stealth::Query.new(database: database, expression: select_expression)
   end
 
+  def select : Stealth::Query
+    select_expression = Stealth::SelectExpression.new(from: expression)
+    Stealth::Query.new(database: database, expression: select_expression)
+  end
+
   def cross_join(right : Stealth::Table, on : ColumnDeclaring(Bool)? = nil) : QuerySource
     new_expression = JoinExpression.new(
       type: JoinType::CROSS_JOIN,
