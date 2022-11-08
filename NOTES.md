@@ -87,3 +87,9 @@ https://github.com/pgjdbc/pgjdbc/blob/d5ed52ef391670e83ae5265af2f7301c615ce4ca/p
 How do they do it? Don't know
 
 I'm...so...dumb. After finding out about ^ I looked at crystal-pg and crystal-sqlite and they both implemented stuff around column name... so I look at crystal-db. Right in front of my face the whole time is the column_name method.
+
+Still a problem though. If I join two tables that have overlapping column names, there's no way to determine the difference with the way things are right now.
+Looking into postgres, they issue a separate query. https://github.com/pgjdbc/pgjdbc/blob/d5ed52ef391670e83ae5265af2f7301c615ce4ca/pgjdbc/src/main/java/org/postgresql/jdbc/PgResultSetMetaData.java#L187
+What should I do?
+The reason it's not a problem for anyone else is that they don't serialize joins often, and the ordering of how you extract data from the result set matters.
+https://github.com/crystal-lang/crystal-db/issues/175
