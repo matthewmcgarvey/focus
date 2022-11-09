@@ -7,16 +7,17 @@ class Stealth::SqlFormatter < Stealth::SqlVisitor
   getter parameters = [] of Stealth::BaseArgumentExpression
 
   def visit(expression : Stealth::SelectExpression)
-    write "SELECT "
+    write "select "
+    write "distinct " if expression.is_distinct
     if expression.columns.empty?
       write "* "
     else
       visit_list(expression.columns)
     end
-    write "FROM "
+    write "from "
     visit_query_source(expression.from)
     if where = expression.where
-      write "WHERE "
+      write "where "
       where.accept(self)
     end
   end

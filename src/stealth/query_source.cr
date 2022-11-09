@@ -21,6 +21,21 @@ class Stealth::QuerySource
     Stealth::Query.new(database: database, expression: select_expression)
   end
 
+  def select_distinct(*columns : Stealth::BaseColumnDeclaring) : Stealth::Query
+    self.select_distinct(columns.to_a)
+  end
+
+  def select_distinct(columns : Enumerable(Stealth::BaseColumnDeclaring)) : Stealth::Query
+    columns = columns.map(&.as_declaring_expression).select(Stealth::BaseColumnDeclaringExpression) # cuz generics
+    select_expression = Stealth::SelectExpression.new(columns: columns, from: expression, is_distinct: true)
+    Stealth::Query.new(database: database, expression: select_expression)
+  end
+
+  def select_distinct : Stealth::Query
+    select_expression = Stealth::SelectExpression.new(from: expression, is_distinct: true)
+    Stealth::Query.new(database: database, expression: select_expression)
+  end
+
   def cross_join(right : Stealth::Table, on : ColumnDeclaring(Bool)? = nil) : QuerySource
     new_expression = JoinExpression.new(
       type: JoinType::CROSS_JOIN,
