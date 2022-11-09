@@ -25,6 +25,17 @@ class Stealth::CachedRow
     get(index, type: C)
   end
 
+  def get(column : ColumnDeclaringExpression(C)) : C? forall C
+    declared_name = column.declared_name
+    if declared_name.nil? || declared_name.blank?
+      raise "TODO: Label of the specified column cannot be null or blank."
+    end
+
+    columns.each_with_index do |column, idx|
+      return get(idx, type: C) if column.name == declared_name
+    end
+  end
+
   def get(column_index : Int32, type : Int32.class) : Int32?
     get_int32(column_index)
   end
