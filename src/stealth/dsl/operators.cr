@@ -12,6 +12,14 @@ module Stealth::Dsl::Operators(T)
     eq(wrap_argument(val))
   end
 
+  def ==(expr : ColumnDeclaring(T)) : Stealth::BinaryExpression(Bool)
+    eq(expr)
+  end
+
+  def ==(val : T) : Stealth::BinaryExpression(Bool)
+    eq(wrap_argument(val))
+  end
+
   def not_eq(expr : ColumnDeclaring(T)) : Stealth::BinaryExpression(Bool)
     Stealth::BinaryExpression.new(
       Stealth::BinaryExpressionType::NOT_EQUAL,
@@ -22,6 +30,14 @@ module Stealth::Dsl::Operators(T)
   end
 
   def not_eq(val : T) : Stealth::BinaryExpression(Bool)
+    not_eq(wrap_argument(val))
+  end
+
+  def !=(expr : ColumnDeclaring(T)) : Stealth::BinaryExpression(Bool)
+    not_eq(expr)
+  end
+
+  def !=(val : T) : Stealth::BinaryExpression(Bool)
     not_eq(wrap_argument(val))
   end
 
@@ -245,6 +261,14 @@ module Stealth::Dsl::Operators(T)
     and(wrap_argument(value))
   end
 
+  def &(expr : ColumnDeclaring(T)) : Stealth::BinaryExpression(Bool)
+    and(expr)
+  end
+
+  def &(value : T) : Stealth::BinaryExpression(Bool)
+    and(wrap_argument(value))
+  end
+
   def or(expr : ColumnDeclaring(T)) : Stealth::BinaryExpression(Bool)
     Stealth::BinaryExpression.new(
       BinaryExpressionType::OR,
@@ -255,6 +279,14 @@ module Stealth::Dsl::Operators(T)
   end
 
   def or(value : T) : Stealth::BinaryExpression(Bool)
+    or(wrap_argument(value))
+  end
+
+  def |(expr : ColumnDeclaring(T)) : Stealth::BinaryExpression(Bool)
+    or(expr)
+  end
+
+  def |(value : T) : Stealth::BinaryExpression(Bool)
     or(wrap_argument(value))
   end
 
@@ -271,6 +303,14 @@ module Stealth::Dsl::Operators(T)
     xor(wrap_argument(value))
   end
 
+  def ^(expr : ColumnDeclaring(T)) : Stealth::BinaryExpression(Bool)
+    xor(expr)
+  end
+
+  def ^(value : T) : Stealth::BinaryExpression(Bool)
+    xor(wrap_argument(value))
+  end
+
   def less_than(expr : ColumnDeclaring(T)) : Stealth::BinaryExpression(Bool)
     Stealth::BinaryExpression.new(
       BinaryExpressionType::LESS_THAN,
@@ -281,6 +321,14 @@ module Stealth::Dsl::Operators(T)
   end
 
   def less_than(value : T) : Stealth::BinaryExpression(Bool)
+    less_than(wrap_argument(value))
+  end
+
+  def <(expr : ColumnDeclaring(T)) : Stealth::BinaryExpression(Bool)
+    less_than(expr)
+  end
+
+  def <(value : T) : Stealth::BinaryExpression(Bool)
     less_than(wrap_argument(value))
   end
 
@@ -297,6 +345,14 @@ module Stealth::Dsl::Operators(T)
     greater_than(wrap_argument(value))
   end
 
+  def >(expr : ColumnDeclaring(T)) : Stealth::BinaryExpression(Bool)
+    greater_than(expr)
+  end
+
+  def >(value : T) : Stealth::BinaryExpression(Bool)
+    greater_than(wrap_argument(value))
+  end
+
   def less_than_or_equal(expr : ColumnDeclaring(T)) : Stealth::BinaryExpression(Bool)
     Stealth::BinaryExpression.new(
       BinaryExpressionType::LESS_THAN_OR_EQUAL,
@@ -310,6 +366,14 @@ module Stealth::Dsl::Operators(T)
     less_than_or_equal(wrap_argument(value))
   end
 
+  def <=(expr : ColumnDeclaring(T)) : Stealth::BinaryExpression(Bool)
+    less_than_or_equal(expr)
+  end
+
+  def <=(value : T) : Stealth::BinaryExpression(Bool)
+    less_than_or_equal(wrap_argument(value))
+  end
+
   def greater_than_or_equal(expr : ColumnDeclaring(T)) : Stealth::BinaryExpression(Bool)
     Stealth::BinaryExpression.new(
       BinaryExpressionType::GREATER_THAN_OR_EQUAL,
@@ -320,6 +384,14 @@ module Stealth::Dsl::Operators(T)
   end
 
   def greater_than_or_equal(value : T) : Stealth::BinaryExpression(Bool)
+    greater_than_or_equal(wrap_argument(value))
+  end
+
+  def >=(expr : ColumnDeclaring(T)) : Stealth::BinaryExpression(Bool)
+    greater_than_or_equal(expr)
+  end
+
+  def >=(value : T) : Stealth::BinaryExpression(Bool)
     greater_than_or_equal(wrap_argument(value))
   end
 end

@@ -88,11 +88,11 @@ end
 query = database.from(Todos)
   .select
   .where(
-    Todos.id.is_not_null.and(Stealth.exists(
+    Todos.id.is_not_null & Stealth.exists(
       database.from(Users)
         .select
-        .where(Users.id.eq(Todos.user_id))
-    ))
+        .where(Users.id == Todos.user_id)
+    )
   )
 
 puts query.to_sql
