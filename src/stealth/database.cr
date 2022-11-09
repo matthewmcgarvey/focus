@@ -18,14 +18,14 @@ class Stealth::Database
     Stealth::QuerySource.new(self, table, table.as_expression)
   end
 
-  def insert(table : Stealth::Table)
+  def insert(table : Stealth::Table) : Int64
     builder = Stealth::AssignmentsBuilder.new
     with builder yield
     expression = InsertExpression.new(table.as_expression, builder.assignments)
     execute_update(expression)
   end
 
-  def update(table : Stealth::Table)
+  def update(table : Stealth::Table) : Int64
     builder = Stealth::UpdateStatementBuilder.new
     with builder yield
     expression = Stealth::UpdateExpression.new(
@@ -36,12 +36,12 @@ class Stealth::Database
     execute_update(expression)
   end
 
-  def delete(table : Stealth::Table, where : ColumnDeclaring(Bool))
+  def delete(table : Stealth::Table, where : ColumnDeclaring(Bool)) : Int64
     expression = DeleteExpression.new(table.as_expression, where.as_expression)
     execute_update(expression)
   end
 
-  def delete_all(table : Stealth::Table)
+  def delete_all(table : Stealth::Table) : Int64
     expression = DeleteExpression.new(table.as_expression, where: nil)
     execute_update(expression)
   end
@@ -54,10 +54,10 @@ class Stealth::Database
     execute_expression(expression)
   end
 
-  def execute_update(expression : Stealth::SqlExpression)
+  def execute_update(expression : Stealth::SqlExpression) : Int64
     sql, args = format_expression(expression)
     with_connection do |conn|
-      conn.exec(sql, args: args.map(&.value))
+      conn.exec(sql, args: args.map(&.value)).rows_affected
     end
   end
 
