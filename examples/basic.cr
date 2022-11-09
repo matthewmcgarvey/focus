@@ -85,15 +85,7 @@ end
 # database.delete(Users, Users.name.eq("billy"))
 # database.delete_all(Users)
 
-query = database.from(Todos)
-  .select
-  .where(
-    Todos.id.is_not_null & Stealth.exists(
-      database.from(Users)
-        .select
-        .where(Users.id == Todos.user_id)
-    )
-  )
+query = database.sequence_of(Todos)
 
 puts query.to_sql
 query.each do |row|

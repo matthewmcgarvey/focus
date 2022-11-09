@@ -18,6 +18,10 @@ class Stealth::Database
     Stealth::QuerySource.new(self, table, table.as_expression)
   end
 
+  def sequence_of(table : Stealth::Table) : Stealth::Query
+    from(table).select(table.columns)
+  end
+
   def insert(table : Stealth::Table) : Int64
     builder = Stealth::AssignmentsBuilder.new
     with builder yield
