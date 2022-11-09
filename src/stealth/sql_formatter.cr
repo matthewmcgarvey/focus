@@ -214,6 +214,16 @@ class Stealth::SqlFormatter < Stealth::SqlVisitor
     end
   end
 
+  def visit(expression : Stealth::DeleteExpression)
+    write "delete from "
+    expression.table.accept(self)
+
+    if where = expression.where
+      write "where "
+      where.accept(self)
+    end
+  end
+
   def to_sql : String
     sql_string_builder.to_s
   end

@@ -36,6 +36,16 @@ class Stealth::Database
     execute_update(expression)
   end
 
+  def delete(table : Stealth::Table, where : ColumnDeclaring(Bool))
+    expression = DeleteExpression.new(table.as_expression, where.as_expression)
+    execute_update(expression)
+  end
+
+  def delete_all(table : Stealth::Table)
+    expression = DeleteExpression.new(table.as_expression, where: nil)
+    execute_update(expression)
+  end
+
   def close : Nil
     raw_db.close
   end
