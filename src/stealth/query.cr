@@ -70,4 +70,13 @@ class Stealth::Query
     new_expression = expression.copy(having: condition.as_expression)
     Stealth::Query.new(database, new_expression)
   end
+
+  def order_by(*orders : OrderByExpression) : Query
+    order_by(orders.to_a)
+  end
+
+  def order_by(orders : Array(OrderByExpression)) : Query
+    new_expression = expression.copy(order_by: orders)
+    Stealth::Query.new(database, new_expression)
+  end
 end

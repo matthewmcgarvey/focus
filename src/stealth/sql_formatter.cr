@@ -28,6 +28,10 @@ class Stealth::SqlFormatter < Stealth::SqlVisitor
       write "having "
       having.accept(self)
     end
+    if expression.order_by.any?
+      write "order by "
+      visit_list expression.order_by
+    end
   end
 
   def visit(expression : Stealth::BaseColumnExpression)
@@ -196,6 +200,13 @@ class Stealth::SqlFormatter < Stealth::SqlVisitor
     if condition = expression.condition
       write "on "
       condition.accept(self)
+    end
+  end
+
+  def visit(expression : Stealth::OrderByExpression)
+    expression.expression.accept(self)
+    if expression.order_type == OrderType::DESCENDING
+      write "desc "
     end
   end
 

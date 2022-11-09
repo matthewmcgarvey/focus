@@ -13,4 +13,12 @@ module Stealth::ColumnDeclaring(T)
   abstract def as_expression : Stealth::ScalarExpression(T)
   abstract def wrap_argument(argument : T) : Stealth::ArgumentExpression(T)
   abstract def aliased(label : String? = nil) : Stealth::ColumnDeclaringExpression(T)
+
+  def asc : OrderByExpression
+    OrderByExpression.new(as_expression, OrderType::ASCENDING)
+  end
+
+  def desc : OrderByExpression
+    OrderByExpression.new(as_expression, OrderType::DESCENDING)
+  end
 end
