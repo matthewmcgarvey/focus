@@ -323,3 +323,13 @@ module Stealth::Dsl::Operators(T)
     greater_than_or_equal(wrap_argument(value))
   end
 end
+
+module Stealth::Dsl::TopLevelOperators
+  def exists(query : Query) : ExistsExpression
+    ExistsExpression.new(query.expression)
+  end
+
+  def not_exists(query : Query) : ExistsExpression
+    ExistsExpression.new(query.expression, not_exists: true)
+  end
+end

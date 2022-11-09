@@ -85,16 +85,23 @@ end
 # database.delete(Users, Users.name.eq("billy"))
 # database.delete_all(Users)
 
-query = database.from(Users)
+query = database.from(Todos)
   .select
+  .where(
+    Todos.id.is_not_null.and(Stealth.exists(
+      database.from(Users)
+        .select
+        .where(Users.id.eq(Todos.user_id))
+    ))
+  )
 
-# puts query.to_sql
+puts query.to_sql
 query.each do |row|
   # pp row.columns.map { |col| {name: col.name, value: col.value} }
   # val = {id: row.get_int32(0)}
-  val = {name: row.get(Users.name), id: row.get(Users.id), age: row.get(Users.age)}
+  # val = {name: row.get(Users.name), id: row.get(Users.id), age: row.get(Users.age)}
   # val = {name: row.get(Users.name), count: row.get_int32(1)}
-  # val = {name: row.get(Todos.name), id: row.get(Todos.id), user_id: row.get(Todos.user_id)}
+  val = {name: row.get(Todos.name), id: row.get(Todos.id), user_id: row.get(Todos.user_id)}
   # val = {count: row.get_int32(0)}
   # val = {name: row.get(nickname)}
   pp val

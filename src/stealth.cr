@@ -7,6 +7,7 @@ require "./stealth/dsl/*"
 
 module Stealth
   extend Stealth::Dsl::Aggregation
+  extend Stealth::Dsl::TopLevelOperators
   VERSION = "0.1.0"
 
   # TODO: Put your code here

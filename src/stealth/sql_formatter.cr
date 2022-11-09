@@ -224,6 +224,16 @@ class Stealth::SqlFormatter < Stealth::SqlVisitor
     end
   end
 
+  def visit(expression : ExistsExpression)
+    if expression.not_exists
+      write "not exists"
+    else
+      write "exists "
+    end
+
+    visit_query_source(expression.query)
+  end
+
   def to_sql : String
     sql_string_builder.to_s
   end
