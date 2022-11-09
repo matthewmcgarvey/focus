@@ -79,4 +79,11 @@ class Stealth::Query
     new_expression = expression.copy(order_by: orders)
     Stealth::Query.new(database, new_expression)
   end
+
+  def limit(limit : Int32, offset : Int32? = nil)
+    new_limit = limit.tap { |lim| lim > 0 ? lim : nil } || expression.limit
+    new_offset = offset.tap { |off| off && off > 0 ? off : nil } || expression.offset
+    new_expression = expression.copy(limit: new_limit, offset: new_offset)
+    Stealth::Query.new(database, new_expression)
+  end
 end

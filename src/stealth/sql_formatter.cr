@@ -32,6 +32,10 @@ class Stealth::SqlFormatter < Stealth::SqlVisitor
       write "order by "
       visit_list expression.order_by
     end
+
+    if expression.limit || expression.offset
+      write_pagination(expression)
+    end
   end
 
   def visit(expression : Stealth::BaseColumnExpression)
@@ -264,6 +268,12 @@ class Stealth::SqlFormatter < Stealth::SqlVisitor
     visit_list(assignments.map(&.expression))
     remove_last_blank
     write ") "
+  end
+
+  protected def write_pagination(expr : QueryExpression)
+    write "limit ?, ? "
+    parameters << ArgumentExpression.new(expr.offset || 0, Int32)
+    parameters << ArgumentExpression.new(expr.limit || Int32::MAX, Int32)
   end
 
   protected def remove_last_blank

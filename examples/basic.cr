@@ -84,7 +84,7 @@ end
 
 query = database.from(Users)
   .select
-  .order_by(Users.age.asc)
+  .limit(10, offset: 10)
 
 # puts query.to_sql
 query.each do |row|
