@@ -41,4 +41,22 @@ class Stealth::Query
       where: condition)
     Stealth::Query.new(database, new_expression)
   end
+
+  def where_with_conditions(&block : Array(ColumnDeclaring(Bool)) -> Nil) : Stealth::Query
+    conditions = [] of ColumnDeclaring(Bool)
+    yield conditions
+    return self if conditions.empty?
+
+    condition = conditions.reduce { |a, b| a.and b }
+    where condition.as(Stealth::ScalarExpression(Bool))
+  end
+
+  def where_with_or_conditions(&block : Array(ColumnDeclaring(Bool)) -> Nil) : Stealth::Query
+    conditions = [] of ColumnDeclaring(Bool)
+    yield conditions
+    return self if conditions.empty?
+
+    condition = conditions.reduce { |a, b| a.or b }
+    where condition.as(Stealth::ScalarExpression(Bool))
+  end
 end
