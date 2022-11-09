@@ -59,4 +59,18 @@ class Stealth::Query
     condition = conditions.reduce { |a, b| a.or b }
     where condition.as(Stealth::ScalarExpression(Bool))
   end
+
+  def group_by(*columns : BaseColumnDeclaring) : Query
+    group_by(columns.to_a)
+  end
+
+  def group_by(columns : Array(BaseColumnDeclaring)) : Query
+    new_expression = SelectExpression.new(
+      columns: expression.columns,
+      from: expression.from,
+      where: expression.where,
+      group_by: columns.map(&.as_expression.as(BaseScalarExpression))
+    )
+    Stealth::Query.new(database, new_expression)
+  end
 end

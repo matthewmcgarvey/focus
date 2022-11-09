@@ -20,6 +20,10 @@ class Stealth::SqlFormatter < Stealth::SqlVisitor
       write "where "
       where.accept(self)
     end
+    if expression.group_by.any?
+      write "group by "
+      visit_list expression.group_by
+    end
   end
 
   def visit(expression : Stealth::BaseColumnExpression)
