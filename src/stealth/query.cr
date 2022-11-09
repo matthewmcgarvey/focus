@@ -35,10 +35,7 @@ class Stealth::Query
   end
 
   def where(condition : Stealth::ScalarExpression(Bool)) : Stealth::Query
-    new_expression = Stealth::SelectExpression.new(
-      columns: expression.columns,
-      from: expression.from,
-      where: condition)
+    new_expression = expression.copy(where: condition)
     Stealth::Query.new(database, new_expression)
   end
 
@@ -65,12 +62,12 @@ class Stealth::Query
   end
 
   def group_by(columns : Array(BaseColumnDeclaring)) : Query
-    new_expression = SelectExpression.new(
-      columns: expression.columns,
-      from: expression.from,
-      where: expression.where,
-      group_by: columns.map(&.as_expression.as(BaseScalarExpression))
-    )
+    new_expression = expression.copy(group_by: columns.map(&.as_expression.as(BaseScalarExpression)))
+    Stealth::Query.new(database, new_expression)
+  end
+
+  def having(condition : ColumnDeclaring(Bool)) : Query
+    new_expression = expression.copy(having: condition.as_expression)
     Stealth::Query.new(database, new_expression)
   end
 end

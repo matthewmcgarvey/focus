@@ -24,6 +24,10 @@ class Stealth::SqlFormatter < Stealth::SqlVisitor
       write "group by "
       visit_list expression.group_by
     end
+    if having = expression.having
+      write "having "
+      having.accept(self)
+    end
   end
 
   def visit(expression : Stealth::BaseColumnExpression)

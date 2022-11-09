@@ -85,6 +85,7 @@ end
 query = database.from(Users)
   .select(Users.name, Stealth.count(Users.name))
   .group_by(Users.name)
+  .having(Stealth.count(Users.name).less_than(49))
 
 # puts query.to_sql
 query.each do |row|
