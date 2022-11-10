@@ -93,3 +93,8 @@ Looking into postgres, they issue a separate query. https://github.com/pgjdbc/pg
 What should I do?
 The reason it's not a problem for anyone else is that they don't serialize joins often, and the ordering of how you extract data from the result set matters.
 https://github.com/crystal-lang/crystal-db/issues/175
+
+## Table Macro
+
+I'm really hoping this will be the only macro and I plan to document exactly what the table looks like so that people aren't scared of the macro or confused.
+They wouldn't even have to use it if they don't want to.
