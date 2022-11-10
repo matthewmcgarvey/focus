@@ -1,7 +1,7 @@
-require "sqlite3"
 require "../src/stealth"
+require "../src/sqlite3"
 
-database = Stealth::Database.connect("sqlite3://./data.db")
+database = Stealth::SQLiteDatabase.connect("sqlite3://./data.db")
 
 class Users
   extend Stealth::Table

@@ -1,4 +1,4 @@
-class Stealth::Database
+abstract class Stealth::Database
   def self.connect(url : String) : Database
     new(raw_db: DB.open(url))
   end
@@ -84,9 +84,5 @@ class Stealth::Database
     end
   end
 
-  def format_expression(expression : Stealth::SqlExpression) : Tuple(String, Array(Stealth::BaseArgumentExpression))
-    visitor = Stealth::SqlFormatter.new
-    expression.accept(visitor)
-    {visitor.to_sql, visitor.parameters}
-  end
+  abstract def format_expression(expression : Stealth::SqlExpression) : Tuple(String, Array(Stealth::BaseArgumentExpression))
 end

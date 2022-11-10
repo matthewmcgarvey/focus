@@ -1,6 +1,6 @@
 require "./sql_visitor"
 
-class Stealth::SqlFormatter < Stealth::SqlVisitor
+abstract class Stealth::SqlFormatter < Stealth::SqlVisitor
   WHITESPACE_BYTE = 32_u8
 
   private getter sql_string_builder = String::Builder.new
@@ -113,10 +113,7 @@ class Stealth::SqlFormatter < Stealth::SqlVisitor
     end
   end
 
-  def visit(expression : Stealth::ArgumentExpression)
-    write "? "
-    parameters << expression
-  end
+  abstract def visit(expression : Stealth::ArgumentExpression)
 
   def visit(expression : Stealth::BetweenExpression(_))
     expression.expression.accept(self)
@@ -290,11 +287,7 @@ class Stealth::SqlFormatter < Stealth::SqlVisitor
     write ") "
   end
 
-  protected def write_pagination(expr : QueryExpression)
-    write "limit ?, ? "
-    parameters << ArgumentExpression.new(expr.offset || 0, Int32)
-    parameters << ArgumentExpression.new(expr.limit || Int32::MAX, Int32)
-  end
+  protected abstract def write_pagination(expr : QueryExpression)
 
   protected def remove_last_blank
     sql_string_builder.chomp!(WHITESPACE_BYTE)
