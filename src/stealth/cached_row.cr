@@ -32,9 +32,9 @@ class Stealth::CachedRow
 
   def get(column : Column(C)) : C? forall C
     index = -1
-    col = columns.find do |col|
+    col = columns.find do |c|
       index += 1
-      col.name == column.name
+      c.name == column.name
     end
     return nil if col.nil?
 
@@ -47,8 +47,8 @@ class Stealth::CachedRow
       raise "TODO: Label of the specified column cannot be null or blank."
     end
 
-    columns.each_with_index do |column, idx|
-      return get(idx, type: C) if column.name == declared_name
+    columns.each_with_index do |col, idx|
+      return get(idx, type: C) if col.name == declared_name
     end
   end
 

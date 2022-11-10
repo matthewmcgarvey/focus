@@ -20,7 +20,7 @@ abstract class Stealth::SqlFormatter < Stealth::SqlVisitor
       write "where "
       where.accept(self)
     end
-    if expression.group_by.any?
+    if !expression.group_by.empty?
       write "group by "
       visit_list expression.group_by
     end
@@ -28,7 +28,7 @@ abstract class Stealth::SqlFormatter < Stealth::SqlVisitor
       write "having "
       having.accept(self)
     end
-    if expression.order_by.any?
+    if !expression.order_by.empty?
       write "order by "
       visit_list expression.order_by
     end
