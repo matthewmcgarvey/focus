@@ -3,48 +3,16 @@ require "../src/sqlite3"
 
 database = Stealth::SQLiteDatabase.connect("sqlite3://./data.db")
 
-class Users
-  extend Stealth::Table
-
-  class_getter table_name : String = "users"
-  class_getter columns : Array(Stealth::BaseColumn) do
-    [
-      id,
-      name,
-      age,
-    ] of Stealth::BaseColumn
-  end
-  class_getter id : Stealth::Column(Int32) do
-    Stealth::Column.new(table: self, name: "id", sql_type: Int32)
-  end
-  class_getter name : Stealth::Column(String) do
-    Stealth::Column.new(table: self, name: "name", sql_type: String)
-  end
-  class_getter age : Stealth::Column(Int32) do
-    Stealth::Column.new(table: self, name: "age", sql_type: Int32)
-  end
+Stealth::Table.define Users, "users" do
+  column id : Int32
+  column name : String
+  column age : Int32
 end
 
-class Todos
-  extend Stealth::Table
-
-  class_getter table_name : String = "todos"
-  class_getter columns : Array(Stealth::BaseColumn) do
-    [
-      id,
-      name,
-      user_id,
-    ] of Stealth::BaseColumn
-  end
-  class_getter id : Stealth::Column(Int32) do
-    Stealth::Column.new(table: self, name: "id", sql_type: Int32)
-  end
-  class_getter name : Stealth::Column(String) do
-    Stealth::Column.new(table: self, name: "name", sql_type: String)
-  end
-  class_getter user_id : Stealth::Column(Int32) do
-    Stealth::Column.new(table: self, name: "user_id", sql_type: Int32)
-  end
+Stealth::Table.define Todos, "todos" do
+  column id : Int32
+  column name : String
+  column user_id : Int32
 end
 
 database.with_connection do |conn|
