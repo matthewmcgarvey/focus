@@ -98,3 +98,12 @@ https://github.com/crystal-lang/crystal-db/issues/175
 
 I'm really hoping this will be the only macro and I plan to document exactly what the table looks like so that people aren't scared of the macro or confused.
 They wouldn't even have to use it if they don't want to.
+
+## Entity Binding
+
+I have not implemented this yet as I was focusing solely on the query building.
+
+One thing I don't like about Ktorm is how it implemented entity binding https://www.ktorm.org/en/entities-and-column-binding.html
+
+It goes against my stated goal which is to not tie the database table down to one singular model.
+Ktorm has you define the entity on the table which does exactly that.
