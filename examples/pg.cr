@@ -11,7 +11,7 @@ Stealth::Table.define Users, "users" do
   column nickname : String
   column joined_at : Time
   column total_score : Int64
-  column average_score : Float64
+  column average_score : Float32
   column available_for_hire : Bool
   column created_at : Time
   column updated_at : Time
@@ -26,13 +26,21 @@ database.insert(Users) do
   set(Users.total_score, 100)
   set(Users.created_at, Time.utc)
   set(Users.updated_at, Time.utc)
+  set(Users.available_for_hire, true)
+  set(Users.average_score, 45.78)
 end
 
 query = database.sequence_of(Users)
 
 puts query.to_sql
 query.each do |row|
-  puts "User {"
-  row.columns.each { |col| puts "\t#{col.name}: #{col.value}" }
-  puts "}"
+  val = {
+    id:                 row.get(Users.id),
+    joined_at:          row.get(Users.joined_at),
+    year_born:          row.get(Users.year_born),
+    total_score:        row.get(Users.total_score),
+    average_score:      row.get(Users.average_score),
+    available_for_hire: row.get(Users.available_for_hire),
+  }
+  puts val
 end
