@@ -1,6 +1,8 @@
-# stealth
+# Stealth
 
-TODO: Write a description here
+SQL query builder for multiple databases. Heavily inspired by Kotlin's [Ktorm](https://www.ktorm.org).
+
+Not at all ready for real use. (There's not even any tests, so don't be crazy and try to use it for real.)
 
 ## Installation
 
@@ -16,11 +18,7 @@ TODO: Write a description here
 
 ## Usage
 
-```crystal
-require "stealth"
-```
-
-TODO: Write usage instructions here
+Check out usage in the examples directory.
 
 ## Development
 
