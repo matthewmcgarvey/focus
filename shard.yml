@@ -12,5 +12,8 @@ dependencies:
   db:
     github: crystal-lang/crystal-db
     version: 0.11.0
+development_dependencies:
   sqlite3:
     github: crystal-lang/crystal-sqlite3
+  pg:
+    github: will/crystal-pg
