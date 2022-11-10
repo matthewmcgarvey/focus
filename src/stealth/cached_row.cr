@@ -1,6 +1,6 @@
 class Stealth::CachedRow
   def self.build(result_set : DB::ResultSet) : Stealth::CachedRow
-    columns = [] of Stealth::CachedColumn
+    columns = [] of Stealth::BaseCachedColumn
     result_set.column_count.times do
       index = result_set.next_column_index
       name = result_set.column_name(index)
@@ -9,7 +9,7 @@ class Stealth::CachedRow
     new(columns)
   end
 
-  getter columns : Array(Stealth::CachedColumn)
+  getter columns : Array(Stealth::BaseCachedColumn)
 
   def initialize(@columns)
   end

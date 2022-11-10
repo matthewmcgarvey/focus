@@ -145,14 +145,14 @@ enum Stealth::AggregateType
 end
 
 module Stealth::BaseArgumentExpression
-  abstract def value : DB::Any
+  abstract def value
 end
 
 class Stealth::ArgumentExpression(T)
   include Stealth::ScalarExpression(T)
   include Stealth::BaseArgumentExpression
 
-  getter value : DB::Any
+  getter value : T
 
   def initialize(@value, @sql_type)
   end
