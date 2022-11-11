@@ -71,8 +71,10 @@ class Stealth::CachedRow
       val.to_i
     when Bool
       val ? 1 : 0
+    when Nil
+      nil
     else
-      val.try(&.to_s.to_i)
+      val.to_s.to_i
     end
   end
 
@@ -83,8 +85,10 @@ class Stealth::CachedRow
       val.to_i64
     when Bool
       val ? 1_i64 : 0_i64
+    when Nil
+      nil
     else
-      val.try(&.to_s.to_i64)
+      val.to_s.to_i64
     end
   end
 
@@ -95,8 +99,10 @@ class Stealth::CachedRow
       val.to_f32
     when Bool
       val ? 1.0_f32 : 0.0_f32
+    when Nil
+      nil
     else
-      val.try(&.to_s.to_f32)
+      val.to_s.to_f32
     end
   end
 
@@ -107,8 +113,10 @@ class Stealth::CachedRow
       val.to_f
     when Bool
       val ? 1.0 : 0.0
+    when Nil
+      nil
     else
-      val.try(&.to_s.to_f)
+      val.to_s.to_f64
     end
   end
 

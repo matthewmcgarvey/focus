@@ -6,7 +6,7 @@ database = Stealth::SQLiteDatabase.connect("sqlite3://./data.db")
 Stealth::Table.define Users, "users" do
   column id : Int32
   column name : String
-  column age : Int32
+  column role : String
 end
 
 Stealth::Table.define Todos, "todos" do
@@ -21,7 +21,7 @@ database.with_connection do |conn|
       users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name varchar(128),
-        age INTEGER
+        role varchar(64)
       );
   SQL
 
@@ -37,12 +37,12 @@ end
 
 database.insert(Users) do
   set(Users.name, "bobby")
-  set(Users.age, 45)
+  set(Users.role, "user")
 end
 
 database.insert(Users) do
   set(Users.name, "billy")
-  set(Users.age, 24)
+  set(Users.role, "admin")
 end
 
 database.insert(Todos) do
@@ -53,15 +53,18 @@ end
 # database.delete(Users, Users.name.eq("billy"))
 # database.delete_all(Users)
 
-query = database.sequence_of(Todos)
+query = database.from(Users)
+  .select(Users.id)
+  .where(Users.role.eq("admin"))
 
+puts query.map(&.get(0, Int32))
 puts query.to_sql
 query.each do |row|
   # pp row.columns.map { |col| {name: col.name, value: col.value} }
-  # val = {id: row.get_int32(0)}
-  # val = {name: row.get(Users.name), id: row.get(Users.id), age: row.get(Users.age)}
+  val = {id: row.get(0, Int32).as(Int32?)}
+  # val = {name: row.get(Users.name), id: row.get(Users.id), role: row.get(Users.role)}
   # val = {name: row.get(Users.name), count: row.get_int32(1)}
-  val = {name: row.get(Todos.name), id: row.get(Todos.id), user_id: row.get(Todos.user_id)}
+  # val = {name: row.get(Todos.name), id: row.get(Todos.id), user_id: row.get(Todos.user_id)}
   # val = {count: row.get_int32(0)}
   # val = {name: row.get(nickname)}
   pp val

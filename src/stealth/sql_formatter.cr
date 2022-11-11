@@ -157,7 +157,7 @@ abstract class Stealth::SqlFormatter < Stealth::SqlVisitor
   def visit(expression : Stealth::InsertExpression)
     write "insert into "
     expression.table.accept(self)
-    write_insert_column_names(expression.assignments.map(&.column))
+    write_insert_column_names(expression.assignments.map(&.column.as(BaseColumnExpression)))
     write "values "
     write_insert_values(expression.assignments)
   end
@@ -282,7 +282,7 @@ abstract class Stealth::SqlFormatter < Stealth::SqlVisitor
 
   protected def write_insert_values(assignments : Array(BaseColumnAssignmentExpression))
     write "("
-    visit_list(assignments.map(&.expression))
+    visit_list(assignments.map(&.expression.as(BaseScalarExpression)))
     remove_last_blank
     write ") "
   end
