@@ -41,6 +41,7 @@ Databases currently supported:
 
 - SQLite3
 - Postgresql
+- Mysql
 
 ### Define a table
 
