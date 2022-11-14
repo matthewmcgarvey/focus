@@ -21,3 +21,5 @@ development_dependencies:
     github: crystal-ameba/ameba
   mysql:
     github: crystal-lang/crystal-mysql
+  minitest:
+    github: ysbaddaden/minitest.cr
