@@ -31,7 +31,8 @@ class Stealth::Query
   end
 
   def to_sql : String
-    database.format_expression(expression).first
+    result = database.format_expression(expression)
+    "#{result.first} #{result[1].map(&.value)}"
   end
 
   def where(condition : Stealth::ScalarExpression(Bool)) : Stealth::Query
@@ -80,10 +81,18 @@ class Stealth::Query
     Stealth::Query.new(database, new_expression)
   end
 
-  def limit(limit : Int32, offset : Int32? = nil)
-    new_limit = limit.tap { |lim| lim > 0 ? lim : nil } || expression.limit
-    new_offset = offset.tap { |off| off && off > 0 ? off : nil } || expression.offset
+  def limit(offset : Int32?, limit : Int32?) : Query
+    new_limit = limit.try { |lim| lim > 0 ? lim : nil } || expression.limit
+    new_offset = offset.try { |off| off > 0 ? off : nil } || expression.offset
     new_expression = expression.copy(limit: new_limit, offset: new_offset)
     Stealth::Query.new(database, new_expression)
+  end
+
+  def limit(limit : Int32) : Query
+    limit(limit: limit, offset: nil)
+  end
+
+  def offset(offset : Int32) : Query
+    limit(limit: nil, offset: offset)
   end
 end
