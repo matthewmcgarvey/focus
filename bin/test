@@ -1,0 +1,10 @@
+#!/bin/bash
+
+files=$1
+
+if [ -z "$files" ]
+then
+  files=$(find ./test -iname "*_test.cr")
+fi
+
+crystal run $files
