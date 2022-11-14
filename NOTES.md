@@ -107,3 +107,13 @@ One thing I don't like about Ktorm is how it implemented entity binding https://
 
 It goes against my stated goal which is to not tie the database table down to one singular model.
 Ktorm has you define the entity on the table which does exactly that.
+
+## Ktorm Blocks
+
+For a long time, I've wondered why a lot of methods take in a block when it always seemed like it could just take in one argument instead.
+The blocks always pass in the table, but all the doc examples I've seen never use it.
+In my code I didn't add block overloads, `#where` is the best example.
+I finally realized why you would want the block, though.
+With a block you could have helper functions that don't care what the table is, but uses methods that are on all tables.
+The best example I can come up with is pagination. I can't do it without telling the pagination which table to use.
+I'm sure there's alternatives to the block, so I'm not sure I want to add in the block stuff right now anyways.
