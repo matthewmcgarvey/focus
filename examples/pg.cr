@@ -29,9 +29,10 @@ struct User
   getter age : Int32
   getter year_born : Int16
 
-  def self.setup(database : Stealth::Database) : Stealth::Query
-    database.from(Users)
-      .select(Users.id, Users.name, Users.age, Users.year_born)
+  class_getter table : Stealth::Table = Users
+
+  def self.setup(query_source : Stealth::QuerySource) : Stealth::Query
+    query_source.select(Users.id, Users.name, Users.age, Users.year_born)
   end
 
   def initialize(row : Stealth::CachedRow)

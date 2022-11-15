@@ -30,10 +30,10 @@ struct Todo
   getter name : String
   getter user : User
 
-  def self.setup(database : Stealth::Database) : Stealth::Query
-    database.from(Todos)
-      .inner_join(Users, on: Todos.user_id.eq(Users.id))
-      .select
+  class_getter table : Stealth::Table = Todos
+
+  def self.setup(query_source : Stealth::QuerySource) : Stealth::Query
+    query_source.inner_join(Users, on: Todos.user_id.eq(Users.id)).select
   end
 
   def initialize(row : Stealth::CachedRow)
@@ -54,9 +54,10 @@ struct User
   getter name : String
   getter role : String
 
-  def self.setup(database : Stealth::Database) : Stealth::Query
-    database.from(Users)
-      .select(Users.id, Users.name, Users.role)
+  class_getter table : Stealth::Table = Users
+
+  def self.setup(query_source : Stealth::QuerySource) : Stealth::Query
+    query_source.select(Users.id, Users.name, Users.role)
   end
 
   def initialize(row : Stealth::CachedRow)
