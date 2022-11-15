@@ -30,7 +30,7 @@ class Stealth::CachedRow
   def initialize(@columns)
   end
 
-  def get(column : Column(C)) : C? forall C
+  def get?(column : Column(C)) : C? forall C
     index = -1
     col = columns.find do |c|
       index += 1
@@ -38,21 +38,21 @@ class Stealth::CachedRow
     end
     return nil if col.nil?
 
-    get(index, type: C)
+    get?(index, type: C)
   end
 
-  def get(column : ColumnDeclaringExpression(C)) : C? forall C
+  def get?(column : ColumnDeclaringExpression(C)) : C? forall C
     declared_name = column.declared_name
     if declared_name.nil? || declared_name.blank?
       raise "TODO: Label of the specified column cannot be null or blank."
     end
 
     columns.each_with_index do |col, idx|
-      return get(idx, type: C) if col.name == declared_name
+      return get?(idx, type: C) if col.name == declared_name
     end
   end
 
-  def get(column_index : Int32, type : Int16.class) : Int16?
+  def get?(column_index : Int32, type : Int16.class) : Int16?
     val = columns[column_index].value
     case val
     when Int16, Int32, Int64, Float32, Float64
@@ -64,7 +64,7 @@ class Stealth::CachedRow
     end
   end
 
-  def get(column_index : Int32, type : Int32.class) : Int32?
+  def get?(column_index : Int32, type : Int32.class) : Int32?
     val = columns[column_index].value
     case val
     when Int16, Int32, Int64, Float32, Float64
@@ -78,7 +78,7 @@ class Stealth::CachedRow
     end
   end
 
-  def get(column_index : Int32, type : Int64.class) : Int64?
+  def get?(column_index : Int32, type : Int64.class) : Int64?
     val = columns[column_index].value
     case val
     when Int16, Int32, Int64, Float32, Float64
@@ -92,7 +92,7 @@ class Stealth::CachedRow
     end
   end
 
-  def get(column_index : Int32, type : Float32.class) : Float32?
+  def get?(column_index : Int32, type : Float32.class) : Float32?
     val = columns[column_index].value
     case val
     when Int32, Int64, Float32, Float64
@@ -106,7 +106,7 @@ class Stealth::CachedRow
     end
   end
 
-  def get(column_index : Int32, type : Float64.class) : Float64?
+  def get?(column_index : Int32, type : Float64.class) : Float64?
     val = columns[column_index].value
     case val
     when Int32, Int64, Float32, Float64
@@ -120,7 +120,7 @@ class Stealth::CachedRow
     end
   end
 
-  def get(column_index : Int32, type : String.class) : String?
+  def get?(column_index : Int32, type : String.class) : String?
     val = columns[column_index].value
     case val
     when String
@@ -130,7 +130,7 @@ class Stealth::CachedRow
     end
   end
 
-  def get(column_index : Int32, type : Bool.class) : Bool?
+  def get?(column_index : Int32, type : Bool.class) : Bool?
     val = columns[column_index].value
     case val
     when Bool
@@ -142,7 +142,7 @@ class Stealth::CachedRow
     end
   end
 
-  def get(column_index : Int32, type : Time.class) : Time?
+  def get?(column_index : Int32, type : Time.class) : Time?
     val = columns[column_index].value
     return val if val.is_a? Time
     return if val.nil?
