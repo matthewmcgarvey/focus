@@ -35,7 +35,7 @@ query = database.sequence_of(Users)
 puts query.to_sql
 query.each do |row|
   val = {
-    id:                 row.get?(Users.id),
+    id:                 row.get(Users.id),
     joined_at:          row.get?(Users.joined_at),
     year_born:          row.get?(Users.year_born),
     total_score:        row.get?(Users.total_score),
