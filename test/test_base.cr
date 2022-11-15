@@ -10,8 +10,7 @@ abstract class TestBase < Minitest::Test
     database.with_connection do |conn|
       raw_sql = File.read(filename)
       raw_sql.split(';')
-        .map(&.presence)
-        .compact
+        .compact_map(&.presence)
         .each { |sql_stmt| conn.exec sql_stmt }
     end
   end
