@@ -61,38 +61,6 @@ The first argument `Users` defines the class that you will use to reference the 
 The second argument is the definitive table name that it will use.
 Each column of the table is then defined in a block using `column` and a type declaration.
 
-**A note about macros in this library**
-
-It is a goal of Stealth to make the library as macro-free as possible.
-Ideally, there would be no macros but the way tables are defined would be unpleasant without the macros.
-
-Here is what the above table generates, and if you hate macros, this is to show that you don't have to use them.
-
-```crystal
-class Users
-  COLUMNS = [] of Stealth::BaseColumn
-  extend Stealth::Table
-
-  class_getter table_name : String = "user"
-  class_getter column : Array(Stealth::BaseColumn) = COLUMNS
-
-  COLUMNS << id
-  class_getter id : Stealth::Column(Int32) do
-    Stealth::Column.new(table: self, name: "id", sql_type: Int32)
-  end
-
-  COLUMNS << name
-  class_getter name : Stealth::Column(String) do
-    Stealth::Column.new(table: self, name: "name", sql_type: String)
-  end
-
-  COLUMNS << role
-  class_getter role : Stealth::Column(String) do
-    Stealth::Column.new(table: self, name: "role", sql_type: String)
-  end
-end
-```
-
 ### Make a query
 
 ```crystal
