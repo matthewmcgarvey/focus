@@ -231,6 +231,12 @@ abstract class Stealth::SqlFormatter < Stealth::SqlVisitor
     visit_query_source(expression.query)
   end
 
+  # TODO: figure out a good way to handle formatters not
+  # providing all expected overloads
+  def visit(expression : Stealth::SqlExpression)
+    raise "woops"
+  end
+
   def to_sql : String
     sql_string_builder.to_s
   end
