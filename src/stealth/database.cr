@@ -18,8 +18,9 @@ abstract class Stealth::Database
     Stealth::QuerySource.new(self, table, table.as_expression)
   end
 
-  def sequence_of(entity_class : Stealth::Entity.class) : Stealth::Query
-    entity_class.setup(self.from(entity_class.table))
+  def sequence_of(entity_class : T.class) : Stealth::EntitySequence(T) forall T
+    query = entity_class.setup(self.from(entity_class.table))
+    EntitySequence.new(query, entity_class)
   end
 
   def insert(table : Stealth::Table) : Int64

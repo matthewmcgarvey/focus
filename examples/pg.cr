@@ -56,6 +56,6 @@ database.insert(Users) do
   set(Users.average_score, 45.78)
 end
 
-pp database.sequence_of(User).map { |row| User.new(row) }
+pp database.sequence_of(User).results
 
 database.close
