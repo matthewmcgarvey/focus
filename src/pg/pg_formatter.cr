@@ -41,12 +41,12 @@ class Stealth::PGFormatter < Stealth::SqlFormatter
 
   protected def write_pagination(expr : QueryExpression)
     if limit = expr.limit
-      write "limit ? "
-      parameters << ArgumentExpression.new(limit, Int32)
+      write "limit "
+      ArgumentExpression.new(limit, Int32).accept(self)
     end
     if offset = expr.offset
-      write "offset ? "
-      parameters << ArgumentExpression.new(offset, Int32)
+      write "offset "
+      ArgumentExpression.new(offset, Int32).accept(self)
     end
   end
 end
