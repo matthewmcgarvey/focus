@@ -21,7 +21,9 @@ end
 
 Users = UsersTable.new
 
-struct BaseUser
+struct User
+  include Stealth::Entity
+
   getter id : Int32
   getter name : String
   getter age : Int32
@@ -53,6 +55,6 @@ database.insert(Users) do
   set(Users.average_score, 45.78)
 end
 
-pp BaseUser.setup(database).map { |row| BaseUser.new(row) }
+pp database.sequence_of(User).map { |row| User.new(row) }
 
 database.close

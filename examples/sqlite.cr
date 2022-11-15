@@ -24,6 +24,8 @@ end
 Todos = TodosTable.new
 
 struct Todo
+  include Stealth::Entity
+
   getter id : Int32
   getter name : String
   getter user : User
@@ -46,6 +48,8 @@ struct Todo
 end
 
 struct User
+  include Stealth::Entity
+
   getter id : Int32
   getter name : String
   getter role : String
@@ -100,6 +104,6 @@ database.insert(Todos) do
   set(Todos.user_id, 2)
 end
 
-pp Todo.setup(database).map { |row| Todo.new(row) }
+pp database.sequence_of(Todo).map { |row| Todo.new(row) }
 
 database.close
