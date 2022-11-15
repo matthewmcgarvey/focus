@@ -21,6 +21,25 @@ end
 
 Users = UsersTable.new
 
+struct BaseUser
+  getter id : Int32
+  getter name : String
+  getter age : Int32
+  getter year_born : Int16
+
+  def self.setup(database : Stealth::Database) : Stealth::Query
+    database.from(Users)
+      .select(Users.id, Users.name, Users.age, Users.year_born)
+  end
+
+  def initialize(row : Stealth::CachedRow)
+    @id = row.get(Users.id)
+    @name = row.get(Users.name)
+    @age = row.get(Users.age)
+    @year_born = row.get(Users.year_born)
+  end
+end
+
 database.insert(Users) do
   set(Users.name, "William")
   set(Users.age, 39)
@@ -34,17 +53,6 @@ database.insert(Users) do
   set(Users.average_score, 45.78)
 end
 
-query = database.sequence_of(Users)
+pp BaseUser.setup(database).map { |row| BaseUser.new(row) }
 
-puts query.to_sql
-query.each do |row|
-  val = {
-    id:                 row.get(Users.id),
-    joined_at:          row.get?(Users.joined_at),
-    year_born:          row.get?(Users.year_born),
-    total_score:        row.get?(Users.total_score),
-    average_score:      row.get?(Users.average_score),
-    available_for_hire: row.get?(Users.available_for_hire),
-  }
-  puts val
-end
+database.close

@@ -23,13 +23,55 @@ end
 
 Todos = TodosTable.new
 
+struct Todo
+  getter id : Int32
+  getter name : String
+  getter user : User
+
+  def self.setup(database : Stealth::Database) : Stealth::Query
+    database.from(Todos)
+      .inner_join(Users, on: Todos.user_id.eq(Users.id))
+      .select
+  end
+
+  def initialize(row : Stealth::CachedRow)
+    @id = row.get(Todos.id)
+    @name = row.get(Todos.name)
+    @user = User.new(
+      id: row.get(3, Int32),
+      name: row.get(4, String),
+      role: row.get(Users.role)
+    )
+  end
+end
+
+struct User
+  getter id : Int32
+  getter name : String
+  getter role : String
+
+  def self.setup(database : Stealth::Database) : Stealth::Query
+    database.from(Users)
+      .select(Users.id, Users.name, Users.role)
+  end
+
+  def initialize(row : Stealth::CachedRow)
+    @id = row.get(Users.id)
+    @name = row.get(Users.name)
+    @role = row.get(Users.role)
+  end
+
+  def initialize(@id, @name, @role)
+  end
+end
+
 database.with_connection do |conn|
   conn.exec(<<-SQL)
     create table if not exists
       users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name varchar(128),
-        role varchar(64)
+        name varchar(128) not null,
+        role varchar(64) not null
       );
   SQL
 
@@ -37,8 +79,8 @@ database.with_connection do |conn|
     create table if not exists
       todos(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name varchar(128),
-        user_id INTEGER
+        name varchar(128) not null,
+        user_id INTEGER not null
       );
   SQL
 end
@@ -58,24 +100,6 @@ database.insert(Todos) do
   set(Todos.user_id, 2)
 end
 
-# database.delete(Users, Users.name.eq("billy"))
-# database.delete_all(Users)
-
-query = database.from(Users)
-  .select(Users.id)
-  .where(Users.role.eq("admin"))
-
-puts query.map(&.get?(0, Int32))
-puts query.to_sql
-query.each do |row|
-  # pp row.columns.map { |col| {name: col.name, value: col.value} }
-  val = {id: row.get?(0, Int32).as(Int32?)}
-  # val = {name: row.get?(Users.name), id: row.get?(Users.id), role: row.get?(Users.role)}
-  # val = {name: row.get?(Users.name), count: row.get?(1, Int32)}
-  # val = {name: row.get?(Todos.name), id: row.get?(Todos.id), user_id: row.get?(Todos.user_id)}
-  # val = {count: row.get?(0, Int32)}
-  # val = {name: row.get?(nickname)}
-  pp val
-end
+pp Todo.setup(database).map { |row| Todo.new(row) }
 
 database.close
