@@ -3,7 +3,9 @@ require "../src/pg"
 
 database = Stealth::PGDatabase.connect("postgresql://lucky@localhost:5432/avram_dev")
 
-Stealth::Table.define Users, "users" do
+class UsersTable < Stealth::Table
+  @table_name = "users"
+
   column id : Int32
   column name : String
   column age : Int32
@@ -16,6 +18,8 @@ Stealth::Table.define Users, "users" do
   column created_at : Time
   column updated_at : Time
 end
+
+Users = UsersTable.new
 
 database.insert(Users) do
   set(Users.name, "William")

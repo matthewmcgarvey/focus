@@ -2,17 +2,6 @@ abstract class Stealth::Table
   annotation ColumnLabel
   end
 
-  macro define(klass, table_name)
-    class {{ klass }}_Table < Stealth::Table
-
-      {{ yield }}
-
-      @table_name = {{ table_name }}
-    end
-
-    {{ klass }} = {{ klass }}_Table.new
-  end
-
   private macro column(type_declaration)
     {%
       name = type_declaration.var

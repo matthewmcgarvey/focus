@@ -3,17 +3,25 @@ require "../src/sqlite"
 
 database = Stealth::SQLiteDatabase.connect("sqlite3://./data.db")
 
-Stealth::Table.define Users, "users" do
+class UsersTable < Stealth::Table
+  @table_name = "users"
+
   column id : Int32
   column name : String
   column role : String
 end
 
-Stealth::Table.define Todos, "todos" do
+Users = UsersTable.new
+
+class TodosTable < Stealth::Table
+  @table_name = "todos"
+
   column id : Int32
   column name : String
   column user_id : Int32
 end
+
+Todos = TodosTable.new
 
 database.with_connection do |conn|
   conn.exec(<<-SQL)

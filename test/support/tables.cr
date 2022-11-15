@@ -1,10 +1,16 @@
-Stealth::Table.define Departments, "departments" do
+class DepartmentsTable < Stealth::Table
+  @table_name = "departments"
+
   column id : Int32
   column name : String
   column location : String
 end
 
-Stealth::Table.define Employees, "employees" do
+Departments = DepartmentsTable.new
+
+class EmployeesTable < Stealth::Table
+  @table_name = "employees"
+
   column id : Int32
   column name : String
   column job : String
@@ -13,3 +19,5 @@ Stealth::Table.define Employees, "employees" do
   column salary : Int32
   column department_id : Int32
 end
+
+Employees = EmployeesTable.new
