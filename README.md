@@ -50,16 +50,19 @@ It's important to understand that these are not our data models.
 They are used to build queries.
 
 ```crystal
-Stealth::Table.define Users, "users" do
+class UsersTable < Stealth::Table
+  @table_name = "users"
+
   column id : Int32
   column name : String
   column role : String
 end
+
+Users = UsersTable.new
 ```
 
-The first argument `Users` defines the class that you will use to reference the table.
-The second argument is the definitive table name that it will use.
-Each column of the table is then defined in a block using `column` and a type declaration.
+We define the table `UsersTable` with the table name and the columns.
+We then create an instance and assign it to `Users` for a nice API.
 
 ### Make a query
 
