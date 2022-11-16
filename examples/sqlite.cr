@@ -105,6 +105,6 @@ database.insert(Todos) do
   set(Todos.user_id, 2)
 end
 
-pp database.sequence_of(Todo).results
+pp database.sequence_of(Todo).to_a
 
 database.close

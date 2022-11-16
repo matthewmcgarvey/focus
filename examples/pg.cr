@@ -56,6 +56,6 @@ database.insert(Users) do
   set(Users.average_score, 45.78)
 end
 
-pp database.sequence_of(User).results
+pp database.sequence_of(User).to_a
 
 database.close
