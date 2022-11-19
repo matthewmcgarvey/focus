@@ -108,6 +108,9 @@ One thing I don't like about Ktorm is how it implemented entity binding https://
 It goes against my stated goal which is to not tie the database table down to one singular model.
 Ktorm has you define the entity on the table which does exactly that.
 
+Looked into this more, seems like we don't need the entity sequence as much as I though.
+Stuff around grouping might be wanted, but the main thing was getting an iterable list of the entities and getting just one
+
 ## Ktorm Blocks
 
 For a long time, I've wondered why a lot of methods take in a block when it always seemed like it could just take in one argument instead.

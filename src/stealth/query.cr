@@ -30,6 +30,10 @@ class Stealth::Query
     end
   end
 
+  def bind_to(entity : T.class) : Array(T) forall T
+    rows.map(&.bind_to(entity))
+  end
+
   def to_sql : String
     result = database.format_expression(expression)
     "#{result.first} #{result[1].map(&.value)}"

@@ -24,17 +24,9 @@ end
 Todos = TodosTable.new
 
 struct Todo
-  include Stealth::Entity
-
   getter id : Int32
   getter name : String
   getter user : User
-
-  class_getter table : Stealth::Table = Todos
-
-  def self.setup(query_source : Stealth::QuerySource) : Stealth::Query
-    query_source.inner_join(Users, on: Todos.user_id.eq(Users.id)).select
-  end
 
   def initialize(row : Stealth::CachedRow)
     @id = row.get(Todos.id)
@@ -48,17 +40,9 @@ struct Todo
 end
 
 struct User
-  include Stealth::Entity
-
   getter id : Int32
   getter name : String
   getter role : String
-
-  class_getter table : Stealth::Table = Users
-
-  def self.setup(query_source : Stealth::QuerySource) : Stealth::Query
-    query_source.select(Users.id, Users.name, Users.role)
-  end
 
   def initialize(row : Stealth::CachedRow)
     @id = row.get(Users.id)
@@ -105,6 +89,9 @@ database.insert(Todos) do
   set(Todos.user_id, 2)
 end
 
-pp database.sequence_of(Todo).to_a
+pp database.from(Todos)
+  .left_join(Users, on: Todos.user_id.eq(Users.id))
+  .select
+  .bind_to(Todo)
 
 database.close

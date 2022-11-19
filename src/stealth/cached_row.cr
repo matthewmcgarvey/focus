@@ -30,6 +30,10 @@ class Stealth::CachedRow
   def initialize(@columns)
   end
 
+  def bind_to(entity : T.class) : T forall T
+    entity.new(self)
+  end
+
   def get?(column : Column(C)) : C? forall C
     index = -1
     col = columns.find do |c|

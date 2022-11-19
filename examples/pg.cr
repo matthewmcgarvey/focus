@@ -22,18 +22,10 @@ end
 Users = UsersTable.new
 
 struct User
-  include Stealth::Entity
-
   getter id : Int32
   getter name : String
   getter age : Int32
   getter year_born : Int16
-
-  class_getter table : Stealth::Table = Users
-
-  def self.setup(query_source : Stealth::QuerySource) : Stealth::Query
-    query_source.select(Users.id, Users.name, Users.age, Users.year_born)
-  end
 
   def initialize(row : Stealth::CachedRow)
     @id = row.get(Users.id)
@@ -56,6 +48,8 @@ database.insert(Users) do
   set(Users.average_score, 45.78)
 end
 
-pp database.sequence_of(User).to_a
+pp database.from(Users)
+  .select(Users.id, Users.name, Users.age, Users.year_born)
+  .bind_to(User)
 
 database.close
