@@ -64,6 +64,18 @@ class Focus::CachedRow
     get?(column).not_nil!
   end
 
+  def get?(column_label : String, type : T.class) : T? forall T
+    get?(find_column(column_label), type)
+  end
+
+  def get(column_label : String, type : T.class) : T forall T
+    get(find_column(column_label), type)
+  end
+
+  def get(column_index : Int32, type : T.class) : T forall T
+    get?(column_index, type).not_nil!
+  end
+
   def get?(column_index : Int32, type : Int16.class) : Int16?
     val = columns[column_index].value
     case val
@@ -74,10 +86,6 @@ class Focus::CachedRow
     else
       val.try(&.to_s.to_i16)
     end
-  end
-
-  def get(column_index : Int32, type : Int16.class) : Int16
-    get?(column_index, type).not_nil!
   end
 
   def get?(column_index : Int32, type : Int32.class) : Int32?
@@ -94,10 +102,6 @@ class Focus::CachedRow
     end
   end
 
-  def get(column_index : Int32, type : Int32.class) : Int32
-    get?(column_index, type).not_nil!
-  end
-
   def get?(column_index : Int32, type : Int64.class) : Int64?
     val = columns[column_index].value
     case val
@@ -110,10 +114,6 @@ class Focus::CachedRow
     else
       val.to_s.to_i64
     end
-  end
-
-  def get(column_index : Int32, type : Int64.class) : Int64
-    get?(column_index, type).not_nil!
   end
 
   def get?(column_index : Int32, type : Float32.class) : Float32?
@@ -130,10 +130,6 @@ class Focus::CachedRow
     end
   end
 
-  def get(column_index : Int32, type : Float32.class) : Float32
-    get?(column_index, type).not_nil!
-  end
-
   def get?(column_index : Int32, type : Float64.class) : Float64?
     val = columns[column_index].value
     case val
@@ -148,10 +144,6 @@ class Focus::CachedRow
     end
   end
 
-  def get(column_index : Int32, type : Float64.class) : Float64
-    get?(column_index, type).not_nil!
-  end
-
   def get?(column_index : Int32, type : String.class) : String?
     val = columns[column_index].value
     case val
@@ -160,10 +152,6 @@ class Focus::CachedRow
     else
       val.try(&.to_s)
     end
-  end
-
-  def get(column_index : Int32, type : String.class) : String
-    get?(column_index, type).not_nil!
   end
 
   def get?(column_index : Int32, type : Bool.class) : Bool?
@@ -176,10 +164,6 @@ class Focus::CachedRow
     else
       !!val
     end
-  end
-
-  def get(column_index : Int32, type : Bool.class) : Bool
-    get?(column_index, type).not_nil!
   end
 
   def get?(column_index : Int32, type : Time.class) : Time?
@@ -197,7 +181,10 @@ class Focus::CachedRow
     end
   end
 
-  def get(column_index : Int32, type : Time.class) : Time
-    get?(column_index, type).not_nil!
+  def find_column(column_label : String) : Int32
+    columns.each_with_index do |col, idx|
+      return idx if col.name == column_label
+    end
+    raise "Invalid column name: #{column_label}"
   end
 end

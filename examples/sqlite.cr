@@ -32,9 +32,9 @@ struct Todo
     @id = row.get(Todos.id)
     @name = row.get(Todos.name)
     @user = User.new(
-      id: row.get(3, Int32),
-      name: row.get(4, String),
-      role: row.get(Users.role)
+      id: row.get(Users.id.aliased("users_id")),
+      name: row.get(Users.name.aliased("users_name")),
+      role: row.get(Users.role.aliased("users_role"))
     )
   end
 end
@@ -91,7 +91,7 @@ end
 
 pp database.from(Todos)
   .left_join(Users, on: Todos.user_id.eq(Users.id))
-  .select
+  .select(Todos.id, Todos.name, Users.id.aliased("users_id"), Users.name.aliased("users_name"), Users.role.aliased("users_role"))
   .bind_to(Todo)
 
 database.close
