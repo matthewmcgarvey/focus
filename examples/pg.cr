@@ -49,7 +49,6 @@ database.insert(Users) do
 end
 
 query = database.from(Users).select(Users.id, Users.name, Users.age, Users.year_born)
-pp query.bind_to(User)
-pp query.average_by(Users.age)
+pp query.bind_to_last(User)
 
 database.close

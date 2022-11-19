@@ -34,6 +34,33 @@ class Stealth::Query
     rows.map(&.bind_to(entity))
   end
 
+  def bind_to_one?(entity : T.class, at index : Int32) : T? forall T
+    drop(index)
+      .take(1)
+      .first?
+      .try(&.bind_to(entity))
+  end
+
+  def bind_to_one(entity : T.class, at index : Int32) : T forall T
+    bind_to_one?(entity, index).not_nil!
+  end
+
+  def bind_to_first?(entity : T.class) : T? forall T
+    bind_to_one?(entity, at: 0)
+  end
+
+  def bind_to_first(entity : T.class) : T forall T
+    bind_to_one(entity, at: 0)
+  end
+
+  def bind_to_last?(entity : T.class) : T? forall T
+    rows.last.try(&.bind_to(entity))
+  end
+
+  def bind_to_last(entity : T.class) : T forall T
+    bind_to_last?(entity).not_nil!
+  end
+
   def to_sql : String
     result = database.format_expression(expression)
     "#{result.first} #{result[1].map(&.value)}"
@@ -98,6 +125,22 @@ class Stealth::Query
 
   def offset(offset : Int32) : Query
     limit(limit: nil, offset: offset)
+  end
+
+  def drop(n : Int32) : Query
+    if n.zero?
+      self
+    else
+      offset = expression.offset || 0
+      new_expression = expression.copy(offset: offset + n)
+      Query.new(database, new_expression)
+    end
+  end
+
+  def take(n : Int32) : Query
+    limit = expression.limit || Int32::MAX
+    new_expression = expression.copy(limit: Math.min(limit, n))
+    Query.new(database, new_expression)
   end
 
   def any? : Bool
