@@ -50,6 +50,6 @@ end
 
 query = database.from(Users).select(Users.id, Users.name, Users.age, Users.year_born)
 pp query.bind_to(User)
-pp query.none?
+pp query.average_by(Users.age)
 
 database.close

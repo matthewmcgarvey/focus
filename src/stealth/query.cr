@@ -112,6 +112,22 @@ class Stealth::Query
     aggregate_columns(Stealth.count).not_nil!
   end
 
+  def sum_by(selector : ColumnDeclaring(T)) : T? forall T
+    aggregate_columns(Stealth.sum(selector))
+  end
+
+  def max_by(selector : ColumnDeclaring(T)) : T? forall T
+    aggregate_columns(Stealth.max(selector))
+  end
+
+  def min_by(selector : ColumnDeclaring(T)) : T? forall T
+    aggregate_columns(Stealth.min(selector))
+  end
+
+  def average_by(selector : BaseColumnDeclaring) : Float32?
+    aggregate_columns(Stealth.avg(selector))
+  end
+
   def aggregate_columns(aggregation : ColumnDeclaring(T)) : T? forall T
     new_expression = expression.copy(columns: [aggregation.aliased(nil).as(BaseColumnDeclaringExpression)])
     new_query = Query.new(database, new_expression)
