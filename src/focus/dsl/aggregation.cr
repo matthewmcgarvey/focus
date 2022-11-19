@@ -1,4 +1,4 @@
-module Stealth::Dsl::Aggregation
+module Focus::Dsl::Aggregation
   def min(column : ColumnDeclaring(Comparable)) : AggregateExpression
     AggregateExpression.new(AggregateType::MIN, column.as_expression, is_distinct: false, sql_type: column.sql_type)
   end

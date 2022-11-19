@@ -1,12 +1,12 @@
 require "./sql_visitor"
 
-abstract class Stealth::SqlFormatter < Stealth::SqlVisitor
+abstract class Focus::SqlFormatter < Focus::SqlVisitor
   WHITESPACE_BYTE = 32_u8
 
   private getter sql_string_builder = String::Builder.new
-  getter parameters = [] of Stealth::BaseArgumentExpression
+  getter parameters = [] of Focus::BaseArgumentExpression
 
-  def visit(expression : Stealth::SelectExpression)
+  def visit(expression : Focus::SelectExpression)
     write "select "
     write "distinct " if expression.is_distinct
     if expression.columns.empty?
@@ -38,7 +38,7 @@ abstract class Stealth::SqlFormatter < Stealth::SqlVisitor
     end
   end
 
-  def visit(expression : Stealth::BaseColumnExpression)
+  def visit(expression : Focus::BaseColumnExpression)
     if table = expression.table
       if table_alias = table.table_alias.presence
         write "#{quoted(table_alias)}."
@@ -55,7 +55,7 @@ abstract class Stealth::SqlFormatter < Stealth::SqlVisitor
     write "#{quoted(expression.name)} "
   end
 
-  def visit(expression : Stealth::TableExpression)
+  def visit(expression : Focus::TableExpression)
     if catalog = expression.catalog.presence
       write "#{quoted(catalog)}."
     end
@@ -69,7 +69,7 @@ abstract class Stealth::SqlFormatter < Stealth::SqlVisitor
     end
   end
 
-  def visit(expression : Stealth::BinaryExpression(_))
+  def visit(expression : Focus::BinaryExpression(_))
     if expression.left.wrap_in_parens?
       wrap_in_parens do
         expression.left.accept(self)
@@ -89,7 +89,7 @@ abstract class Stealth::SqlFormatter < Stealth::SqlVisitor
     end
   end
 
-  def visit(expression : Stealth::UnaryExpression(_))
+  def visit(expression : Focus::UnaryExpression(_))
     case expression.type
     when UnaryExpressionType::IS_NULL, UnaryExpressionType::IS_NOT_NULL
       if expression.operand.wrap_in_parens?
@@ -113,9 +113,9 @@ abstract class Stealth::SqlFormatter < Stealth::SqlVisitor
     end
   end
 
-  abstract def visit(expression : Stealth::ArgumentExpression)
+  abstract def visit(expression : Focus::ArgumentExpression)
 
-  def visit(expression : Stealth::BetweenExpression(_))
+  def visit(expression : Focus::BetweenExpression(_))
     expression.expression.accept(self)
 
     if expression.not_between
@@ -129,16 +129,16 @@ abstract class Stealth::SqlFormatter < Stealth::SqlVisitor
     expression.upper.accept(self)
   end
 
-  def visit(expression : Stealth::ColumnDeclaringExpression(_))
+  def visit(expression : Focus::ColumnDeclaringExpression(_))
     expression.expression.accept(self)
     declared_name = expression.declared_name.presence
-    column_expression = expression.expression.as?(Stealth::ColumnExpression)
+    column_expression = expression.expression.as?(Focus::ColumnExpression)
     if declared_name && (column_expression.nil? || column_expression.name != declared_name)
       write "as #{quoted(declared_name)} "
     end
   end
 
-  def visit(expression : Stealth::AggregateExpression(_))
+  def visit(expression : Focus::AggregateExpression(_))
     write "#{expression.method}("
     if expression.is_distinct
       write "distinct "
@@ -154,7 +154,7 @@ abstract class Stealth::SqlFormatter < Stealth::SqlVisitor
     write ") "
   end
 
-  def visit(expression : Stealth::InsertExpression)
+  def visit(expression : Focus::InsertExpression)
     write "insert into "
     expression.table.accept(self)
     write_insert_column_names(expression.assignments.map(&.column.as(BaseColumnExpression)))
@@ -162,7 +162,7 @@ abstract class Stealth::SqlFormatter < Stealth::SqlVisitor
     write_insert_values(expression.assignments)
   end
 
-  def visit(expression : Stealth::UpdateExpression)
+  def visit(expression : Focus::UpdateExpression)
     write "update "
     expression.table.accept(self)
     write "set "
@@ -173,7 +173,7 @@ abstract class Stealth::SqlFormatter < Stealth::SqlVisitor
     end
   end
 
-  def visit(expression : Stealth::InListExpression)
+  def visit(expression : Focus::InListExpression)
     expression.left.accept(self)
 
     if expression.not_in_list
@@ -193,7 +193,7 @@ abstract class Stealth::SqlFormatter < Stealth::SqlVisitor
     end
   end
 
-  def visit(expression : Stealth::JoinExpression)
+  def visit(expression : Focus::JoinExpression)
     visit_query_source(expression.left)
     write "#{expression.join_type} "
     visit_query_source(expression.right)
@@ -204,14 +204,14 @@ abstract class Stealth::SqlFormatter < Stealth::SqlVisitor
     end
   end
 
-  def visit(expression : Stealth::OrderByExpression)
+  def visit(expression : Focus::OrderByExpression)
     expression.expression.accept(self)
     if expression.order_type == OrderType::DESCENDING
       write "desc "
     end
   end
 
-  def visit(expression : Stealth::DeleteExpression)
+  def visit(expression : Focus::DeleteExpression)
     write "delete from "
     expression.table.accept(self)
 
@@ -233,7 +233,7 @@ abstract class Stealth::SqlFormatter < Stealth::SqlVisitor
 
   # TODO: figure out a good way to handle formatters not
   # providing all expected overloads
-  def visit(expression : Stealth::SqlExpression)
+  def visit(expression : Focus::SqlExpression)
     raise "woops"
   end
 
@@ -241,7 +241,7 @@ abstract class Stealth::SqlFormatter < Stealth::SqlVisitor
     sql_string_builder.to_s
   end
 
-  protected def visit_list(expressions : Array(Stealth::SqlExpression))
+  protected def visit_list(expressions : Array(Focus::SqlExpression))
     expressions.each_with_index do |expression, idx|
       if idx > 0
         remove_last_blank

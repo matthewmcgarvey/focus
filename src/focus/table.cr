@@ -1,4 +1,4 @@
-abstract class Stealth::Table
+abstract class Focus::Table
   annotation ColumnLabel
   end
 
@@ -10,18 +10,18 @@ abstract class Stealth::Table
     %}
 
     @[ColumnLabel]
-    getter {{ name }} : Stealth::Column({{ type }}) do
-      Stealth::Column.new(table: self, name: {{ name_str }}, sql_type: {{ type }})
+    getter {{ name }} : Focus::Column({{ type }}) do
+      Focus::Column.new(table: self, name: {{ name_str }}, sql_type: {{ type }})
     end
   end
 
   getter table_name : String
-  getter columns : Array(Stealth::BaseColumn) = [] of Stealth::BaseColumn
+  getter columns : Array(Focus::BaseColumn) = [] of Focus::BaseColumn
 
   def initialize
     {% begin %}
       {% for ivar in @type.instance_vars %}
-        {% ann = ivar.annotation(::Stealth::Table::ColumnLabel) %}
+        {% ann = ivar.annotation(::Focus::Table::ColumnLabel) %}
         {% if ann %}
           columns << {{ ivar.id }}
         {% end %}
@@ -29,7 +29,7 @@ abstract class Stealth::Table
     {% end %}
   end
 
-  def as_expression : Stealth::TableExpression
-    Stealth::TableExpression.new(name: table_name)
+  def as_expression : Focus::TableExpression
+    Focus::TableExpression.new(name: table_name)
   end
 end

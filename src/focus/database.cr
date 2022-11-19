@@ -1,4 +1,4 @@
-abstract class Stealth::Database
+abstract class Focus::Database
   def self.connect(url : String) : Database
     new(raw_db: DB.open(url))
   end
@@ -8,27 +8,27 @@ abstract class Stealth::Database
   end
 
   private getter raw_db : DB::Database
-  private getter transaction_manager : Stealth::TransactionManager
+  private getter transaction_manager : Focus::TransactionManager
 
   def initialize(@raw_db : DB::Database)
-    @transaction_manager = Stealth::TransactionManager.new(raw_db)
+    @transaction_manager = Focus::TransactionManager.new(raw_db)
   end
 
-  def from(table : Stealth::Table) : Stealth::QuerySource
-    Stealth::QuerySource.new(self, table, table.as_expression)
+  def from(table : Focus::Table) : Focus::QuerySource
+    Focus::QuerySource.new(self, table, table.as_expression)
   end
 
-  def insert(table : Stealth::Table) : Int64
-    builder = Stealth::AssignmentsBuilder.new
+  def insert(table : Focus::Table) : Int64
+    builder = Focus::AssignmentsBuilder.new
     with builder yield
     expression = InsertExpression.new(table.as_expression, builder.assignments)
     execute_update(expression)
   end
 
-  def update(table : Stealth::Table) : Int64
-    builder = Stealth::UpdateStatementBuilder.new
+  def update(table : Focus::Table) : Int64
+    builder = Focus::UpdateStatementBuilder.new
     with builder yield
-    expression = Stealth::UpdateExpression.new(
+    expression = Focus::UpdateExpression.new(
       table.as_expression,
       builder.assignments,
       builder.where.try(&.as_expression)
@@ -36,12 +36,12 @@ abstract class Stealth::Database
     execute_update(expression)
   end
 
-  def delete(table : Stealth::Table, where : ColumnDeclaring(Bool)) : Int64
+  def delete(table : Focus::Table, where : ColumnDeclaring(Bool)) : Int64
     expression = DeleteExpression.new(table.as_expression, where.as_expression)
     execute_update(expression)
   end
 
-  def delete_all(table : Stealth::Table) : Int64
+  def delete_all(table : Focus::Table) : Int64
     expression = DeleteExpression.new(table.as_expression, where: nil)
     execute_update(expression)
   end
@@ -50,18 +50,18 @@ abstract class Stealth::Database
     raw_db.close
   end
 
-  def execute_query(expression : Stealth::SqlExpression) : DB::ResultSet
+  def execute_query(expression : Focus::SqlExpression) : DB::ResultSet
     execute_expression(expression)
   end
 
-  def execute_update(expression : Stealth::SqlExpression) : Int64
+  def execute_update(expression : Focus::SqlExpression) : Int64
     sql, args = format_expression(expression)
     with_connection do |conn|
       conn.exec(sql, args: args.map(&.value)).rows_affected
     end
   end
 
-  def execute_expression(expression : Stealth::SqlExpression) : DB::ResultSet
+  def execute_expression(expression : Focus::SqlExpression) : DB::ResultSet
     sql, args = format_expression(expression)
     with_connection do |conn|
       conn.query(sql, args: args.map(&.value))
@@ -80,5 +80,5 @@ abstract class Stealth::Database
     end
   end
 
-  abstract def format_expression(expression : Stealth::SqlExpression) : Tuple(String, Array(Stealth::BaseArgumentExpression))
+  abstract def format_expression(expression : Focus::SqlExpression) : Tuple(String, Array(Focus::BaseArgumentExpression))
 end

@@ -1,40 +1,40 @@
-module Stealth::BaseScalarExpression
-  include Stealth::SqlExpression
+module Focus::BaseScalarExpression
+  include Focus::SqlExpression
 end
 
-module Stealth::ScalarExpression(T)
-  include Stealth::BaseScalarExpression
-  include Stealth::ColumnDeclaring(T)
+module Focus::ScalarExpression(T)
+  include Focus::BaseScalarExpression
+  include Focus::ColumnDeclaring(T)
 
-  def as_expression : Stealth::ScalarExpression(T)
+  def as_expression : Focus::ScalarExpression(T)
     self
   end
 
-  def wrap_argument(argument : T) : Stealth::ArgumentExpression(T)
+  def wrap_argument(argument : T) : Focus::ArgumentExpression(T)
     ArgumentExpression.new(argument, sql_type)
   end
 
-  def aliased(label : String? = nil) : Stealth::ColumnDeclaringExpression(T)
-    Stealth::ColumnDeclaringExpression.new(self, label)
+  def aliased(label : String? = nil) : Focus::ColumnDeclaringExpression(T)
+    Focus::ColumnDeclaringExpression.new(self, label)
   end
 
-  def as_declaring_expression : Stealth::ColumnDeclaringExpression(T)
+  def as_declaring_expression : Focus::ColumnDeclaringExpression(T)
     aliased(nil)
   end
 end
 
-module Stealth::QuerySourceExpression
-  include Stealth::SqlExpression
+module Focus::QuerySourceExpression
+  include Focus::SqlExpression
 end
 
-module Stealth::QueryExpression
-  include Stealth::QuerySourceExpression
+module Focus::QueryExpression
+  include Focus::QuerySourceExpression
 
   getter table_alias : String?
 end
 
-class Stealth::TableExpression
-  include Stealth::QuerySourceExpression
+class Focus::TableExpression
+  include Focus::QuerySourceExpression
 
   getter name : String
   getter table_alias : String?
@@ -49,8 +49,8 @@ class Stealth::TableExpression
   end
 end
 
-class Stealth::SelectExpression
-  include Stealth::QueryExpression
+class Focus::SelectExpression
+  include Focus::QueryExpression
 
   getter columns : Array(BaseColumnDeclaringExpression)
   getter from : QuerySourceExpression
@@ -100,11 +100,11 @@ class Stealth::SelectExpression
   end
 end
 
-class Stealth::AggregateExpression(T)
-  include Stealth::ScalarExpression(T)
+class Focus::AggregateExpression(T)
+  include Focus::ScalarExpression(T)
 
-  getter type : Stealth::AggregateType
-  getter argument : Stealth::BaseScalarExpression?
+  getter type : Focus::AggregateType
+  getter argument : Focus::BaseScalarExpression?
   getter is_distinct : Bool
 
   def initialize(@type, @argument, @is_distinct, @sql_type)
@@ -119,7 +119,7 @@ class Stealth::AggregateExpression(T)
   end
 end
 
-enum Stealth::AggregateType
+enum Focus::AggregateType
   MIN
   MAX
   AVG
@@ -144,13 +144,13 @@ enum Stealth::AggregateType
   end
 end
 
-module Stealth::BaseArgumentExpression
+module Focus::BaseArgumentExpression
   abstract def value
 end
 
-class Stealth::ArgumentExpression(T)
-  include Stealth::ScalarExpression(T)
-  include Stealth::BaseArgumentExpression
+class Focus::ArgumentExpression(T)
+  include Focus::ScalarExpression(T)
+  include Focus::BaseArgumentExpression
 
   getter value : T
 
@@ -158,12 +158,12 @@ class Stealth::ArgumentExpression(T)
   end
 end
 
-class Stealth::BetweenExpression(T)
-  include Stealth::ScalarExpression(Bool)
+class Focus::BetweenExpression(T)
+  include Focus::ScalarExpression(Bool)
 
-  getter expression : Stealth::ScalarExpression(T)
-  getter lower : Stealth::ScalarExpression(T)
-  getter upper : Stealth::ScalarExpression(T)
+  getter expression : Focus::ScalarExpression(T)
+  getter lower : Focus::ScalarExpression(T)
+  getter upper : Focus::ScalarExpression(T)
   getter not_between : Bool
 
   def initialize(@expression, @lower, @upper, @not_between = false)
@@ -175,12 +175,12 @@ class Stealth::BetweenExpression(T)
   end
 end
 
-class Stealth::BinaryExpression(T)
-  include Stealth::ScalarExpression(T)
+class Focus::BinaryExpression(T)
+  include Focus::ScalarExpression(T)
 
-  getter type : Stealth::BinaryExpressionType
-  getter left : Stealth::BaseScalarExpression
-  getter right : Stealth::BaseScalarExpression
+  getter type : Focus::BinaryExpressionType
+  getter left : Focus::BaseScalarExpression
+  getter right : Focus::BaseScalarExpression
 
   def initialize(@type, @left, @right, @sql_type)
   end
@@ -190,7 +190,7 @@ class Stealth::BinaryExpression(T)
   end
 end
 
-enum Stealth::BinaryExpressionType
+enum Focus::BinaryExpressionType
   PLUS
   MINUS
   TIMES
@@ -248,10 +248,10 @@ enum Stealth::BinaryExpressionType
   end
 end
 
-module Stealth::BaseColumnExpression
-  include Stealth::SqlExpression
+module Focus::BaseColumnExpression
+  include Focus::SqlExpression
 
-  getter table : Stealth::TableExpression?
+  getter table : Focus::TableExpression?
   getter name : String
 
   def wrap_in_parens? : Bool
@@ -259,9 +259,9 @@ module Stealth::BaseColumnExpression
   end
 end
 
-class Stealth::ColumnExpression(T)
-  include Stealth::ScalarExpression(T)
-  include Stealth::BaseColumnExpression
+class Focus::ColumnExpression(T)
+  include Focus::ScalarExpression(T)
+  include Focus::BaseColumnExpression
 
   def initialize(@table, @name, @sql_type)
   end
@@ -271,8 +271,8 @@ class Stealth::ColumnExpression(T)
   end
 end
 
-module Stealth::BaseColumnDeclaringExpression
-  include Stealth::SqlExpression
+module Focus::BaseColumnDeclaringExpression
+  include Focus::SqlExpression
 
   getter declared_name : String?
 
@@ -281,9 +281,9 @@ module Stealth::BaseColumnDeclaringExpression
   end
 end
 
-class Stealth::ColumnDeclaringExpression(T)
-  include Stealth::ScalarExpression(T)
-  include Stealth::BaseColumnDeclaringExpression
+class Focus::ColumnDeclaringExpression(T)
+  include Focus::ScalarExpression(T)
+  include Focus::BaseColumnDeclaringExpression
 
   getter expression : ScalarExpression(T)
 
@@ -291,25 +291,25 @@ class Stealth::ColumnDeclaringExpression(T)
   end
 end
 
-module Stealth::BaseColumnAssignmentExpression
-  include Stealth::SqlExpression
+module Focus::BaseColumnAssignmentExpression
+  include Focus::SqlExpression
 
-  abstract def column : Stealth::BaseColumnExpression
-  abstract def expression : Stealth::BaseScalarExpression
+  abstract def column : Focus::BaseColumnExpression
+  abstract def expression : Focus::BaseScalarExpression
 end
 
-class Stealth::ColumnAssignmentExpression(T)
-  include Stealth::BaseColumnAssignmentExpression
+class Focus::ColumnAssignmentExpression(T)
+  include Focus::BaseColumnAssignmentExpression
 
-  getter column : Stealth::ColumnExpression(T)
-  getter expression : Stealth::ScalarExpression(T)
+  getter column : Focus::ColumnExpression(T)
+  getter expression : Focus::ScalarExpression(T)
 
   def initialize(@column, @expression)
   end
 end
 
-class Stealth::DeleteExpression
-  include Stealth::SqlExpression
+class Focus::DeleteExpression
+  include Focus::SqlExpression
   getter table : TableExpression
   getter where : ScalarExpression(Bool)?
 
@@ -317,8 +317,8 @@ class Stealth::DeleteExpression
   end
 end
 
-class Stealth::ExistsExpression
-  include Stealth::ScalarExpression(Bool)
+class Focus::ExistsExpression
+  include Focus::ScalarExpression(Bool)
 
   getter query : QueryExpression
   getter not_exists : Bool
@@ -328,8 +328,8 @@ class Stealth::ExistsExpression
   end
 end
 
-class Stealth::InListExpression(T)
-  include Stealth::ScalarExpression(Bool)
+class Focus::InListExpression(T)
+  include Focus::ScalarExpression(Bool)
 
   getter left : ScalarExpression(T)
   getter query : QueryExpression?
@@ -341,18 +341,18 @@ class Stealth::InListExpression(T)
   end
 end
 
-class Stealth::InsertExpression
-  include Stealth::SqlExpression
+class Focus::InsertExpression
+  include Focus::SqlExpression
 
-  getter table : Stealth::TableExpression
+  getter table : Focus::TableExpression
   getter assignments : Array(BaseColumnAssignmentExpression)
 
   def initialize(@table, @assignments)
   end
 end
 
-class Stealth::JoinExpression
-  include Stealth::QuerySourceExpression
+class Focus::JoinExpression
+  include Focus::QuerySourceExpression
 
   getter type : JoinType
   getter left : QuerySourceExpression
@@ -367,7 +367,7 @@ class Stealth::JoinExpression
   end
 end
 
-enum Stealth::JoinType
+enum Focus::JoinType
   CROSS_JOIN
   INNER_JOIN
   LEFT_JOIN
@@ -389,8 +389,8 @@ enum Stealth::JoinType
   end
 end
 
-class Stealth::OrderByExpression
-  include Stealth::SqlExpression
+class Focus::OrderByExpression
+  include Focus::SqlExpression
 
   getter expression : BaseScalarExpression
   getter order_type : OrderType
@@ -403,7 +403,7 @@ class Stealth::OrderByExpression
   end
 end
 
-enum Stealth::OrderType
+enum Focus::OrderType
   ASCENDING
   DESCENDING
 
@@ -419,11 +419,11 @@ enum Stealth::OrderType
   end
 end
 
-class Stealth::UnaryExpression(T)
-  include Stealth::ScalarExpression(T)
+class Focus::UnaryExpression(T)
+  include Focus::ScalarExpression(T)
 
-  getter type : Stealth::UnaryExpressionType
-  getter operand : Stealth::BaseScalarExpression
+  getter type : Focus::UnaryExpressionType
+  getter operand : Focus::BaseScalarExpression
 
   def initialize(@type, @operand, @sql_type)
   end
@@ -433,7 +433,7 @@ class Stealth::UnaryExpression(T)
   end
 end
 
-enum Stealth::UnaryExpressionType
+enum Focus::UnaryExpressionType
   IS_NULL
   IS_NOT_NULL
   UNARY_MINUS
@@ -458,12 +458,12 @@ enum Stealth::UnaryExpressionType
   end
 end
 
-class Stealth::UpdateExpression
-  include Stealth::SqlExpression
+class Focus::UpdateExpression
+  include Focus::SqlExpression
 
-  getter table : Stealth::TableExpression
-  getter assignments : Array(Stealth::BaseColumnAssignmentExpression)
-  getter where : Stealth::ScalarExpression(Bool)?
+  getter table : Focus::TableExpression
+  getter assignments : Array(Focus::BaseColumnAssignmentExpression)
+  getter where : Focus::ScalarExpression(Bool)?
 
   def initialize(@table, @assignments, @where = nil)
   end

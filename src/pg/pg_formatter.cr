@@ -1,4 +1,4 @@
-class Stealth::PGFormatter < Stealth::SqlFormatter
+class Focus::PGFormatter < Focus::SqlFormatter
   property argument_counter = 1
 
   def visit(expression : TableExpression)
@@ -15,13 +15,13 @@ class Stealth::PGFormatter < Stealth::SqlFormatter
     end
   end
 
-  def visit(expression : Stealth::ArgumentExpression)
+  def visit(expression : Focus::ArgumentExpression)
     write "$#{argument_counter} "
     parameters << expression
     self.argument_counter += 1
   end
 
-  def visit(expression : Stealth::ILikeExpression)
+  def visit(expression : Focus::ILikeExpression)
     if expression.left.wrap_in_parens?
       wrap_in_parens do
         expression.left.accept(self)

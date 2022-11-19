@@ -1,4 +1,4 @@
-class Stealth::ILikeExpression
+class Focus::ILikeExpression
   include ScalarExpression(Bool)
 
   getter left : BaseScalarExpression
@@ -9,7 +9,7 @@ class Stealth::ILikeExpression
   end
 end
 
-module Stealth::ColumnDeclaring(T)
+module Focus::ColumnDeclaring(T)
   def i_like(expr : ColumnDeclaring(String)) : ILikeExpression
     ILikeExpression.new(as_expression, expr.as_expression)
   end

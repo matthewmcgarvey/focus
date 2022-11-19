@@ -8,7 +8,7 @@ class PGDatabaseTest < PGTestBase
     end
 
     count = database.from(Departments)
-      .select(Stealth.count(Departments.id))
+      .select(Focus.count(Departments.id))
       .where(Departments.name.eq("r&d"))
       .first
       .get(0, Int32)
@@ -18,7 +18,7 @@ class PGDatabaseTest < PGTestBase
     database.delete(Departments, where: Departments.name.eq("r&d"))
 
     count = database.from(Departments)
-      .select(Stealth.count(Departments.id))
+      .select(Focus.count(Departments.id))
       .where(Departments.name.eq("r&d"))
       .first
       .get(0, Int32)

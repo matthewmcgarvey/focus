@@ -2,10 +2,10 @@ require "../test_base"
 require "../../src/pg"
 
 abstract class PGTestBase < TestBase
-  @database : Stealth::PGDatabase?
+  @database : Focus::PGDatabase?
 
-  def database : Stealth::PGDatabase
-    @database ||= Stealth::PGDatabase.connect("postgres://postgres:postgres@localhost/test")
+  def database : Focus::PGDatabase
+    @database ||= Focus::PGDatabase.connect("postgres://postgres:postgres@localhost/test")
   end
 
   def setup

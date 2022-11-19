@@ -1,10 +1,10 @@
-module Stealth::BaseCachedColumn
+module Focus::BaseCachedColumn
   abstract def value
   abstract def name : String
 end
 
-class Stealth::CachedColumn(T)
-  include Stealth::BaseCachedColumn
+class Focus::CachedColumn(T)
+  include Focus::BaseCachedColumn
   getter value : T
   getter name : String
 

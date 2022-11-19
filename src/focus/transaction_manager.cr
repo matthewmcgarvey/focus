@@ -1,5 +1,5 @@
 # As long as I limit usage to block forms I can lean on crystal-db's connection and transaction handling
-class Stealth::TransactionManager
+class Focus::TransactionManager
   private getter raw_db : DB::Database
   private getter current_transaction : DB::Transaction?
 

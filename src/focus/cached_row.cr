@@ -1,4 +1,4 @@
-class Stealth::CachedRow
+class Focus::CachedRow
   # Taken from https://github.com/luckyframework/avram/blob/f0148f4274798124f5457c85fa35f7ba985636b6/src/avram/charms/time_extensions.cr#L10-L23
   TIME_FORMATS = [
     Time::Format::ISO_8601_DATE_TIME,
@@ -15,17 +15,17 @@ class Stealth::CachedRow
     Time::Format::ISO_8601_TIME,
   ]
 
-  def self.build(result_set : DB::ResultSet) : Stealth::CachedRow
-    columns = [] of Stealth::BaseCachedColumn
+  def self.build(result_set : DB::ResultSet) : Focus::CachedRow
+    columns = [] of Focus::BaseCachedColumn
     result_set.column_count.times do
       index = result_set.next_column_index
       name = result_set.column_name(index)
-      columns << Stealth::CachedColumn.new(value: result_set.read, name: name)
+      columns << Focus::CachedColumn.new(value: result_set.read, name: name)
     end
     new(columns)
   end
 
-  getter columns : Array(Stealth::BaseCachedColumn)
+  getter columns : Array(Focus::BaseCachedColumn)
 
   def initialize(@columns)
   end

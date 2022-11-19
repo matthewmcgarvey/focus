@@ -1,10 +1,10 @@
 require "minitest"
 require "minitest/focus"
-require "../src/stealth"
+require "../src/focus"
 require "./support/tables"
 
 abstract class TestBase < Minitest::Test
-  abstract def database : Stealth::Database
+  abstract def database : Focus::Database
 
   def exec_sql_script(filename : String)
     database.with_connection do |conn|

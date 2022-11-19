@@ -2,10 +2,10 @@ require "../test_base"
 require "../../src/mysql"
 
 abstract class MySqlTestBase < TestBase
-  @database : Stealth::MySqlDatabase?
+  @database : Focus::MySqlDatabase?
 
-  def database : Stealth::MySqlDatabase
-    @database ||= Stealth::MySqlDatabase.connect("mysql://root:password@localhost/test")
+  def database : Focus::MySqlDatabase
+    @database ||= Focus::MySqlDatabase.connect("mysql://root:password@localhost/test")
   end
 
   def setup

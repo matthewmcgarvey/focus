@@ -1,4 +1,4 @@
-class Stealth::SQLiteDatabase < Stealth::Database
+class Focus::SQLiteDatabase < Focus::Database
   def self.connect(url : String) : SQLiteDatabase
     new(raw_db: DB::Database.new(SQLite3::Driver.new, URI.parse(url)))
   end
@@ -7,8 +7,8 @@ class Stealth::SQLiteDatabase < Stealth::Database
     new(raw_db: db)
   end
 
-  def format_expression(expression : Stealth::SqlExpression) : Tuple(String, Array(Stealth::BaseArgumentExpression))
-    visitor = Stealth::SQLiteFormatter.new
+  def format_expression(expression : Focus::SqlExpression) : Tuple(String, Array(Focus::BaseArgumentExpression))
+    visitor = Focus::SQLiteFormatter.new
     expression.accept(visitor)
     {visitor.to_sql, visitor.parameters}
   end

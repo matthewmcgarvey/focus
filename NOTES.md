@@ -38,7 +38,7 @@ All of this to say, I want to use the visitor pattern, but I'm going to implemen
 
 Frustrating trying to work with generics in this library.
 Had to add the BaseColumn and BaseColumnExpression classes to cope with the need for arrays of these things.
-**NOTE** The code works as it is right now with the `abstract def as_expression` commented out in `Stealth::BaseColumn` which seems... broken?
+**NOTE** The code works as it is right now with the `abstract def as_expression` commented out in `Focus::BaseColumn` which seems... broken?
 
 One thing I just realized with Ktorm's generics usage is that Kotlin is able to conditionally add methods to an object based on generics
 
@@ -57,7 +57,7 @@ UPDATE: After talking about it in the Discord, I found a hack solution for this.
 def not : UnaryExpression(Bool)
   {% raise "#{@type.name}##{@def.name} may only be used with Bool columns" %}
   UnaryExpression.new(
-    Stealth::UnaryExpressionType::NOT,
+    Focus::UnaryExpressionType::NOT,
     operand: as_expression,
     sql_type: Bool
   )

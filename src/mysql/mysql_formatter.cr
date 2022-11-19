@@ -1,5 +1,5 @@
-class Stealth::MySqlFormatter < Stealth::SqlFormatter
-  def visit(expression : Stealth::ArgumentExpression)
+class Focus::MySqlFormatter < Focus::SqlFormatter
+  def visit(expression : Focus::ArgumentExpression)
     write "? "
     parameters << expression
   end

@@ -1,5 +1,5 @@
-class Stealth::SQLiteFormatter < Stealth::SqlFormatter
-  def visit(expression : Stealth::ArgumentExpression)
+class Focus::SQLiteFormatter < Focus::SqlFormatter
+  def visit(expression : Focus::ArgumentExpression)
     write "? "
     parameters << expression
   end

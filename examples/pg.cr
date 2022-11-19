@@ -1,9 +1,9 @@
-require "../src/stealth"
+require "../src/focus"
 require "../src/pg"
 
-database = Stealth::PGDatabase.connect("postgresql://lucky@localhost:5432/avram_dev")
+database = Focus::PGDatabase.connect("postgresql://lucky@localhost:5432/avram_dev")
 
-class UsersTable < Stealth::Table
+class UsersTable < Focus::Table
   @table_name = "users"
 
   column id : Int32
@@ -27,7 +27,7 @@ struct User
   getter age : Int32
   getter year_born : Int16
 
-  def initialize(row : Stealth::CachedRow)
+  def initialize(row : Focus::CachedRow)
     @id = row.get(Users.id)
     @name = row.get(Users.name)
     @age = row.get(Users.age)

@@ -1,9 +1,9 @@
-require "../src/stealth"
+require "../src/focus"
 require "../src/sqlite"
 
-database = Stealth::SQLiteDatabase.connect("sqlite3://./data.db")
+database = Focus::SQLiteDatabase.connect("sqlite3://./data.db")
 
-class UsersTable < Stealth::Table
+class UsersTable < Focus::Table
   @table_name = "users"
 
   column id : Int32
@@ -13,7 +13,7 @@ end
 
 Users = UsersTable.new
 
-class TodosTable < Stealth::Table
+class TodosTable < Focus::Table
   @table_name = "todos"
 
   column id : Int32
@@ -28,7 +28,7 @@ struct Todo
   getter name : String
   getter user : User
 
-  def initialize(row : Stealth::CachedRow)
+  def initialize(row : Focus::CachedRow)
     @id = row.get(Todos.id)
     @name = row.get(Todos.name)
     @user = User.new(
@@ -44,7 +44,7 @@ struct User
   getter name : String
   getter role : String
 
-  def initialize(row : Stealth::CachedRow)
+  def initialize(row : Focus::CachedRow)
     @id = row.get(Users.id)
     @name = row.get(Users.name)
     @role = row.get(Users.role)

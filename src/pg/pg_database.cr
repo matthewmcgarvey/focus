@@ -1,4 +1,4 @@
-class Stealth::PGDatabase < Stealth::Database
+class Focus::PGDatabase < Focus::Database
   def self.connect(url : String) : PGDatabase
     new(raw_db: DB::Database.new(PG::Driver.new, URI.parse(url)))
   end
@@ -7,8 +7,8 @@ class Stealth::PGDatabase < Stealth::Database
     new(raw_db: db)
   end
 
-  def format_expression(expression : Stealth::SqlExpression) : Tuple(String, Array(Stealth::BaseArgumentExpression))
-    visitor = Stealth::PGFormatter.new
+  def format_expression(expression : Focus::SqlExpression) : Tuple(String, Array(Focus::BaseArgumentExpression))
+    visitor = Focus::PGFormatter.new
     expression.accept(visitor)
     {visitor.to_sql, visitor.parameters}
   end

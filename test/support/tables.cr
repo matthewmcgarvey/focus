@@ -1,4 +1,4 @@
-class DepartmentsTable < Stealth::Table
+class DepartmentsTable < Focus::Table
   @table_name = "departments"
 
   column id : Int32
@@ -8,7 +8,7 @@ end
 
 Departments = DepartmentsTable.new
 
-class EmployeesTable < Stealth::Table
+class EmployeesTable < Focus::Table
   @table_name = "employees"
 
   column id : Int32

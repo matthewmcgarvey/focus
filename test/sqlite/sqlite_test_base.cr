@@ -2,10 +2,10 @@ require "../test_base"
 require "../../src/sqlite"
 
 abstract class SQLiteTestBase < TestBase
-  @database : Stealth::SQLiteDatabase?
+  @database : Focus::SQLiteDatabase?
 
-  def database : Stealth::SQLiteDatabase
-    @database ||= Stealth::SQLiteDatabase.connect("sqlite3://%3Amemory%3A")
+  def database : Focus::SQLiteDatabase
+    @database ||= Focus::SQLiteDatabase.connect("sqlite3://%3Amemory%3A")
   end
 
   def setup

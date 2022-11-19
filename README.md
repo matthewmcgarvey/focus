@@ -1,4 +1,4 @@
-# Stealth
+# Focus
 
 SQL query builder for multiple databases. Heavily inspired by Kotlin's [Ktorm](https://www.ktorm.org).
 
@@ -17,8 +17,8 @@ Not at all ready for real use. (There's not even any tests, so don't be crazy an
 
    ```yaml
    dependencies:
-     stealth:
-       github: matthewmcgarvey/stealth
+     focus:
+       github: matthewmcgarvey/focus
    ```
 
 2. Run `shards install`
@@ -27,12 +27,12 @@ Not at all ready for real use. (There's not even any tests, so don't be crazy an
 
 ### Connect to a database
 
-The aim of stealth is to provide fluent access to many different types of databases.
-Stealth will provide any extra functionality for each supported database or ways of providing it yourself.
+The aim of focus is to provide fluent access to many different types of databases.
+Focus will provide any extra functionality for each supported database or ways of providing it yourself.
 
 ```crystal
-require "stealth"
-require "stealth/sqlite"
+require "focus"
+require "focus/sqlite"
 
 database = SQLiteDatabase.connect("sqlite3://./data.db")
 ```
@@ -50,7 +50,7 @@ It's important to understand that these are not our data models.
 They are used to build queries.
 
 ```crystal
-class UsersTable < Stealth::Table
+class UsersTable < Focus::Table
   @table_name = "users"
 
   column id : Int32
@@ -97,7 +97,7 @@ TODO: Write development instructions here
 
 ## Contributing
 
-1. Fork it (<https://github.com/matthewmcgarvey/stealth/fork>)
+1. Fork it (<https://github.com/matthewmcgarvey/focus/fork>)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
