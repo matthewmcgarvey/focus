@@ -99,4 +99,23 @@ class Stealth::Query
   def offset(offset : Int32) : Query
     limit(limit: nil, offset: offset)
   end
+
+  def any? : Bool
+    count > 0
+  end
+
+  def none? : Bool
+    count.zero?
+  end
+
+  def count : Int32
+    aggregate_columns(Stealth.count).not_nil!
+  end
+
+  def aggregate_columns(aggregation : ColumnDeclaring(T)) : T? forall T
+    new_expression = expression.copy(columns: [aggregation.aliased(nil).as(BaseColumnDeclaringExpression)])
+    new_query = Query.new(database, new_expression)
+    row = new_query.rows.first
+    row.get?(0, T)
+  end
 end

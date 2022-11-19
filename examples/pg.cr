@@ -48,8 +48,8 @@ database.insert(Users) do
   set(Users.average_score, 45.78)
 end
 
-pp database.from(Users)
-  .select(Users.id, Users.name, Users.age, Users.year_born)
-  .bind_to(User)
+query = database.from(Users).select(Users.id, Users.name, Users.age, Users.year_born)
+pp query.bind_to(User)
+pp query.none?
 
 database.close

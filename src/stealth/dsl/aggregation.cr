@@ -31,8 +31,8 @@ module Stealth::Dsl::Aggregation
     AggregateExpression.new(AggregateType::SUM, column.as_expression, is_distinct: true, sql_type: column.sql_type)
   end
 
-  def count(column : ColumnDeclaring(Comparable)) : AggregateExpression(Int32)
-    AggregateExpression.new(AggregateType::COUNT, column.as_expression, is_distinct: false, sql_type: Int32)
+  def count(column : ColumnDeclaring(Comparable)? = nil) : AggregateExpression(Int32)
+    AggregateExpression.new(AggregateType::COUNT, column.try(&.as_expression), is_distinct: false, sql_type: Int32)
   end
 
   def count_distinct(column : ColumnDeclaring(Comparable)) : AggregateExpression(Int32)
