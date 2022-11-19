@@ -73,6 +73,26 @@ database.from(Users)
   .map(&.get(Users.id))
 ```
 
+### Bind rows to Crystal objects
+
+```crystal
+struct User
+  getter id : Int32
+  getter name : String
+  getter role : String
+
+  def initialize(row : Focus::CachedRow)
+    @id = row.get(Users.id)
+    @name = row.get(Users.name)
+    @role = row.get(Users.role)
+  end
+end
+
+users = database.from(Users)
+  .select
+  .bind_to(User)
+```
+
 ### Insert data
 
 ```crystal
