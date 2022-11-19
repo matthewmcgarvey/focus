@@ -6,10 +6,35 @@ Not at all ready for real use. (There's not even any tests, so don't be crazy an
 
 ## Goals
 
-- Support more types of SQL queries
-- Separate data models from database tables
-- Work with multiple database types
-- Use less macros
+### Create an easy to understand library
+
+I don't want this library to take 10 months to feel like you know how to do everything.
+I want it to be made in a way that's not only easy to use, but easy to dig into internally.
+That means two things:
+
+1. This will be a clean, well documented DSL
+2. There will be minimal macro usages
+
+I want to avoid macro usages because, while they can make code simpler to write, it can cause confusion for maintainers and developers when they run into bugs.
+By trying to avoid macros, I also have to think about how I can use regular Crystal to make a pleasant API rather than fall back to macros.
+As of right now, I only have one macro which is `Stealth::Table.column`. It's only used when defining tables and I believe it's necessary to avoid users immediately running into hand cramps when defining tables.
+Maybe one day this library could have no macros?
+
+### Separate data models from database tables
+
+This will probably be the most unusual goal of this project.
+The vast majority of ORMs have you define your data model and equate that to a table in the database.
+When you create a `User` model, it wraps the `users` table in the database and that class is how you fetch and manipulate data.
+So why change that?
+Well, from my experience in Crystal over the past few years, maintaining that style fundamentally limits the database queries that can be safely constructed (or else they provide a backdoor way to do it that feels like you're subverting the whole point of the ORM) and places quite a burden on the maintainers of the project to add increasing complexity to manage the codebase and add more and more features.
+We've spent enough time trying to copy ActiveRecord, and it's just not going to be possible to provide the same flexibility that it does.
+So I'm trying a different path. One where you define your table completely separately from your data models. The table is used to build queries and the results can be parsed just as they are or bound to a data model.
+This way, you can have as many data models as you want connected to the same table, you can build much more customized SQL queries, and the internals of the library are much simpler to understand.
+
+### Work with multiple database types
+
+I don't want to limit this library to just PostgreSQL. I want developers to be able to fully use different databases even within the same project.
+By "fully use" I do mean that I want to provide accessible DSLs or extension points to use all the features of a particular database (like jsonb in PostgreSQL).
 
 ## Installation
 
