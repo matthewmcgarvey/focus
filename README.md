@@ -1,6 +1,7 @@
 # Focus
 
 SQL query builder for multiple databases. Heavily inspired by Kotlin's [Ktorm](https://www.ktorm.org).
+Do you want to learn an ORM or do you want to be able to focus?
 
 Not at all ready for real use. (There's not even any tests, so don't be crazy and try to use it for real.)
 
