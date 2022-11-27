@@ -14,6 +14,12 @@ abstract class Focus::Database
     @transaction_manager = Focus::TransactionManager.new(raw_db)
   end
 
+  def setup_connection(&block : DB::Connection -> _)
+    raw_db.setup_connection do |conn|
+      block.call conn
+    end
+  end
+
   def from(table : Focus::Table) : Focus::QuerySource
     Focus::QuerySource.new(self, table, table.as_expression)
   end
