@@ -10,7 +10,7 @@ module Focus::ScalarExpression(T)
     self
   end
 
-  def wrap_argument(argument : T) : Focus::ArgumentExpression(T)
+  def wrap_argument(argument : T?) : Focus::ArgumentExpression(T)
     ArgumentExpression.new(argument, sql_type)
   end
 
@@ -152,7 +152,7 @@ class Focus::ArgumentExpression(T)
   include Focus::ScalarExpression(T)
   include Focus::BaseArgumentExpression
 
-  getter value : T
+  getter value : T?
 
   def initialize(@value, @sql_type)
   end

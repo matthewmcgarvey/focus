@@ -11,7 +11,7 @@ module Focus::ColumnDeclaring(T)
   getter sql_type : T.class
 
   abstract def as_expression : Focus::ScalarExpression(T)
-  abstract def wrap_argument(argument : T) : Focus::ArgumentExpression(T)
+  abstract def wrap_argument(argument : T?) : Focus::ArgumentExpression(T)
   abstract def aliased(label : String? = nil) : Focus::ColumnDeclaringExpression(T)
 
   def asc : OrderByExpression

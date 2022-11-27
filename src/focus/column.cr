@@ -24,8 +24,8 @@ class Focus::Column(T)
     Focus::ColumnExpression.new(table.as_expression, name, sql_type)
   end
 
-  def wrap_argument(argument : T) : Focus::ArgumentExpression(T)
-    Focus::ArgumentExpression.new(argument, sql_type)
+  def wrap_argument(argument : T?) : Focus::ArgumentExpression(T)
+    Focus::ArgumentExpression(T).new(argument, sql_type)
   end
 
   def aliased(label : String? = nil) : Focus::ColumnDeclaringExpression(T)
