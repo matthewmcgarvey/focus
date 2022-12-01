@@ -234,7 +234,7 @@ abstract class Focus::SqlFormatter < Focus::SqlVisitor
   # TODO: figure out a good way to handle formatters not
   # providing all expected overloads
   def visit(expression : Focus::SqlExpression)
-    raise "woops"
+    raise "No visit method found for #{expression.class.name}"
   end
 
   def to_sql : String

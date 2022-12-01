@@ -39,6 +39,35 @@ class Focus::PGFormatter < Focus::SqlFormatter
     end
   end
 
+  def visit(expression : Focus::InsertOrUpdateExpression)
+    write "insert into "
+    expression.table.accept(self)
+    write_insert_column_names(expression.assignments.map(&.column.as(BaseColumnExpression)))
+    write "values "
+    write_insert_values(expression.assignments)
+
+    if expression.conflict_columns.any?
+      write "on conflict "
+      write_insert_column_names(expression.conflict_columns)
+
+      if expression.update_assignments.any?
+        write "do update set "
+        visit_column_assignments(expression.update_assignments)
+      else
+        write "do nothing "
+      end
+    end
+
+    if expression.returning_columns.any?
+      write "returning "
+
+      expression.returning_columns.each_with_index do |returning_column, idx|
+        write ", " if idx > 0
+        write quoted(returning_column.name)
+      end
+    end
+  end
+
   protected def write_pagination(expr : QueryExpression)
     if limit = expr.limit
       write "limit "

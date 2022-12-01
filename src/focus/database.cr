@@ -31,6 +31,27 @@ abstract class Focus::Database
     execute_update(expression)
   end
 
+  def insert_returning_generated_key(table : Focus::Table, column : Focus::Column(T)) : T forall T
+    builder = Focus::AssignmentsBuilder.new
+    with builder yield
+    expression = InsertExpression.new(table.as_expression, builder.assignments)
+    result_set = execute_insert_and_return_generated_key(expression, column)
+    rows = [] of Focus::CachedRow
+    begin
+      result_set.each do
+        rows << Focus::CachedRow.build(result_set)
+      end
+    ensure
+      result_set.close
+    end
+    rows
+    if row = rows.first?
+      row.get(0, type: T)
+    else
+      raise "Expected a key to be returned by the database"
+    end
+  end
+
   def update(table : Focus::Table) : Int64
     builder = Focus::UpdateStatementBuilder.new
     with builder yield
@@ -57,20 +78,16 @@ abstract class Focus::Database
   end
 
   def execute_query(expression : Focus::SqlExpression) : DB::ResultSet
-    execute_expression(expression)
+    sql, args = format_expression(expression)
+    with_connection do |conn|
+      conn.query(sql, args: args.map(&.value))
+    end
   end
 
   def execute_update(expression : Focus::SqlExpression) : Int64
     sql, args = format_expression(expression)
     with_connection do |conn|
       conn.exec(sql, args: args.map(&.value)).rows_affected
-    end
-  end
-
-  def execute_expression(expression : Focus::SqlExpression) : DB::ResultSet
-    sql, args = format_expression(expression)
-    with_connection do |conn|
-      conn.query(sql, args: args.map(&.value))
     end
   end
 
@@ -87,4 +104,5 @@ abstract class Focus::Database
   end
 
   abstract def format_expression(expression : Focus::SqlExpression) : Tuple(String, Array(Focus::BaseArgumentExpression))
+  abstract def execute_insert_and_return_generated_key(expression : Focus::InsertExpression, column : Focus::BaseColumn) : DB::ResultSet
 end

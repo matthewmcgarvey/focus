@@ -2,10 +2,13 @@ require "./pg_test_base"
 
 class PGDatabaseTest < PGTestBase
   def test_it_works
-    database.insert(Departments) do
+    id = database.insert_returning_generated_key(Departments, Departments.id) do
       set(Departments.name, "r&d")
       set(Departments.location, "Boston")
     end
+
+    department = database.from(Departments).select.where(Departments.id.eq(id)).first
+    assert_equal "r&d", department.get(Departments.name)
 
     count = database.from(Departments)
       .select(Focus.count(Departments.id))

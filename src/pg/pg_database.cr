@@ -12,4 +12,13 @@ class Focus::PGDatabase < Focus::Database
     expression.accept(visitor)
     {visitor.to_sql, visitor.parameters}
   end
+
+  def execute_insert_and_return_generated_key(expression : Focus::InsertExpression, column : Focus::BaseColumn) : DB::ResultSet
+    returning_expression = InsertOrUpdateExpression.new(
+      table: expression.table,
+      assignments: expression.assignments,
+      returning_columns: [column.as_expression] of BaseColumnExpression
+    )
+    execute_query(returning_expression)
+  end
 end
