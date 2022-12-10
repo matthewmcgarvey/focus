@@ -55,7 +55,7 @@ module Focus::Dsl::Operators(T)
   end
 
   def in_list(list : Array(T)) : InListExpression(T)
-    values = list.map { |value| wrap_argument(value) }
+    values = list.map { |value| wrap_argument(value).as(Focus::ScalarExpression(T)) }
     InListExpression.new(left: as_expression, values: values)
   end
 
