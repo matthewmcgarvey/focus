@@ -8,8 +8,6 @@ module Focus::ColumnDeclaring(T)
   include Focus::BaseColumnDeclaring
   include Focus::Dsl::Operators(T)
 
-  getter sql_type : T.class
-
   abstract def as_expression : Focus::ScalarExpression(T)
   abstract def wrap_argument(argument : T?) : Focus::ArgumentExpression(T)
   abstract def aliased(label : String? = nil) : Focus::ColumnDeclaringExpression(T)
@@ -20,5 +18,9 @@ module Focus::ColumnDeclaring(T)
 
   def desc : OrderByExpression
     OrderByExpression.new(as_expression, OrderType::DESCENDING)
+  end
+
+  def sql_type
+    T
   end
 end

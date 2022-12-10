@@ -1,10 +1,9 @@
 module Focus::Dsl::Operators(T)
   def eq(expr : ColumnDeclaring(T)) : Focus::BinaryExpression(Bool)
-    Focus::BinaryExpression.new(
+    Focus::BinaryExpression(Bool).new(
       Focus::BinaryExpressionType::EQUAL,
       left: as_expression,
-      right: expr.as_expression,
-      sql_type: Bool
+      right: expr.as_expression
     )
   end
 
@@ -21,11 +20,10 @@ module Focus::Dsl::Operators(T)
   end
 
   def not_eq(expr : ColumnDeclaring(T)) : Focus::BinaryExpression(Bool)
-    Focus::BinaryExpression.new(
+    Focus::BinaryExpression(Bool).new(
       Focus::BinaryExpressionType::NOT_EQUAL,
       left: as_expression,
-      right: expr.as_expression,
-      sql_type: Bool
+      right: expr.as_expression
     )
   end
 
@@ -78,51 +76,45 @@ module Focus::Dsl::Operators(T)
   end
 
   def is_null : UnaryExpression(Bool)
-    UnaryExpression.new(
+    UnaryExpression(Bool).new(
       Focus::UnaryExpressionType::IS_NULL,
-      operand: as_expression,
-      sql_type: Bool
+      operand: as_expression
     )
   end
 
   def is_not_null : UnaryExpression(Bool)
-    UnaryExpression.new(
+    UnaryExpression(Bool).new(
       Focus::UnaryExpressionType::IS_NOT_NULL,
-      operand: as_expression,
-      sql_type: Bool
+      operand: as_expression
     )
   end
 
   def unary_minus : UnaryExpression(T)
-    UnaryExpression.new(
+    UnaryExpression(T).new(
       Focus::UnaryExpressionType::UNARY_MINUS,
-      operand: as_expression,
-      sql_type: sql_type
+      operand: as_expression
     )
   end
 
   def unary_plus : UnaryExpression(T)
-    UnaryExpression.new(
+    UnaryExpression(T).new(
       Focus::UnaryExpressionType::UNARY_PLUS,
-      operand: as_expression,
-      sql_type: sql_type
+      operand: as_expression
     )
   end
 
   def not : UnaryExpression(Bool)
-    UnaryExpression.new(
+    UnaryExpression(Bool).new(
       Focus::UnaryExpressionType::NOT,
-      operand: as_expression,
-      sql_type: Bool
+      operand: as_expression
     )
   end
 
   def plus(expr : ColumnDeclaring(T)) : Focus::BinaryExpression(T)
-    Focus::BinaryExpression.new(
+    Focus::BinaryExpression(T).new(
       BinaryExpressionType::PLUS,
       as_expression,
-      expr.as_expression,
-      sql_type
+      expr.as_expression
     )
   end
 
@@ -139,11 +131,10 @@ module Focus::Dsl::Operators(T)
   end
 
   def minus(expr : ColumnDeclaring(T)) : Focus::BinaryExpression(T)
-    Focus::BinaryExpression.new(
+    Focus::BinaryExpression(T).new(
       BinaryExpressionType::MINUS,
       as_expression,
-      expr.as_expression,
-      sql_type
+      expr.as_expression
     )
   end
 
@@ -160,11 +151,10 @@ module Focus::Dsl::Operators(T)
   end
 
   def times(expr : ColumnDeclaring(T)) : Focus::BinaryExpression(T)
-    Focus::BinaryExpression.new(
+    Focus::BinaryExpression(T).new(
       BinaryExpressionType::TIMES,
       as_expression,
-      expr.as_expression,
-      sql_type
+      expr.as_expression
     )
   end
 
@@ -181,11 +171,10 @@ module Focus::Dsl::Operators(T)
   end
 
   def div(expr : ColumnDeclaring(T)) : Focus::BinaryExpression(T)
-    Focus::BinaryExpression.new(
+    Focus::BinaryExpression(T).new(
       BinaryExpressionType::DIV,
       as_expression,
-      expr.as_expression,
-      sql_type
+      expr.as_expression
     )
   end
 
@@ -202,11 +191,10 @@ module Focus::Dsl::Operators(T)
   end
 
   def rem(expr : ColumnDeclaring(T)) : Focus::BinaryExpression(T)
-    Focus::BinaryExpression.new(
+    Focus::BinaryExpression(T).new(
       BinaryExpressionType::REM,
       as_expression,
-      expr.as_expression,
-      sql_type
+      expr.as_expression
     )
   end
 
@@ -222,12 +210,11 @@ module Focus::Dsl::Operators(T)
     rem(wrap_argument(value))
   end
 
-  def like(expr : ColumnDeclaring(T)) : Focus::BinaryExpression(B)
-    Focus::BinaryExpression.new(
+  def like(expr : ColumnDeclaring(T)) : Focus::BinaryExpression(Bool)
+    Focus::BinaryExpression(Bool).new(
       BinaryExpressionType::LIKE,
       as_expression,
-      expr.as_expression,
-      Bool
+      expr.as_expression
     )
   end
 
@@ -236,11 +223,10 @@ module Focus::Dsl::Operators(T)
   end
 
   def not_like(expr : ColumnDeclaring(T)) : Focus::BinaryExpression(Bool)
-    Focus::BinaryExpression.new(
+    Focus::BinaryExpression(Bool).new(
       BinaryExpressionType::NOT_LIKE,
       as_expression,
-      expr.as_expression,
-      Bool
+      expr.as_expression
     )
   end
 
@@ -249,11 +235,10 @@ module Focus::Dsl::Operators(T)
   end
 
   def and(expr : ColumnDeclaring(T)) : Focus::BinaryExpression(Bool)
-    Focus::BinaryExpression.new(
+    Focus::BinaryExpression(Bool).new(
       BinaryExpressionType::AND,
       as_expression,
-      expr.as_expression,
-      Bool
+      expr.as_expression
     )
   end
 
@@ -270,11 +255,10 @@ module Focus::Dsl::Operators(T)
   end
 
   def or(expr : ColumnDeclaring(T)) : Focus::BinaryExpression(Bool)
-    Focus::BinaryExpression.new(
+    Focus::BinaryExpression(Bool).new(
       BinaryExpressionType::OR,
       as_expression,
-      expr.as_expression,
-      Bool
+      expr.as_expression
     )
   end
 
@@ -291,11 +275,10 @@ module Focus::Dsl::Operators(T)
   end
 
   def xor(expr : ColumnDeclaring(T)) : Focus::BinaryExpression(Bool)
-    Focus::BinaryExpression.new(
+    Focus::BinaryExpression(Bool).new(
       BinaryExpressionType::XOR,
       as_expression,
-      expr.as_expression,
-      Bool
+      expr.as_expression
     )
   end
 
@@ -312,11 +295,10 @@ module Focus::Dsl::Operators(T)
   end
 
   def less_than(expr : ColumnDeclaring(T)) : Focus::BinaryExpression(Bool)
-    Focus::BinaryExpression.new(
+    Focus::BinaryExpression(Bool).new(
       BinaryExpressionType::LESS_THAN,
       as_expression,
-      expr.as_expression,
-      Bool
+      expr.as_expression
     )
   end
 
@@ -333,11 +315,10 @@ module Focus::Dsl::Operators(T)
   end
 
   def greater_than(expr : ColumnDeclaring(T)) : Focus::BinaryExpression(Bool)
-    Focus::BinaryExpression.new(
+    Focus::BinaryExpression(Bool).new(
       BinaryExpressionType::GREATER_THAN,
       as_expression,
-      expr.as_expression,
-      Bool
+      expr.as_expression
     )
   end
 
@@ -354,11 +335,10 @@ module Focus::Dsl::Operators(T)
   end
 
   def less_than_or_equal(expr : ColumnDeclaring(T)) : Focus::BinaryExpression(Bool)
-    Focus::BinaryExpression.new(
+    Focus::BinaryExpression(Bool).new(
       BinaryExpressionType::LESS_THAN_OR_EQUAL,
       as_expression,
-      expr.as_expression,
-      Bool
+      expr.as_expression
     )
   end
 
@@ -375,11 +355,10 @@ module Focus::Dsl::Operators(T)
   end
 
   def greater_than_or_equal(expr : ColumnDeclaring(T)) : Focus::BinaryExpression(Bool)
-    Focus::BinaryExpression.new(
+    Focus::BinaryExpression(Bool).new(
       BinaryExpressionType::GREATER_THAN_OR_EQUAL,
       as_expression,
-      expr.as_expression,
-      Bool
+      expr.as_expression
     )
   end
 

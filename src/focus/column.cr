@@ -17,19 +17,19 @@ class Focus::Column(T)
   include Focus::BaseColumn
   include Focus::ColumnDeclaring(T)
 
-  def initialize(@table : Focus::Table, @name : String, @sql_type : T.class)
+  def initialize(@table : Focus::Table, @name : String)
   end
 
   def as_expression : Focus::ColumnExpression(T)
-    Focus::ColumnExpression.new(table.as_expression, name, sql_type)
+    Focus::ColumnExpression(T).new(table.as_expression, name)
   end
 
   def wrap_argument(argument : T?) : Focus::ArgumentExpression(T)
-    Focus::ArgumentExpression(T).new(argument, sql_type)
+    Focus::ArgumentExpression(T).new(argument)
   end
 
   def aliased(label : String? = nil) : Focus::ColumnDeclaringExpression(T)
-    Focus::ColumnDeclaringExpression.new(as_expression, label)
+    Focus::ColumnDeclaringExpression(T).new(as_expression, label)
   end
 
   def as_declaring_expression : Focus::ColumnDeclaringExpression(T)

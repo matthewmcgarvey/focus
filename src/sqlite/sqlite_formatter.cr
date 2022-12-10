@@ -6,7 +6,7 @@ class Focus::SQLiteFormatter < Focus::SqlFormatter
 
   protected def write_pagination(expr : QueryExpression)
     write "limit ?, ? "
-    parameters << ArgumentExpression.new(expr.offset || 0, Int32)
-    parameters << ArgumentExpression.new(expr.limit || Int32::MAX, Int32)
+    parameters << ArgumentExpression(Int32).new(expr.offset || 0)
+    parameters << ArgumentExpression(Int32).new(expr.limit || Int32::MAX)
   end
 end

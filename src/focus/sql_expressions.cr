@@ -6,12 +6,12 @@ module Focus::ScalarExpression(T)
   include Focus::BaseScalarExpression
   include Focus::ColumnDeclaring(T)
 
-  def as_expression : Focus::ScalarExpression(T)
+  def as_expression : self
     self
   end
 
   def wrap_argument(argument : T?) : Focus::ArgumentExpression(T)
-    ArgumentExpression.new(argument, sql_type)
+    ArgumentExpression(T).new(argument)
   end
 
   def aliased(label : String? = nil) : Focus::ColumnDeclaringExpression(T)
@@ -107,7 +107,7 @@ class Focus::AggregateExpression(T)
   getter argument : Focus::BaseScalarExpression?
   getter is_distinct : Bool
 
-  def initialize(@type, @argument, @is_distinct, @sql_type)
+  def initialize(@type, @argument, @is_distinct)
   end
 
   def method : String
@@ -154,7 +154,7 @@ class Focus::ArgumentExpression(T)
 
   getter value : T?
 
-  def initialize(@value, @sql_type)
+  def initialize(@value)
   end
 end
 
@@ -167,7 +167,6 @@ class Focus::BetweenExpression(T)
   getter not_between : Bool
 
   def initialize(@expression, @lower, @upper, @not_between = false)
-    @sql_type = Bool
   end
 
   def wrap_in_parens? : Bool
@@ -182,7 +181,7 @@ class Focus::BinaryExpression(T)
   getter left : Focus::BaseScalarExpression
   getter right : Focus::BaseScalarExpression
 
-  def initialize(@type, @left, @right, @sql_type)
+  def initialize(@type, @left, @right)
   end
 
   def operator : String
@@ -263,10 +262,10 @@ class Focus::ColumnExpression(T)
   include Focus::ScalarExpression(T)
   include Focus::BaseColumnExpression
 
-  def initialize(@table, @name, @sql_type)
+  def initialize(@table, @name)
   end
 
-  def initialize(@name, @sql_type)
+  def initialize(@name)
     @table = nil
   end
 end
@@ -287,7 +286,7 @@ class Focus::ColumnDeclaringExpression(T)
 
   getter expression : ScalarExpression(T)
 
-  def initialize(@expression, @declared_name, @sql_type = expression.sql_type)
+  def initialize(@expression, @declared_name)
   end
 end
 
@@ -324,7 +323,6 @@ class Focus::ExistsExpression
   getter not_exists : Bool
 
   def initialize(@query, @not_exists = false)
-    @sql_type = Bool
   end
 end
 
@@ -337,7 +335,6 @@ class Focus::InListExpression(T)
   getter not_in_list : Bool
 
   def initialize(@left, @query = nil, @values = nil, @not_in_list = false)
-    @sql_type = Bool
   end
 end
 
@@ -425,7 +422,7 @@ class Focus::UnaryExpression(T)
   getter type : Focus::UnaryExpressionType
   getter operand : Focus::BaseScalarExpression
 
-  def initialize(@type, @operand, @sql_type)
+  def initialize(@type, @operand)
   end
 
   def operator : String

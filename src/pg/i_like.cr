@@ -5,7 +5,6 @@ class Focus::ILikeExpression
   getter right : BaseScalarExpression
 
   def initialize(@left, @right)
-    @sql_type = Bool
   end
 end
 
