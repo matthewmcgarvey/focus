@@ -18,7 +18,7 @@ class SQLiteDatabaseTest < SQLiteTestBase
 
     assert_equal 1, count
 
-    database.delete(Departments, where: Departments.name.eq("r&d"))
+    database.delete(Departments, where: Departments.name.eq("r&d").and(Departments.id.in_list([1, 2, 3, 4])))
 
     count = database.from(Departments)
       .select(Focus.count(Departments.id))
