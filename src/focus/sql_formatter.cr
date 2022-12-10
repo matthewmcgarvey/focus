@@ -69,7 +69,7 @@ abstract class Focus::SqlFormatter < Focus::SqlVisitor
     end
   end
 
-  def visit(expression : Focus::BinaryExpression(_))
+  def visit(expression : Focus::BinaryExpression)
     if expression.left.wrap_in_parens?
       wrap_in_parens do
         expression.left.accept(self)

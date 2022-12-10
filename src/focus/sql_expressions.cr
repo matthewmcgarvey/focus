@@ -174,12 +174,12 @@ class Focus::BetweenExpression(T)
   end
 end
 
-class Focus::BinaryExpression(T)
+class Focus::BinaryExpression(T, V)
   include Focus::ScalarExpression(T)
 
   getter type : Focus::BinaryExpressionType
-  getter left : Focus::BaseScalarExpression
-  getter right : Focus::BaseScalarExpression
+  getter left : Focus::ScalarExpression(V)
+  getter right : Focus::ScalarExpression(V)
 
   def initialize(@type, @left, @right)
   end
@@ -331,7 +331,7 @@ class Focus::InListExpression(T)
 
   getter left : ScalarExpression(T)
   getter query : QueryExpression?
-  getter values : Array(ScalarExpression(T))?
+  getter values : Array(ArgumentExpression(T))?
   getter not_in_list : Bool
 
   def initialize(@left, @query = nil, @values = nil, @not_in_list = false)
