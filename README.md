@@ -141,6 +141,23 @@ end
 
 TODO: Write development instructions here
 
+## TODO
+
+- Make `Focus::CachedRow` (or some other thing) implement `DB::ResultsSet`
+  - this library should integrate cleanly with `DB::Serializable`
+- Write good tests
+- Custom data types (i.e. postgis)
+- Custom queries (i.e. jsonb queries)
+- Add overloads to query methods that can be given a block
+  - The blocks will be passed the table being used
+  - They must return the expected criteria
+  - This is so that you can have helpers that don't care about the specifics of the table but can still do common things between them
+  - The most obvious example I can think of is for having an agnostic pagination helper
+  - Seriously consider whether that's actually beneficial or it can be implemented cleanly the way it is right now
+
+Take like a month and a half and you pretty much forget everything!
+There was something about the table definitions I wanted to change but I don't remember what.
+
 ## Contributing
 
 1. Fork it (<https://github.com/matthewmcgarvey/focus/fork>)
