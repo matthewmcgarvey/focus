@@ -18,7 +18,7 @@ class Focus::Query
   def rows : Array(Focus::CachedRow)
     @rows ||= begin
       rows = [] of Focus::CachedRow
-      result_set = database.execute_query(expression)
+      result_set = inner_result_set
       begin
         result_set.each do
           rows << Focus::CachedRow.build(result_set)
@@ -30,15 +30,27 @@ class Focus::Query
     end
   end
 
+  def result_set : DB::ResultSet
+    CachedResultSet.new(rows, inner_result_set)
+  end
+
+  @inner_result_set : DB::ResultSet?
+
+  # only meant for use between #rows and #result_set
+  # it can only be used once
+  private def inner_result_set : DB::ResultSet
+    @inner_result_set ||= database.execute_query(expression)
+  end
+
   def bind_to(entity : T.class) : Array(T) forall T
-    rows.map(&.bind_to(entity))
+    entity.from_rs(result_set)
   end
 
   def bind_to_one?(entity : T.class, at index : Int32) : T? forall T
     drop(index)
       .take(1)
+      .bind_to(entity)
       .first?
-      .try(&.bind_to(entity))
   end
 
   def bind_to_one(entity : T.class, at index : Int32) : T forall T
@@ -54,7 +66,8 @@ class Focus::Query
   end
 
   def bind_to_last?(entity : T.class) : T? forall T
-    rows.last.try(&.bind_to(entity))
+    result_set = CachedResultSet.new(rows.last(1), inner_result_set)
+    entity.from_rs(result_set).pop?
   end
 
   def bind_to_last(entity : T.class) : T forall T

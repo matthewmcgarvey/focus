@@ -22,17 +22,12 @@ end
 Users = UsersTable.new
 
 struct User
-  getter id : Int32
-  getter name : String
-  getter age : Int32
-  getter year_born : Int16
+  include DB::Serializable
 
-  def initialize(row : Focus::CachedRow)
-    @id = row.get(Users.id)
-    @name = row.get(Users.name)
-    @age = row.get(Users.age)
-    @year_born = row.get(Users.year_born)
-  end
+  property id : Int64
+  property name : String
+  property age : Int32
+  property year_born : Int16
 end
 
 database.insert(Users) do

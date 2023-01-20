@@ -23,35 +23,22 @@ end
 
 Todos = TodosTable.new
 
-struct Todo
-  getter id : Int32
-  getter name : String
-  getter user : User
+class TodoWithUser
+  include DB::Serializable
 
-  def initialize(row : Focus::CachedRow)
-    @id = row.get(Todos.id)
-    @name = row.get(Todos.name)
-    @user = User.new(
-      id: row.get(Users.id.aliased("users_id")),
-      name: row.get(Users.name.aliased("users_name")),
-      role: row.get(Users.role.aliased("users_role"))
-    )
-  end
+  property id : Int64
+  property name : String
+  property user_id : Int64
+  property user_name : String
+  property user_role : String
 end
 
-struct User
-  getter id : Int32
-  getter name : String
-  getter role : String
+class User
+  include DB::Serializable
 
-  def initialize(row : Focus::CachedRow)
-    @id = row.get(Users.id)
-    @name = row.get(Users.name)
-    @role = row.get(Users.role)
-  end
-
-  def initialize(@id, @name, @role)
-  end
+  property id : Int64
+  property name : String
+  property role : String
 end
 
 database.with_connection do |conn|
@@ -91,7 +78,7 @@ end
 
 pp database.from(Todos)
   .left_join(Users, on: Todos.user_id.eq(Users.id))
-  .select(Todos.id, Todos.name, Users.id.aliased("users_id"), Users.name.aliased("users_name"), Users.role.aliased("users_role"))
-  .bind_to(Todo)
+  .select(Todos.id, Todos.name, Todos.user_id, Users.name.aliased("user_name"), Users.role.aliased("user_role"))
+  .bind_to(TodoWithUser)
 
 database.close
