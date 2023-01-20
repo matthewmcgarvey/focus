@@ -71,11 +71,11 @@ class Focus::PGFormatter < Focus::SqlFormatter
   protected def write_pagination(expr : QueryExpression)
     if limit = expr.limit
       write "limit "
-      ArgumentExpression.new(limit, Int32).accept(self)
+      ArgumentExpression(Int32).new(limit).accept(self)
     end
     if offset = expr.offset
       write "offset "
-      ArgumentExpression.new(offset, Int32).accept(self)
+      ArgumentExpression(Int32).new(offset).accept(self)
     end
   end
 end
