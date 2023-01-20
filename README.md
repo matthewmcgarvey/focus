@@ -79,7 +79,7 @@ They are used to build queries.
 class UsersTable < Focus::Table
   @table_name = "users"
 
-  column id : Int32
+  column id : Int64
   column name : String
   column role : String
 end
@@ -101,17 +101,15 @@ database.from(Users)
 
 ### Bind rows to Crystal objects
 
+Focus cleanly integrates with `DB::Serializable`.
+
 ```crystal
 struct User
-  getter id : Int32
-  getter name : String
-  getter role : String
+  DB::Serializable
 
-  def initialize(row : Focus::CachedRow)
-    @id = row.get(Users.id)
-    @name = row.get(Users.name)
-    @role = row.get(Users.role)
-  end
+  property id : Int64
+  property name : String
+  property role : String
 end
 
 users = database.from(Users)
@@ -143,8 +141,6 @@ TODO: Write development instructions here
 
 ## TODO
 
-- Make `Focus::CachedRow` (or some other thing) implement `DB::ResultsSet`
-  - this library should integrate cleanly with `DB::Serializable`
 - Write good tests
 - Custom data types (i.e. postgis)
 - Custom queries (i.e. jsonb queries)
