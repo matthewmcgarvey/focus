@@ -288,6 +288,10 @@ class Focus::ColumnDeclaringExpression(T)
 
   def initialize(@expression, @declared_name)
   end
+
+  def as_declaring_expression : Focus::ColumnDeclaringExpression(T)
+    self
+  end
 end
 
 module Focus::BaseColumnAssignmentExpression
