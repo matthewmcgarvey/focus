@@ -1,6 +1,6 @@
 class Focus::MySqlDatabase < Focus::Database
   def self.connect(url : String) : MySqlDatabase
-    new(raw_db: DB::Database.new(MySql::Driver.new, URI.parse(url)))
+    new(raw_db: DB.open(url))
   end
 
   def self.connect(db : DB::Database) : MySqlDatabase

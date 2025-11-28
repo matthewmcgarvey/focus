@@ -1,6 +1,6 @@
 class Focus::SQLiteDatabase < Focus::Database
   def self.connect(url : String) : SQLiteDatabase
-    new(raw_db: DB::Database.new(SQLite3::Driver.new, URI.parse(url)))
+    new(raw_db: DB.open(url))
   end
 
   def self.connect(db : DB::Database) : SQLiteDatabase

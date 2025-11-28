@@ -1,6 +1,6 @@
 class Focus::PGDatabase < Focus::Database
   def self.connect(url : String) : PGDatabase
-    new(raw_db: DB::Database.new(PG::Driver.new, URI.parse(url)))
+    new(raw_db: DB.open(url))
   end
 
   def self.connect(db : DB::Database) : PGDatabase

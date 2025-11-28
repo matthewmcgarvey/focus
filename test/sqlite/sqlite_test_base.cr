@@ -5,7 +5,7 @@ abstract class SQLiteTestBase < TestBase
   @database : Focus::SQLiteDatabase?
 
   def database : Focus::SQLiteDatabase
-    @database ||= Focus::SQLiteDatabase.connect("sqlite3://%3Amemory%3A")
+    @database ||= Focus::SQLiteDatabase.connect("sqlite3://")
   end
 
   def setup
