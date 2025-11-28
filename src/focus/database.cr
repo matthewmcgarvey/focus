@@ -24,14 +24,14 @@ abstract class Focus::Database
     Focus::QuerySource.new(self, table, table.as_expression)
   end
 
-  def insert(table : Focus::Table) : Int64
+  def insert(table : Focus::Table, &) : Int64
     builder = Focus::AssignmentsBuilder.new
     with builder yield
     expression = InsertExpression.new(table.as_expression, builder.assignments)
     execute_update(expression)
   end
 
-  def insert_returning_generated_key(table : Focus::Table, column : Focus::Column(T)) : T forall T
+  def insert_returning_generated_key(table : Focus::Table, column : Focus::Column(T), &) : T forall T
     builder = Focus::AssignmentsBuilder.new
     with builder yield
     expression = InsertExpression.new(table.as_expression, builder.assignments)
@@ -52,7 +52,7 @@ abstract class Focus::Database
     end
   end
 
-  def update(table : Focus::Table) : Int64
+  def update(table : Focus::Table, &) : Int64
     builder = Focus::UpdateStatementBuilder.new
     with builder yield
     expression = Focus::UpdateExpression.new(
@@ -91,13 +91,13 @@ abstract class Focus::Database
     end
   end
 
-  def with_connection(&block : DB::Connection -> T) : T forall T
+  def with_connection(& : DB::Connection -> T) : T forall T
     transaction_manager.with_connection do |conn|
       yield conn
     end
   end
 
-  def with_transaction(&block : DB::Transaction -> T) : T? forall T
+  def with_transaction(& : DB::Transaction -> T) : T? forall T
     transaction_manager.with_transaction do |txn|
       yield txn
     end

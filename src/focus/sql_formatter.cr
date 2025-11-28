@@ -307,7 +307,7 @@ abstract class Focus::SqlFormatter < Focus::SqlVisitor
     str
   end
 
-  protected def wrap_in_parens
+  protected def wrap_in_parens(&)
     write "("
     yield
     remove_last_blank

@@ -12,7 +12,7 @@ class Focus::InsertOrUpdateExpression
     @assignments,
     @conflict_columns = [] of BaseColumnExpression,
     @update_assignments = [] of BaseColumnAssignmentExpression,
-    @returning_columns = [] of BaseColumnExpression
+    @returning_columns = [] of BaseColumnExpression,
   )
   end
 end

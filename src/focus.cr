@@ -9,6 +9,4 @@ module Focus
   extend Focus::Dsl::Aggregation
   extend Focus::Dsl::TopLevelOperators
   VERSION = "0.1.0"
-
-  # TODO: Put your code here
 end

@@ -7,7 +7,7 @@ class Focus::Query
   def initialize(@database : Focus::Database, @expression : Focus::SelectExpression)
   end
 
-  def each(&block : Focus::CachedRow -> Nil)
+  def each(& : Focus::CachedRow -> Nil)
     rows.each do |row|
       yield row
     end
@@ -84,7 +84,7 @@ class Focus::Query
     Focus::Query.new(database, new_expression)
   end
 
-  def where_with_conditions(&block : Array(ColumnDeclaring(Bool)) -> Nil) : Focus::Query
+  def where_with_conditions(& : Array(ColumnDeclaring(Bool)) -> Nil) : Focus::Query
     conditions = [] of ColumnDeclaring(Bool)
     yield conditions
     return self if conditions.empty?
@@ -93,7 +93,7 @@ class Focus::Query
     where condition.as(Focus::ScalarExpression(Bool))
   end
 
-  def where_with_or_conditions(&block : Array(ColumnDeclaring(Bool)) -> Nil) : Focus::Query
+  def where_with_or_conditions(& : Array(ColumnDeclaring(Bool)) -> Nil) : Focus::Query
     conditions = [] of ColumnDeclaring(Bool)
     yield conditions
     return self if conditions.empty?

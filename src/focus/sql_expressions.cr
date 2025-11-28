@@ -71,7 +71,7 @@ class Focus::SelectExpression
     @order_by = [] of OrderByExpression,
     @is_distinct = false,
     @limit = nil,
-    @offset = nil
+    @offset = nil,
   )
   end
 
@@ -84,7 +84,7 @@ class Focus::SelectExpression
     order_by = self.order_by,
     is_distinct = self.is_distinct,
     limit = self.limit,
-    offset = self.offset
+    offset = self.offset,
   )
     SelectExpression.new(
       from,
