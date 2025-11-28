@@ -1,11 +1,11 @@
-require "../test_base"
+require "../executing_test_base"
 require "../../src/sqlite"
 
-abstract class SQLiteTestBase < TestBase
-  @database : Focus::SQLiteDatabase?
+abstract class SQLiteTestBase < ExecutingTestBase
+  @database : DB::Database?
 
-  def database : Focus::SQLiteDatabase
-    @database ||= Focus::SQLiteDatabase.connect("sqlite3://")
+  def database : DB::Database
+    @database ||= DB.open("sqlite3://foo.db")
   end
 
   def setup

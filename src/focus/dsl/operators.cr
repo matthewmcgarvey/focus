@@ -56,7 +56,7 @@ module Focus::Dsl::Operators(T)
     InListExpression(T).new(left: as_expression, values: values)
   end
 
-  def in_list(query : Query) : InListExpression(T)
+  def in_list(query : Focus::SelectQuery) : InListExpression(T)
     InListExpression(T).new(left: as_expression, query: query.expression)
   end
 
@@ -70,7 +70,7 @@ module Focus::Dsl::Operators(T)
     InListExpression(T).new(left: as_expression, values: values, not_in_list: true)
   end
 
-  def not_in_list(query : Query) : InListExpression(T)
+  def not_in_list(query : Focus::SelectQuery) : InListExpression(T)
     InListExpression(T).new(left: as_expression, query: query.expression, not_in_list: true)
   end
 
@@ -375,11 +375,11 @@ module Focus::Dsl::Operators(T)
 end
 
 module Focus::Dsl::TopLevelOperators
-  def exists(query : Query) : ExistsExpression
+  def exists(query : Focus::SelectQuery) : ExistsExpression
     ExistsExpression.new(query.expression)
   end
 
-  def not_exists(query : Query) : ExistsExpression
+  def not_exists(query : Focus::SelectQuery) : ExistsExpression
     ExistsExpression.new(query.expression, not_exists: true)
   end
 end

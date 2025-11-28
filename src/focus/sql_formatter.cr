@@ -1,6 +1,6 @@
 require "./sql_visitor"
 
-abstract class Focus::SqlFormatter < Focus::SqlVisitor
+class Focus::SqlFormatter < Focus::SqlVisitor
   WHITESPACE_BYTE = 32_u8
 
   private getter sql_string_builder = String::Builder.new
@@ -9,48 +9,45 @@ abstract class Focus::SqlFormatter < Focus::SqlVisitor
   def visit(expression : Focus::SelectExpression)
     write "select "
     write "distinct " if expression.is_distinct
-    if expression.columns.empty?
+    columns = expression.columns
+    if columns.nil? || columns.empty?
       write "* "
     else
-      visit_list(expression.columns)
+      visit_list(columns)
     end
-    write "from "
-    visit_query_source(expression.from)
+    if from = expression.from
+      write "from "
+      visit_query_source(from)
+    end
     if where = expression.where
       write "where "
       where.accept(self)
     end
-    if !expression.group_by.empty?
+    group_by = expression.group_by
+    if group_by && !group_by.empty?
       write "group by "
-      visit_list expression.group_by
+      visit_list group_by
     end
     if having = expression.having
       write "having "
       having.accept(self)
     end
-    if !expression.order_by.empty?
+    order_by = expression.order_by
+    if order_by && !order_by.empty?
       write "order by "
-      visit_list expression.order_by
+      visit_list order_by
     end
-
-    if expression.limit || expression.offset
-      write_pagination(expression)
+    if limit = expression.limit
+      write "limit #{limit} "
+    end
+    if offset = expression.offset
+      write "offset #{offset} "
     end
   end
 
   def visit(expression : Focus::BaseColumnExpression)
-    if table = expression.table
-      if table_alias = table.table_alias.presence
-        write "#{quoted(table_alias)}."
-      else
-        if catalog = table.catalog.presence
-          write "#{quoted(catalog)}."
-        end
-        if schema = table.schema.presence
-          write "#{quoted(schema)}."
-        end
-        write "#{quoted(table.name)}."
-      end
+    if table_name = expression.table_name
+      write "#{quoted(table_name)}."
     end
     write "#{quoted(expression.name)} "
   end
@@ -66,6 +63,13 @@ abstract class Focus::SqlFormatter < Focus::SqlVisitor
 
     if table_alias = expression.table_alias.presence
       write "#{quoted(table_alias)} "
+    end
+
+    joins = expression.joins
+    if joins && !joins.empty?
+      joins.each do |join|
+        join.accept(self)
+      end
     end
   end
 
@@ -113,7 +117,10 @@ abstract class Focus::SqlFormatter < Focus::SqlVisitor
     end
   end
 
-  abstract def visit(expression : Focus::ArgumentExpression)
+  def visit(expression : Focus::ArgumentExpression)
+    write "? "
+    parameters << expression
+  end
 
   def visit(expression : Focus::BetweenExpression(_))
     expression.expression.accept(self)
@@ -156,20 +163,35 @@ abstract class Focus::SqlFormatter < Focus::SqlVisitor
 
   def visit(expression : Focus::InsertExpression)
     write "insert into "
-    expression.table.accept(self)
-    write_insert_column_names(expression.assignments.map(&.column.as(BaseColumnExpression)))
-    write "values "
-    write_insert_values(expression.assignments)
+    expression.table.as_expression.accept(self)
+    write_insert_column_names(expression.columns.map(&.as_expression))
+    if arguments = expression.arguments
+      write "values "
+      write_insert_values(arguments)
+    elsif query = expression.query
+      visit query
+    end
+    returning = expression.returning
+    if returning && !returning.empty?
+      write "returning "
+      visit_list(returning.map(&.as_expression))
+    end
   end
 
   def visit(expression : Focus::UpdateExpression)
     write "update "
-    expression.table.accept(self)
+    expression.table.as_expression.accept(self)
     write "set "
-    visit_column_assignments(expression.assignments)
+    if assignments = expression.assignments
+      visit_column_assignments(assignments)
+    end
     if where = expression.where
       write "where "
       where.accept(self)
+    end
+    if returning = expression.returning
+      write "returning "
+      visit_list(returning.map(&.as_expression))
     end
   end
 
@@ -194,9 +216,8 @@ abstract class Focus::SqlFormatter < Focus::SqlVisitor
   end
 
   def visit(expression : Focus::JoinExpression)
-    visit_query_source(expression.left)
     write "#{expression.join_type} "
-    visit_query_source(expression.right)
+    visit_query_source(expression.join_table.as_expression)
 
     if condition = expression.condition
       write "on "
@@ -206,18 +227,34 @@ abstract class Focus::SqlFormatter < Focus::SqlVisitor
 
   def visit(expression : Focus::OrderByExpression)
     expression.expression.accept(self)
-    if expression.order_type == OrderType::DESCENDING
-      write "desc "
-    end
+    write "#{expression.order} "
   end
 
   def visit(expression : Focus::DeleteExpression)
     write "delete from "
-    expression.table.accept(self)
+    expression.table.as_expression.accept(self)
 
     if where = expression.where
       write "where "
       where.accept(self)
+    end
+
+    returning = expression.returning
+    if returning && !returning.empty?
+      write "returning "
+      visit_list(returning.map(&.as_expression))
+    end
+
+    order_by = expression.order_by
+    if order_by && !order_by.empty?
+      write "order by "
+      visit_list order_by
+    end
+    if limit = expression.limit
+      write "limit #{limit} "
+    end
+    if offset = expression.offset
+      write "offset #{offset} "
     end
   end
 
@@ -260,7 +297,11 @@ abstract class Focus::SqlFormatter < Focus::SqlVisitor
       end
 
       write "#{quoted(assignment.column.name)} = "
-      assignment.expression.accept(self)
+      if expr = assignment.expression
+        expr.accept(self)
+      elsif query = assignment.query
+        wrap_in_parens { query.accept(self) }
+      end
     end
   end
 
@@ -272,8 +313,8 @@ abstract class Focus::SqlFormatter < Focus::SqlVisitor
       write "("
       expression.accept(self)
       remove_last_blank
-      write ")"
-      expression.table_alias.try { |it| write "#{quoted(it)} " }
+      write ") "
+      expression.table_alias.try { |table_alias| write "#{quoted(table_alias)} " }
     end
   end
 
@@ -286,14 +327,19 @@ abstract class Focus::SqlFormatter < Focus::SqlVisitor
     write ") "
   end
 
-  protected def write_insert_values(assignments : Array(BaseColumnAssignmentExpression))
-    write "("
-    visit_list(assignments.map(&.expression.as(BaseScalarExpression)))
-    remove_last_blank
-    write ") "
+  protected def write_insert_values(arguments : Array(Array(BaseScalarExpression)))
+    row_count = arguments.size
+    arguments.each_with_index do |row, idx|
+      write "("
+      visit_list(row)
+      remove_last_blank
+      write ")"
+      if idx + 1 < row_count
+        write ","
+      end
+      write " "
+    end
   end
-
-  protected abstract def write_pagination(expr : QueryExpression)
 
   protected def remove_last_blank
     sql_string_builder.chomp!(WHITESPACE_BYTE)

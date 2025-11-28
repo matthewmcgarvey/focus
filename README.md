@@ -51,24 +51,6 @@ By "fully use" I do mean that I want to provide accessible DSLs or extension poi
 
 ## Usage
 
-### Connect to a database
-
-The aim of focus is to provide fluent access to many different types of databases.
-Focus will provide any extra functionality for each supported database or ways of providing it yourself.
-
-```crystal
-require "focus"
-require "focus/sqlite"
-
-database = SQLiteDatabase.connect("sqlite3://./data.db")
-```
-
-Databases currently supported:
-
-- SQLite3
-- Postgresql
-- Mysql
-
 ### Define a table
 
 Tables are where we connect Crystal code to the database tables.
@@ -93,10 +75,9 @@ We then create an instance and assign it to `Users` for a nice API.
 ### Make a query
 
 ```crystal
-database.from(Users)
-  .select(Users.id)
+Users.select(Users.id)
   .where(Users.role.eq("admin"))
-  .map(&.get(Users.id))
+  .query_all(database, Int64)
 ```
 
 ### Bind rows to Crystal objects
@@ -105,39 +86,45 @@ Focus cleanly integrates with `DB::Serializable`.
 
 ```crystal
 struct User
-  DB::Serializable
+  include DB::Serializable
 
   property id : Int64
   property name : String
   property role : String
 end
 
-users = database.from(Users)
-  .select
-  .bind_to(User)
+users = Users.select.query_all(database, as: User)
 ```
 
 ### Insert data
 
 ```crystal
-database.insert(Users) do
-  set(Users.name, "bobby")
-  set(Users.role, "user")
-end
+Users.insert(Users.name, Users.role)
+  .values("bobby", "users")
+  .exec(database)
 ```
 
 ### Update data
 
 ```crystal
-database.update(Users) do
-  set(Users.role, "admin")
-  where(Users.name.eq("bobby"))
-end
+Users.update
+  .set(Users.role, "admin")
+  .where(Users.name.eq("bobby"))
+  .exec(database)
 ```
 
 ## Development
 
 TODO: Write development instructions here
+
+## Rewrite
+
+- Values table
+- Dialect hooks/changes
+- SELECT FOR UPDATE
+- Functions (like timestamp)
+- Rework table classes
+- Table class generator
 
 ## TODO
 

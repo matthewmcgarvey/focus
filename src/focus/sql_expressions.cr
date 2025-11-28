@@ -40,8 +40,9 @@ class Focus::TableExpression
   getter table_alias : String?
   getter catalog : String?
   getter schema : String?
+  getter joins : Array(Focus::JoinExpression)?
 
-  def initialize(@name, @table_alias = nil, @catalog = nil, @schema = nil)
+  def initialize(@name, @table_alias = nil, @catalog = nil, @schema = nil, @joins = nil)
   end
 
   def wrap_in_parens? : Bool
@@ -52,56 +53,16 @@ end
 class Focus::SelectExpression
   include Focus::QueryExpression
 
-  getter columns : Array(BaseColumnDeclaringExpression)
-  getter from : QuerySourceExpression
-  getter where : ScalarExpression(Bool)?
-  getter group_by : Array(BaseScalarExpression)
-  getter having : ScalarExpression(Bool)?
-  getter order_by : Array(OrderByExpression)
-  getter is_distinct : Bool
-  getter limit : Int32?
-  getter offset : Int32?
-  getter table_alias : String? = nil
-
-  def initialize(
-    @from,
-    @columns = [] of BaseColumnDeclaringExpression,
-    @where = nil,
-    @group_by = [] of BaseScalarExpression,
-    @having = nil,
-    @order_by = [] of OrderByExpression,
-    @is_distinct = false,
-    @limit = nil,
-    @offset = nil,
-    @table_alias = nil,
-  )
-  end
-
-  def copy(
-    columns = self.columns,
-    from = self.from,
-    where = self.where,
-    group_by = self.group_by,
-    having = self.having,
-    order_by = self.order_by,
-    is_distinct = self.is_distinct,
-    limit = self.limit,
-    offset = self.offset,
-    table_alias = self.table_alias,
-  )
-    SelectExpression.new(
-      from,
-      columns,
-      where,
-      group_by,
-      having,
-      order_by,
-      is_distinct,
-      limit,
-      offset,
-      table_alias,
-    )
-  end
+  property columns : Array(BaseColumnDeclaringExpression)?
+  property from : QuerySourceExpression?
+  property where : ScalarExpression(Bool)?
+  property group_by : Array(BaseScalarExpression)?
+  property having : ScalarExpression(Bool)?
+  property order_by : Array(OrderByExpression)?
+  property is_distinct : Bool = false
+  property limit : Int32?
+  property offset : Int32?
+  property table_alias : String?
 end
 
 class Focus::AggregateExpression(T)
@@ -159,6 +120,10 @@ class Focus::ArgumentExpression(T)
   getter value : T?
 
   def initialize(@value)
+  end
+
+  def wrap_in_parens? : Bool
+    false
   end
 end
 
@@ -254,7 +219,7 @@ end
 module Focus::BaseColumnExpression
   include Focus::SqlExpression
 
-  getter table : Focus::TableExpression?
+  getter table_name : String?
   getter name : String
 
   def wrap_in_parens? : Bool
@@ -266,11 +231,7 @@ class Focus::ColumnExpression(T)
   include Focus::ScalarExpression(T)
   include Focus::BaseColumnExpression
 
-  def initialize(@table, @name)
-  end
-
-  def initialize(@name)
-    @table = nil
+  def initialize(@name, @table_name)
   end
 end
 
@@ -302,25 +263,31 @@ module Focus::BaseColumnAssignmentExpression
   include Focus::SqlExpression
 
   abstract def column : Focus::BaseColumnExpression
-  abstract def expression : Focus::BaseScalarExpression
+  abstract def expression : Focus::BaseScalarExpression?
+  abstract def query : Focus::SelectExpression?
 end
 
 class Focus::ColumnAssignmentExpression(T)
   include Focus::BaseColumnAssignmentExpression
 
   getter column : Focus::ColumnExpression(T)
-  getter expression : Focus::ScalarExpression(T)
+  getter expression : Focus::ScalarExpression(T)?
+  getter query : Focus::SelectExpression?
 
-  def initialize(@column, @expression)
+  def initialize(@column, @expression = nil, @query = nil)
   end
 end
 
 class Focus::DeleteExpression
   include Focus::SqlExpression
-  getter table : TableExpression
-  getter where : ScalarExpression(Bool)?
+  getter table : Focus::Table
+  property where : ScalarExpression(Bool)?
+  property returning : Array(BaseColumn)?
+  property order_by : Array(OrderByExpression)?
+  property limit : Int32?
+  property offset : Int32?
 
-  def initialize(@table, @where)
+  def initialize(@table)
   end
 end
 
@@ -349,10 +316,13 @@ end
 class Focus::InsertExpression
   include Focus::SqlExpression
 
-  getter table : Focus::TableExpression
-  getter assignments : Array(BaseColumnAssignmentExpression)
+  getter table : Focus::Table
+  getter columns : Array(Focus::BaseColumn)
+  property arguments : Array(Array(BaseScalarExpression))?
+  property query : SelectExpression?
+  property returning : Array(Focus::BaseColumn)?
 
-  def initialize(@table, @assignments)
+  def initialize(@table : Focus::Table, @columns : Array(Focus::BaseColumn))
   end
 end
 
@@ -360,11 +330,10 @@ class Focus::JoinExpression
   include Focus::QuerySourceExpression
 
   getter type : JoinType
-  getter left : QuerySourceExpression
-  getter right : QuerySourceExpression
+  getter join_table : Table
   getter condition : ScalarExpression(Bool)?
 
-  def initialize(@type, @left, @right, @condition = nil)
+  def initialize(@type, @join_table, @condition = nil)
   end
 
   def join_type : String
@@ -466,10 +435,16 @@ end
 class Focus::UpdateExpression
   include Focus::SqlExpression
 
-  getter table : Focus::TableExpression
-  getter assignments : Array(Focus::BaseColumnAssignmentExpression)
-  getter where : Focus::ScalarExpression(Bool)?
+  getter table : Focus::Table
+  getter assignments : Array(BaseColumnAssignmentExpression)?
+  property where : ScalarExpression(Bool)?
+  property returning : Array(BaseColumn)?
 
-  def initialize(@table, @assignments, @where = nil)
+  def initialize(@table)
+  end
+
+  def add_assignment(assignment : BaseColumnAssignmentExpression)
+    arr = @assignments ||= Array(BaseColumnAssignmentExpression).new
+    arr << assignment
   end
 end

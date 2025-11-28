@@ -11,7 +11,7 @@ abstract class Focus::Table
 
     @[ColumnLabel]
     getter {{ name }} : Focus::Column({{ type }}) do
-      Focus::Column({{ type }}).new(table: self, name: {{ name_str }})
+      Focus::Column({{ type }}).new(table_name: self.label || self.table_name, name: {{ name_str }})
     end
   end
 
@@ -19,7 +19,7 @@ abstract class Focus::Table
   getter columns : Array(Focus::BaseColumn) = [] of Focus::BaseColumn
   protected property label : String?
 
-  def initialize
+  def initialize(@label = nil)
     {% begin %}
       {% for ivar in @type.instance_vars %}
         {% ann = ivar.annotation(::Focus::Table::ColumnLabel) %}
@@ -30,10 +30,8 @@ abstract class Focus::Table
     {% end %}
   end
 
-  def aliased(label : String? = nil) : self
-    new_instance = self.class.new
-    new_instance.label = label
-    new_instance
+  def aliased(label : String? = nil) : Focus::Table
+    self.class.new(label)
   end
 
   def as_expression : Focus::TableExpression
@@ -41,7 +39,57 @@ abstract class Focus::Table
   end
 
   def column(name : String, type : T.class) : Focus::Column(T) forall T
-    columns.select(Focus::Column(T)).find { |col| col.name == name } || raise "Column '#{name}' not found in table '#{table_name}'"
+    column?(name, type) || raise "Column '#{name}' not found in table '#{table_name}'"
+  end
+
+  def column?(name : String, type : T.class) : Focus::Column(T)? forall T
+    columns.select(Focus::Column(T)).find { |col| col.name == name }
+  end
+
+  def inner_join(join_table : Focus::Table, on : ColumnDeclaring(Bool)? = nil) : Focus::JoinTable
+    add_join(Focus::JoinExpression.new(Focus::JoinType::INNER_JOIN, join_table, on))
+  end
+
+  def left_join(join_table : Focus::Table, on : ColumnDeclaring(Bool)? = nil) : Focus::JoinTable
+    add_join(Focus::JoinExpression.new(Focus::JoinType::LEFT_JOIN, join_table, on))
+  end
+
+  def right_join(join_table : Focus::Table, on : ColumnDeclaring(Bool)? = nil) : Focus::JoinTable
+    add_join(Focus::JoinExpression.new(Focus::JoinType::RIGHT_JOIN, join_table, on))
+  end
+
+  def cross_join(join_table : Focus::Table, on : ColumnDeclaring(Bool)? = nil) : Focus::JoinTable
+    add_join(Focus::JoinExpression.new(Focus::JoinType::CROSS_JOIN, join_table, on))
+  end
+
+  def insert(*columns : Focus::BaseColumn) : Focus::InsertStatement
+    Focus.insert(self, *columns)
+  end
+
+  def update : Focus::UpdateStatement
+    Focus.update(self)
+  end
+
+  def delete : Focus::DeleteStatement
+    Focus.delete(self)
+  end
+
+  def select(*columns : Focus::BaseColumnDeclaring) : Focus::SelectQuery
+    Focus.select(*columns).from(self)
+  end
+
+  def select(columns : Enumerable(Focus::BaseColumnDeclaring)) : Focus::SelectQuery
+    Focus.select(columns).from(self)
+  end
+
+  def select : Focus::SelectQuery
+    Focus.select.from(self)
+  end
+
+  private def add_join(join : Focus::JoinExpression) : Focus::JoinTable
+    join_table = Focus::JoinTable.new(self)
+    join_table.joins << join
+    join_table
   end
 end
 
@@ -55,8 +103,44 @@ class Focus::SubselectTable < Focus::Table
     subquery.table_alias.not_nil!("Subselect table must have an alias")
   end
 
+  def column?(name : String, type : T.class) : Focus::Column(T)? forall T
+    columns = subquery.columns
+    return nil if columns.nil?
+
+    col_expression = columns.select(Focus::ColumnDeclaringExpression(T)).find { |col| col.declared_name == name }
+    return nil if col_expression.nil?
+
+    name = col_expression.declared_name.not_nil!("Column must have a name")
+    Focus::Column(T).new(name: name, table_name: subquery.table_alias)
+  end
+end
+
+class Focus::JoinTable < Focus::Table
+  getter table : Focus::Table
+  getter joins : Array(Focus::JoinExpression) = [] of Focus::JoinExpression
+
+  def initialize(@table : Focus::Table)
+  end
+
+  def table_name : String
+    table.table_name
+  end
+
   def column(name : String, type : T.class) : Focus::Column(T) forall T
-    col_expression = subquery.columns.select(Focus::ColumnDeclaringExpression(T)).find { |col| col.declared_name == name } || raise "Column '#{name}' not found in subselect table '#{table_name}'"
-    Focus::Column(T).new(self, col_expression.declared_name.not_nil!("Column must have a name"))
+    table.column?(name, type) || begin
+      joins.each do |join|
+        col = join.join_table.column?(name, type)
+        return col if col
+      end
+    end || raise "Column '#{name}' not found"
+  end
+
+  def add_join(join : Focus::JoinExpression) : Focus::JoinTable
+    joins << join
+    self
+  end
+
+  def as_expression : Focus::TableExpression
+    Focus::TableExpression.new(name: table.table_name, table_alias: table.label, joins: joins)
   end
 end
