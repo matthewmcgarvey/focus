@@ -17,6 +17,7 @@ abstract class Focus::Table
 
   getter table_name : String
   getter columns : Array(Focus::BaseColumn) = [] of Focus::BaseColumn
+  protected property label : String?
 
   def initialize
     {% begin %}
@@ -29,7 +30,13 @@ abstract class Focus::Table
     {% end %}
   end
 
+  def aliased(label : String? = nil) : self
+    new_instance = self.class.new
+    new_instance.label = label
+    new_instance
+  end
+
   def as_expression : Focus::TableExpression
-    Focus::TableExpression.new(name: table_name)
+    Focus::TableExpression.new(name: table_name, table_alias: label)
   end
 end
