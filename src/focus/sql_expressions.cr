@@ -61,6 +61,7 @@ class Focus::SelectExpression
   getter is_distinct : Bool
   getter limit : Int32?
   getter offset : Int32?
+  getter table_alias : String? = nil
 
   def initialize(
     @from,
@@ -72,6 +73,7 @@ class Focus::SelectExpression
     @is_distinct = false,
     @limit = nil,
     @offset = nil,
+    @table_alias = nil,
   )
   end
 
@@ -85,6 +87,7 @@ class Focus::SelectExpression
     is_distinct = self.is_distinct,
     limit = self.limit,
     offset = self.offset,
+    table_alias = self.table_alias,
   )
     SelectExpression.new(
       from,
@@ -95,7 +98,8 @@ class Focus::SelectExpression
       order_by,
       is_distinct,
       limit,
-      offset
+      offset,
+      table_alias,
     )
   end
 end

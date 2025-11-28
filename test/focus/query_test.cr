@@ -15,7 +15,6 @@ class FocusQueryTest < SQLiteTestBase
   end
 
   def test_table_alias
-    # Createa a simple query using a table alias
     aliased_table = Employees.aliased("e")
     sql = database.from(aliased_table)
       .select(aliased_table.name)
@@ -25,20 +24,17 @@ class FocusQueryTest < SQLiteTestBase
     assert_equal ["vince", "tom", "penny"], sql.map(&.get(aliased_table.name))
   end
 
-  # TODO
-  # def test_subselect_in_from_clause
-  #   subquery = database.from(Employees)
-  #     .select(Employees.department_id, Focus.count(Employees.id).aliased("employee_count"))
-  #     .group_by(Employees.department_id)
-  #     .having(Focus.count(Employees.id).greater_than(1))
-  #     .as_table("dept_counts")
+  def test_subselect_in_from_clause
+    subquery = database.from(Employees)
+      .select(Employees.department_id, Focus.count(Employees.id).aliased("employee_count"))
+      .group_by(Employees.department_id)
+      .having(Focus.count(Employees.id).greater_than(1))
+      .as_table("dept_counts")
 
-  #   results = database.from(subquery)
-  #     .select
-  #     .order_by(subquery.column("employee_count", Int32).asc)
+    results = database.from(subquery)
+      .select
+      .order_by(subquery.column("employee_count", Int32).asc)
 
-  #   puts results.to_sql
-
-  #   assert_equal [[1, 2], [2, 2]], results.map { |row| [row.get("department_id", Int32), row.get("employee_count", Int32)] }
-  # end
+    assert_equal [[1, 2], [2, 2]], results.map { |row| [row.get("department_id", Int32), row.get("employee_count", Int32)] }
+  end
 end

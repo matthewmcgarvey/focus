@@ -20,6 +20,10 @@ abstract class Focus::Database
     end
   end
 
+  def from(table : Focus::SubselectTable) : Focus::QuerySource
+    Focus::QuerySource.new(self, table, table.subquery)
+  end
+
   def from(table : Focus::Table) : Focus::QuerySource
     Focus::QuerySource.new(self, table, table.as_expression)
   end

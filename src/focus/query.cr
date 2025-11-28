@@ -140,6 +140,11 @@ class Focus::Query
     limit(limit: nil, offset: offset)
   end
 
+  def as_table(label : String) : Focus::Table
+    new_expression = expression.copy(table_alias: label)
+    Focus::SubselectTable.new(new_expression)
+  end
+
   def drop(n : Int32) : Query
     if n.zero?
       self
