@@ -152,9 +152,18 @@ TODO: Write development instructions here
   - This is so that you can have helpers that don't care about the specifics of the table but can still do common things between them
   - The most obvious example I can think of is for having an agnostic pagination helper
   - Seriously consider whether that's actually beneficial or it can be implemented cleanly the way it is right now
-
-Take like a month and a half and you pretty much forget everything!
-There was something about the table definitions I wanted to change but I don't remember what.
+- Rework table definitions to not require macros (or at least as many)
+  - I want to look into generating these files so if they are a bit tedious to write, it might be ok
+- Separate the query builder from the database so that the sql generation can be tested (or used) without requiring a database connection
+- Subselects in the FROM clause (probably elsewhere too, but start there)
+  - need to be able to get columns from this subselect appropriately (and when it's aliased!)
+- Look at golang's jet library for more inspiration [https://github.com/go-jet/jet]
+- Update multiple rows with sql like `"UPDATE users SET custom_value = new_vals.custom_value FROM (VALUES (1, 'abc'), (2, 'def')) new_vals (id, custom_value) WHERE users.id = new_vals.id`
+  - jet docs [https://github.com/go-jet/jet/wiki/VALUES] (looks like there are differences between databases)
+- RETURNING support
+  - add for INSERT and UPDATE
+  - remove `insert_returning_generated_key`
+- Change how insert works so you can pass multiple rows
 
 ## Contributing
 
