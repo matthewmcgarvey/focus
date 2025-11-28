@@ -31,7 +31,8 @@ class Focus::Query
   end
 
   def result_set : DB::ResultSet
-    CachedResultSet.new(rows, inner_result_set)
+    # CachedResultSet.new(rows, inner_result_set)
+    inner_result_set
   end
 
   @inner_result_set : DB::ResultSet?

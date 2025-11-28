@@ -1,7 +1,9 @@
+# TODO: Use this class but fix problems with it first.
+# - sqlite time and boolean types require conversion, as well as Int32/Int64
 class Focus::CachedResultSet < DB::ResultSet
   private property current_row_count = -1
   private property current_column_count = -1
-  private getter cached_rows
+  private getter cached_rows : Array(CachedRow)
   private getter inner : DB::ResultSet
 
   def initialize(@cached_rows : Array(CachedRow), @inner)

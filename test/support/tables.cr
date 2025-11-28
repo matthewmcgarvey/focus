@@ -18,6 +18,7 @@ class EmployeesTable < Focus::Table
   column hire_date : Time
   column salary : Int32
   column department_id : Int32
+  column is_remote : Bool
 end
 
 Employees = EmployeesTable.new

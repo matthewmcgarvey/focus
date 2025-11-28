@@ -1,6 +1,19 @@
 require "./sqlite_test_base"
 
 class SQLiteDatabaseTest < SQLiteTestBase
+  class Employee
+    include DB::Serializable
+
+    property id : Int32
+    property name : String
+    property job : String
+    property manager_id : Int32?
+    property hire_date : Time
+    property salary : Int32
+    property department_id : Int32
+    property is_remote : Bool
+  end
+
   def test_it_works
     id = database.insert_returning_generated_key(Departments, Departments.id) do
       set(Departments.name, "r&d")
@@ -27,6 +40,10 @@ class SQLiteDatabaseTest < SQLiteTestBase
       .get(0, Int32)
 
     assert_equal 0, count
+
+    first_employee = database.from(Employees).select.order_by(Employees.id.asc).bind_to_first(Employee)
+
+    assert_equal "vince", first_employee.name
   end
 
   def test_limit
