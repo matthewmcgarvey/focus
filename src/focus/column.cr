@@ -1,42 +1,26 @@
 require "./column_declaring"
 
-module Focus::BaseColumn
-  include Focus::BaseColumnDeclaring
-
+abstract class Focus::Column < Focus::Expression
   getter table_name : String?
   getter name : String
-
-  abstract def as_expression : Focus::BaseColumnExpression
-
-  def label : String
-    name
-  end
-end
-
-class Focus::Column(T)
-  include Focus::BaseColumn
-  include Focus::ColumnDeclaring(T)
 
   def initialize(@name : String, @table_name : String? = nil)
   end
 
-  def as_expression : Focus::ColumnExpression(T)
-    Focus::ColumnExpression(T).new(name, table_name)
+  def asc : Focus::OrderByExpression
+    Focus::OrderByExpression.new(self, Focus::OrderByExpression::OrderType::ASCENDING)
   end
 
-  def wrap_argument(argument : T?) : Focus::ArgumentExpression(T)
-    Focus::ArgumentExpression(T).new(argument)
+  def desc : Focus::OrderByExpression
+    Focus::OrderByExpression.new(self, Focus::OrderByExpression::OrderType::DESCENDING)
   end
 
-  def aliased(label : String? = nil) : Focus::ColumnDeclaringExpression(T)
-    Focus::ColumnDeclaringExpression(T).new(as_expression, label)
-  end
-
-  def as_declaring_expression : Focus::ColumnDeclaringExpression(T)
-    aliased(label)
-  end
-
-  def from(table : Focus::Table) : Focus::Column(T)
-    Focus::Column(T).new(name, table.table_name)
+  def from(table : Focus::Table | Focus::SubqueryExpression) : Focus::Column
+    table_name = if table.is_a?(Focus::Table)
+      table.label || table.table_name
+    else
+      table.subquery_alias
+    end
+    self.class.new(name: @name, table_name: table_name)
   end
 end

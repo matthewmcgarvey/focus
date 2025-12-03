@@ -31,8 +31,9 @@ module Focus::Dsl::Aggregation
     AggregateExpression(Comparable).new(AggregateType::SUM, column.as_expression, is_distinct: true)
   end
 
-  def count(column : ColumnDeclaring(Comparable)? = nil) : AggregateExpression(Int32)
-    AggregateExpression(Int32).new(AggregateType::COUNT, column.try(&.as_expression), is_distinct: false)
+  def count(column : Focus::Column? = nil) : AggregateExpression
+    arg = column || Focus::WildcardExpression.new
+    AggregateExpression.new(Focus::AggregateExpression::AggregateType::COUNT, arg)
   end
 
   def count_distinct(column : ColumnDeclaring(Comparable)) : AggregateExpression(Int32)

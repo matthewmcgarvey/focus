@@ -1,10 +1,17 @@
 require "db"
 
-require "./focus/sql_expression"
 require "./focus/column_declaring"
 require "./focus/queryable"
+require "./focus/expression"
+require "./focus/joinable"
+require "./focus/table_source"
 require "./focus/*"
+require "./focus/expressions/*"
+require "./focus/clauses/*"
+require "./focus/statements/*"
+require "./focus/columns/*"
 require "./focus/dsl/*"
+require "./focus/visitors/*"
 
 module Focus
   extend Focus::Dsl::Aggregation

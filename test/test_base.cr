@@ -1,7 +1,7 @@
 require "minitest"
 require "minitest/focus"
 require "../src/focus"
-require "./support/tables"
+require "./support/tables/*"
 
 abstract class TestBase < Minitest::Test
   def formatted(sql : String) : String
