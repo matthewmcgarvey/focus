@@ -20,10 +20,11 @@ module Focus::Dsl::StatementSource
     Focus::InsertStatement.new(expr)
   end
 
-  # def update(table : Focus::Table) : Focus::UpdateStatement
-  #   update_expression = Focus::UpdateExpression.new(table)
-  #   Focus::UpdateStatement.new(expression: update_expression)
-  # end
+  def update(table : Focus::Table) : Focus::UpdateStatement
+    table_ref = Focus::TableReferenceExpression.new(table.table_name, table.label)
+    update = Focus::UpdateClause.new(table_ref)
+    Focus::UpdateStatement.new(update: update)
+  end
 
   # def delete(table : Focus::Table) : Focus::DeleteStatement
   #   delete_expression = Focus::DeleteExpression.new(table)

@@ -4,7 +4,7 @@ abstract class Focus::Expression
   end
 
   def aliased(alias_str : String) : Focus::ProjectionExpression
-     Focus::ProjectionExpression.new(self, alias_str)
+    Focus::ProjectionExpression.new(self, alias_str)
   end
 
   def in_list(*expressions : Focus::Expression) : Focus::BoolExpression

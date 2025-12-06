@@ -342,6 +342,13 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     statement.returning.try(&.accept(self))
   end
 
+  def visit_statement(statement : Focus::UpdateStatement) : Nil
+    statement.update.accept(self)
+    statement.set.try(&.accept(self))
+    statement.where.try(&.accept(self))
+    statement.returning.try(&.accept(self))
+  end
+
   def visit_statement(statement : Focus::Statement) : Nil
     raise "shouldn't get here. implement #{statement.class} handling"
   end
@@ -399,6 +406,16 @@ class Focus::SqlFormatter < Focus::SqlVisitor
   def visit_clause(clause : Focus::ReturningClause) : Nil
     write "RETURNING "
     visit_list clause.columns
+  end
+
+  def visit_clause(clause : Focus::UpdateClause) : Nil
+    write "UPDATE "
+    clause.table.accept(self)
+  end
+
+  def visit_clause(clause : Focus::SetClause) : Nil
+    write "SET "
+    visit_list clause.set_columns
   end
 
   def visit_clause(clause : Focus::Clause) : Nil
@@ -460,19 +477,19 @@ class Focus::SqlFormatter < Focus::SqlVisitor
 
   def visit_expression(expression : Focus::AggregateExpression) : Nil
     method = case expression.type
-    when Focus::AggregateExpression::AggregateType::MIN
-      "MIN"
-    when Focus::AggregateExpression::AggregateType::MAX
-      "MAX"
-    when Focus::AggregateExpression::AggregateType::AVG
-      "AVG"
-    when Focus::AggregateExpression::AggregateType::SUM
-      "SUM"
-    when Focus::AggregateExpression::AggregateType::COUNT
-      "COUNT"
-    else
-      raise "unexpected aggregate expression method '#{expression.type}'"
-    end
+             when Focus::AggregateExpression::AggregateType::MIN
+               "MIN"
+             when Focus::AggregateExpression::AggregateType::MAX
+               "MAX"
+             when Focus::AggregateExpression::AggregateType::AVG
+               "AVG"
+             when Focus::AggregateExpression::AggregateType::SUM
+               "SUM"
+             when Focus::AggregateExpression::AggregateType::COUNT
+               "COUNT"
+             else
+               raise "unexpected aggregate expression method '#{expression.type}'"
+             end
     write method
     wrap_in_parens { expression.argument.accept(self) }
   end
@@ -521,12 +538,22 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     parameters << expression
   end
 
+  def visit_expression(expression : Focus::SetColumnExpression) : Nil
+    expression.column.accept(self)
+    write "= "
+    if expression.value.is_a?(Focus::SelectStatement)
+      wrap_in_parens { expression.value.accept(self) }
+    else
+      expression.value.accept(self)
+    end
+  end
+
   def visit_expression(expression : Focus::Expression) : Nil
     raise "shouldn't get here. implement #{expression.class} handling"
   end
 
   def visit_token(token : Focus::ColumnToken) : Nil
-     write "#{quoted(token.column)} "
+    write "#{quoted(token.column)} "
   end
 
   def visit_token(token : Focus::Token) : Nil

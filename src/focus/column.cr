@@ -17,10 +17,10 @@ abstract class Focus::Column < Focus::Expression
 
   def from(table : Focus::Table | Focus::SubqueryExpression) : Focus::Column
     table_name = if table.is_a?(Focus::Table)
-      table.label || table.table_name
-    else
-      table.subquery_alias
-    end
+                   table.label || table.table_name
+                 else
+                   table.subquery_alias
+                 end
     self.class.new(name: @name, table_name: table_name)
   end
 end

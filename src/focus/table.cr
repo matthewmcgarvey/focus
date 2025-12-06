@@ -48,9 +48,9 @@ abstract class Focus::Table
     Focus.insert(self, *columns)
   end
 
-  # def update : Focus::UpdateStatement
-  #   Focus.update(self)
-  # end
+  def update : Focus::UpdateStatement
+    Focus.update(self)
+  end
 
   # def delete : Focus::DeleteStatement
   #   Focus.delete(self)

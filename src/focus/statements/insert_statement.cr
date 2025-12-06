@@ -24,8 +24,8 @@ class Focus::InsertStatement < Focus::Statement
     self
   end
 
-  def returning(*columns : Focus::Column) : self
-    @returning = Focus::ReturningClause.new(columns.select(Focus::Column))
+  def returning(*returning_vals : Focus::Expression) : self
+    @returning = Focus::ReturningClause.new(returning_vals.select(Focus::Expression))
     self
   end
 end

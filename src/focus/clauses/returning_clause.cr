@@ -1,6 +1,6 @@
 class Focus::ReturningClause < Focus::Clause
-  getter columns : Array(Focus::Column)
+  getter columns : Array(Focus::Expression)
 
-  def initialize(@columns : Array(Focus::Column))
+  def initialize(@columns : Array(Focus::Expression))
   end
 end
