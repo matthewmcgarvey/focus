@@ -349,6 +349,12 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     statement.returning.try(&.accept(self))
   end
 
+  def visit_statement(statement : Focus::DeleteStatement) : Nil
+    statement.delete.accept(self)
+    statement.where.try(&.accept(self))
+    statement.returning.try(&.accept(self))
+  end
+
   def visit_statement(statement : Focus::Statement) : Nil
     raise "shouldn't get here. implement #{statement.class} handling"
   end
@@ -416,6 +422,11 @@ class Focus::SqlFormatter < Focus::SqlVisitor
   def visit_clause(clause : Focus::SetClause) : Nil
     write "SET "
     visit_list clause.set_columns
+  end
+
+  def visit_clause(clause : Focus::DeleteClause) : Nil
+    write "DELETE FROM "
+    clause.table.accept(self)
   end
 
   def visit_clause(clause : Focus::Clause) : Nil

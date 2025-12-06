@@ -26,8 +26,9 @@ module Focus::Dsl::StatementSource
     Focus::UpdateStatement.new(update: update)
   end
 
-  # def delete(table : Focus::Table) : Focus::DeleteStatement
-  #   delete_expression = Focus::DeleteExpression.new(table)
-  #   Focus::DeleteStatement.new(expression: delete_expression)
-  # end
+  def delete(table : Focus::Table) : Focus::DeleteStatement
+    table_ref = Focus::TableReferenceExpression.new(table.table_name, table.label)
+    delete = Focus::DeleteClause.new(table_ref)
+    Focus::DeleteStatement.new(delete)
+  end
 end
