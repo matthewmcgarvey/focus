@@ -1,5 +1,3 @@
-require "./column_declaring"
-
 abstract class Focus::Column < Focus::Expression
   getter table_name : String?
   getter name : String

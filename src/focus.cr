@@ -1,6 +1,5 @@
 require "db"
 
-require "./focus/column_declaring"
 require "./focus/queryable"
 require "./focus/expression"
 require "./focus/joinable"

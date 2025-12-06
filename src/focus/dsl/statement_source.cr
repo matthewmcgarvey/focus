@@ -3,9 +3,6 @@ module Focus::Dsl::StatementSource
     projections = fields.map { |field| (field.is_a?(Focus::Column) ? Focus::ProjectionExpression.new(field) : field).as(Focus::ProjectionExpression) }
     select_clause = Focus::SelectClause.new(projections.to_a)
     Focus::SelectStatement.new(select_clause)
-    # select_expression = Focus::SelectExpression.new
-    # select_expression.columns = columns.map(&.as_declaring_expression).select(Focus::BaseColumnDeclaringExpression) # cuz generics
-    # Focus::SelectQuery.new(expression: select_expression)
   end
 
   def select : Focus::SelectStatement
