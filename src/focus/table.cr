@@ -48,8 +48,8 @@ abstract class Focus::Table
     Focus.delete(self)
   end
 
-  def select(*fields : Focus::Column | Focus::ProjectionExpression) : Focus::SelectStatement
-    projections = fields.map { |field| (field.is_a?(Focus::Column) ? Focus::ProjectionExpression.new(field) : field).as(Focus::ProjectionExpression) }
+  def select(*fields : Focus::Column | Focus::ProjectionExpression | Focus::AggregateExpression) : Focus::SelectStatement
+    projections = fields.map { |field| (field.is_a?(Focus::ProjectionExpression) ? field : Focus::ProjectionExpression.new(field)).as(Focus::ProjectionExpression) }
     Focus.select(*projections).from(self)
   end
 
