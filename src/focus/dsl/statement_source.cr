@@ -11,20 +11,20 @@ module Focus::Dsl::StatementSource
   end
 
   def insert(table : Focus::Table, *columns : Focus::Column) : Focus::InsertStatement
-    table_ref = Focus::TableReferenceExpression.new(table.table_name, table.label)
+    table_ref = Focus::TableReferenceExpression.new(table.table_name, table.table_alias)
     column_names = columns.map { |column| Focus::ColumnToken.new(column.column_name) }
     expr = Focus::InsertClause.new(table_ref, column_names.to_a)
     Focus::InsertStatement.new(expr)
   end
 
   def update(table : Focus::Table) : Focus::UpdateStatement
-    table_ref = Focus::TableReferenceExpression.new(table.table_name, table.label)
+    table_ref = Focus::TableReferenceExpression.new(table.table_name, table.table_alias)
     update = Focus::UpdateClause.new(table_ref)
     Focus::UpdateStatement.new(update: update)
   end
 
   def delete(table : Focus::Table) : Focus::DeleteStatement
-    table_ref = Focus::TableReferenceExpression.new(table.table_name, table.label)
+    table_ref = Focus::TableReferenceExpression.new(table.table_name, table.table_alias)
     delete = Focus::DeleteClause.new(table_ref)
     Focus::DeleteStatement.new(delete)
   end

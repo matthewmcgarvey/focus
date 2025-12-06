@@ -125,6 +125,7 @@ TODO: Write development instructions here
 - Functions (like timestamp)
 - Rework table classes
 - Table class generator
+- Support for EXCLUDED in insert/update (consider each table has a copy of itself with the table name changed to "EXCLUDED" and no alias or anything)
 
 ## TODO
 

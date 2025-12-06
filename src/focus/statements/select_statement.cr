@@ -17,7 +17,7 @@ class Focus::SelectStatement < Focus::Statement
   end
 
   def from(table : Focus::Table) : self
-    from(Focus::TableReferenceExpression.new(table.table_name, table_alias: table.label))
+    from(Focus::TableReferenceExpression.new(table.table_name, table_alias: table.table_alias))
   end
 
   def from(table_source : Focus::TableSource) : self

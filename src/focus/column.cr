@@ -1,7 +1,7 @@
 abstract class Focus::Column < Focus::Expression
   include Focus::ColumnMacros
 
-  getter table_name : String?
+  property table_name : String?
   getter column_name : String
 
   def initialize(@column_name : String, @table_name : String? = nil)

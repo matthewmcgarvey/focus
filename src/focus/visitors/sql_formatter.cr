@@ -242,6 +242,11 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     end
   end
 
+  def visit_expression(expression : Focus::PostfixOperatorExpression)
+    expression.expression.accept(self)
+    write "#{expression.operator} "
+  end
+
   def visit_expression(expression : Focus::Expression) : Nil
     raise "shouldn't get here. implement #{expression.class} handling"
   end
