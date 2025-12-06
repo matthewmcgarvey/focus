@@ -124,7 +124,7 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     if table_name = expression.table_name
       write "#{quoted(table_name)}."
     end
-    write "#{quoted(expression.name)} "
+    write "#{quoted(expression.column_name)} "
   end
 
   def visit_expression(expression : Focus::TableReferenceExpression) : Nil

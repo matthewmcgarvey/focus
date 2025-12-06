@@ -3,15 +3,15 @@ class DepartmentsTable < Focus::Table
 
   @[ColumnLabel]
   getter id : Focus::Int32Column do
-    Focus::Int32Column.new(table_name: self.label || self.table_name, name: "id")
+    Focus::Int32Column.new(table_name: self.label || self.table_name, column_name: "id")
   end
   @[ColumnLabel]
   getter name : Focus::StringColumn do
-    Focus::StringColumn.new(table_name: self.label || self.table_name, name: "name")
+    Focus::StringColumn.new(table_name: self.label || self.table_name, column_name: "name")
   end
   @[ColumnLabel]
   getter location : Focus::StringColumn do
-    Focus::StringColumn.new(table_name: self.label || self.table_name, name: "location")
+    Focus::StringColumn.new(table_name: self.label || self.table_name, column_name: "location")
   end
 end
 

@@ -12,7 +12,7 @@ module Focus::Dsl::StatementSource
 
   def insert(table : Focus::Table, *columns : Focus::Column) : Focus::InsertStatement
     table_ref = Focus::TableReferenceExpression.new(table.table_name, table.label)
-    column_names = columns.map { |column| Focus::ColumnToken.new(column.name) }
+    column_names = columns.map { |column| Focus::ColumnToken.new(column.column_name) }
     expr = Focus::InsertClause.new(table_ref, column_names.to_a)
     Focus::InsertStatement.new(expr)
   end

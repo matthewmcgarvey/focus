@@ -8,7 +8,7 @@ class Focus::UpdateStatement < Focus::Statement
   end
 
   def set(column : Focus::Column, expr : Focus::Expression) : self
-    col_token = Focus::ColumnToken.new(column.name)
+    col_token = Focus::ColumnToken.new(column.column_name)
     set_column = Focus::SetColumnExpression.new(col_token, expr)
     if set_clause = self.set
       set_clause.set_columns << set_column

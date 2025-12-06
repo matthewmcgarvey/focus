@@ -1,28 +1,3 @@
 class Focus::Int32Column < Focus::Column
-  def greater_than(right : Int32) : Focus::BoolExpression
-    greater_than(Focus::Int32Expression.new(right))
-  end
-
-  def greater_than(right : Focus::Int32Expression) : Focus::BoolExpression
-    expression = Focus::BinaryExpression.new(
-      left: self,
-      right: right,
-      operator: ">"
-    )
-    Focus::BoolExpression.new(expression)
-  end
-
-  def eq(rhs : Focus::Int32Column) : Focus::BoolExpression
-    binary = Focus::BinaryExpression.new(self, rhs, "=")
-    Focus::BoolExpression.new(binary)
-  end
-
-  def eq(rhs : Focus::Int32Expression) : Focus::BoolExpression
-    binary = Focus::BinaryExpression.new(self, rhs, "=")
-    Focus::BoolExpression.new(binary)
-  end
-
-  def eq(rhs : Int32) : Focus::BoolExpression
-    eq(Focus::Int32Expression.new(rhs))
-  end
+  scalar_wrappers(Int32, Focus::Int32Expression, :eq, :greater_than)
 end

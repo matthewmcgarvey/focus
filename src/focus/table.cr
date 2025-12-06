@@ -13,7 +13,7 @@ abstract class Focus::Table
 
     @[ColumnLabel]
     getter {{ name }} : Focus::{{ type }}Column do
-      Focus::{{ type }}Column.new(table_name: self.label || self.table_name, name: {{ name_str }})
+      Focus::{{ type }}Column.new(table_name: self.label || self.table_name, column_name: {{ name_str }})
     end
   end
 
