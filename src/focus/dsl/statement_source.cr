@@ -13,11 +13,12 @@ module Focus::Dsl::StatementSource
     self.select(projection)
   end
 
-  # def insert(table : Focus::Table, *columns : Focus::BaseColumn) : Focus::InsertStatement
-  #   column_arr = columns.select(Focus::BaseColumn)
-  #   insert_expression = Focus::InsertExpression.new(table, column_arr)
-  #   Focus::InsertStatement.new(expression: insert_expression)
-  # end
+  def insert(table : Focus::Table, *columns : Focus::Column) : Focus::InsertStatement
+    table_ref = Focus::TableReferenceExpression.new(table.table_name, table.label)
+    column_names = columns.map { |column| Focus::ColumnToken.new(column.name) }
+    expr = Focus::InsertClause.new(table_ref, column_names.to_a)
+    Focus::InsertStatement.new(expr)
+  end
 
   # def update(table : Focus::Table) : Focus::UpdateStatement
   #   update_expression = Focus::UpdateExpression.new(table)

@@ -44,9 +44,9 @@ abstract class Focus::Table
   #   columns.select(Focus::Column(T)).find { |col| col.name == name }
   # end
 
-  # def insert(*columns : Focus::BaseColumn) : Focus::InsertStatement
-  #   Focus.insert(self, *columns)
-  # end
+  def insert(*columns : Focus::Column) : Focus::InsertStatement
+    Focus.insert(self, *columns)
+  end
 
   # def update : Focus::UpdateStatement
   #   Focus.update(self)

@@ -335,6 +335,13 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     statement.offset_clause.try(&.accept(self))
   end
 
+  def visit_statement(statement : Focus::InsertStatement) : Nil
+    statement.insert_clause.accept(self)
+    statement.values_clause.try(&.accept(self))
+    statement.query.try(&.accept(self))
+    statement.returning.try(&.accept(self))
+  end
+
   def visit_statement(statement : Focus::Statement) : Nil
     raise "shouldn't get here. implement #{statement.class} handling"
   end
@@ -376,6 +383,22 @@ class Focus::SqlFormatter < Focus::SqlVisitor
   def visit_clause(clause : Focus::HavingClause) : Nil
     write "HAVING "
     clause.expression.accept(self)
+  end
+
+  def visit_clause(clause : Focus::InsertClause) : Nil
+    write "INSERT INTO "
+    clause.table.accept(self)
+    wrap_in_parens { visit_list(clause.columns) }
+  end
+
+  def visit_clause(clause : Focus::ValuesClause) : Nil
+    write "VALUES "
+    visit_list clause.rows
+  end
+
+  def visit_clause(clause : Focus::ReturningClause) : Nil
+    write "RETURNING "
+    visit_list clause.columns
   end
 
   def visit_clause(clause : Focus::Clause) : Nil
@@ -489,11 +512,25 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     end
   end
 
+  def visit_expression(expression : Focus::RowConstructorExpression) : Nil
+    wrap_in_parens { visit_list(expression.values) }
+  end
+
+  def visit_expression(expression : Focus::ValueExpression) : Nil
+    write "? "
+    parameters << expression
+  end
+
   def visit_expression(expression : Focus::Expression) : Nil
     raise "shouldn't get here. implement #{expression.class} handling"
   end
 
+  def visit_token(token : Focus::ColumnToken) : Nil
+     write "#{quoted(token.column)} "
+  end
+
   def visit_token(token : Focus::Token) : Nil
+    raise "should get here. implement #{token.class} handling"
   end
 
   def to_sql : String

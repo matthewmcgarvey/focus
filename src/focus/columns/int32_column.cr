@@ -16,4 +16,13 @@ class Focus::Int32Column < Focus::Column
     binary = Focus::BinaryExpression.new(self, rhs, "=")
     Focus::BoolExpression.new(binary)
   end
+
+  def eq(rhs : Focus::Int32Expression) : Focus::BoolExpression
+    binary = Focus::BinaryExpression.new(self, rhs, "=")
+    Focus::BoolExpression.new(binary)
+  end
+
+  def eq(rhs : Int32) : Focus::BoolExpression
+    eq(Focus::Int32Expression.new(rhs))
+  end
 end
