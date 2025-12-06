@@ -22,9 +22,13 @@ class FocusSelectTest < TestBase
   def test_order_by
     stmt1 = Employees.select.order_by(Employees.salary.desc)
     stmt2 = Employees.select.order_by(Employees.name.asc, Employees.salary.desc)
+    stmt3 = Employees.select.order_by(Employees.hire_date.asc.nulls_last)
+    stmt4 = Employees.select.order_by(Employees.hire_date.asc.nulls_first)
 
     assert_equal "SELECT * FROM employees ORDER BY employees.salary DESC", stmt1.to_sql
     assert_equal "SELECT * FROM employees ORDER BY employees.name ASC, employees.salary DESC", stmt2.to_sql
+    assert_equal "SELECT * FROM employees ORDER BY employees.hire_date ASC NULLS LAST", stmt3.to_sql
+    assert_equal "SELECT * FROM employees ORDER BY employees.hire_date ASC NULLS FIRST", stmt4.to_sql
   end
 
   def test_limit_offset

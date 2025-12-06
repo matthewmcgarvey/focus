@@ -164,6 +164,9 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     when Focus::OrderByExpression::OrderType::DESCENDING
       write "DESC "
     end
+    expression.is_nulls_first.try do |nulls_first|
+      write "NULLS #{nulls_first ? "FIRST" : "LAST"} "
+    end
   end
 
   def visit_expression(expression : Focus::AggregateExpression) : Nil
