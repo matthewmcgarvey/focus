@@ -21,6 +21,8 @@ module Focus
   extend Focus::Dsl::StatementSource
   VERSION = "0.1.0"
 
+  alias DBConn = DB::Database | DB::Connection
+
   def self.format_expression(expression : Focus::SqlExpression) : Tuple(String, Array(Focus::BaseArgumentExpression))
     visitor = Focus::SqlFormatter.new
     expression.accept(visitor)
