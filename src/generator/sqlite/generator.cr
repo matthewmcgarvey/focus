@@ -8,7 +8,7 @@ class Focus::SQLiteGenerator
 
   def generate
     query_set = Focus::SQLiteQuerySet.new(db)
-    metadata = query_set.get_tables_metadata("table")
-    pp metadata
+    schema_metadata = query_set.get_schema
+    template.process_schema(dest_dir, schema_metadata)
   end
 end

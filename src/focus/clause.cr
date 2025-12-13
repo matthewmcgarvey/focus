@@ -1,5 +1,5 @@
 abstract class Focus::Clause
-  def accept(visitor : SqlVisitor) : Nil
+  def accept(visitor : Focus::SqlVisitor) : Nil
     visitor.visit_clause(self)
   end
 end

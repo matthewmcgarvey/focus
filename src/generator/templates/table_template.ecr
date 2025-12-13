@@ -1,0 +1,17 @@
+class <%= title_name %>Table < Focus::Table
+  <%- columns.each do |column| -%>
+  getter <%= column.name %> : Focus::<%= column.column_type %>Column
+  <%- end -%>
+
+  def initialize(table_name : String = "<%= table_name %>", table_alias : String? = nil)
+    <%- columns.each do |column| -%>
+    @<%= column.name %> = Focus::<%= column.column_type %>Column.new("<%= column.name %>", table_name)
+    <%- end -%>
+    <%- column_list = columns.map { |col| "@#{col.name}" }.join(", ") -%>
+    columns = [<%= column_list %>]
+
+    super(table_name, table_alias, columns)
+  end
+end
+
+<%= title_name %> = <%= title_name %>Table.new
