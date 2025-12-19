@@ -8,6 +8,10 @@ crystal: 1.18.0
 
 license: MIT
 
+targets:
+  focus:
+    main: src/cli.cr
+
 dependencies:
   db:
     github: crystal-lang/crystal-db
