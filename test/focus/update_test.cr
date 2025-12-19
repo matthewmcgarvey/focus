@@ -8,7 +8,7 @@ class FocusUpdateTest < TestBase
     sql, args = stmt.to_sql_with_args
 
     assert_equal "UPDATE departments SET name = ? WHERE departments.id = ?", formatted(sql)
-    assert_equal ["foo", 1], args.map(&.value)
+    assert_equal ["foo", 1], args
   end
 
   def test_set_from_select
@@ -26,7 +26,7 @@ class FocusUpdateTest < TestBase
       WHERE departments.id = ?
     SQL
     assert_equal expected_sql, formatted(sql)
-    assert_equal [2, 1], args.map(&.value)
+    assert_equal [2, 1], args
   end
 
   def test_returning
@@ -34,6 +34,6 @@ class FocusUpdateTest < TestBase
     sql, args = stmt.to_sql_with_args
 
     assert_equal "UPDATE departments SET name = ? RETURNING departments.id", formatted(sql)
-    assert_equal ["foo"], args.map(&.value)
+    assert_equal ["foo"], args
   end
 end

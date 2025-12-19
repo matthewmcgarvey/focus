@@ -2,7 +2,7 @@ class Focus::SqlFormatter < Focus::SqlVisitor
   WHITESPACE_BYTE = 32_u8
 
   private getter sql_string_builder = String::Builder.new
-  getter parameters = [] of Focus::Parameter
+  getter parameters = [] of DB::Any
 
   def visit_statement(statement : Focus::SelectStatement) : Nil
     statement.select_clause.accept(self)
@@ -146,7 +146,7 @@ class Focus::SqlFormatter < Focus::SqlVisitor
 
   def visit_expression(expression : Focus::Int32Expression) : Nil
     write "? "
-    parameters << expression
+    parameters << expression.value
   end
 
   def visit_expression(expression : Focus::WildcardExpression) : Nil
@@ -229,7 +229,7 @@ class Focus::SqlFormatter < Focus::SqlVisitor
 
   def visit_expression(expression : Focus::ValueExpression) : Nil
     write "? "
-    parameters << expression
+    parameters << expression.value
   end
 
   def visit_expression(expression : Focus::SetColumnExpression) : Nil

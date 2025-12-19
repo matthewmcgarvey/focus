@@ -6,7 +6,7 @@ class FocusInsertTest < TestBase
     sql, args = stmt.to_sql_with_args
 
     assert_equal "INSERT INTO departments (name, location) VALUES (?, ?)", formatted(sql)
-    assert_equal ["hr", "antarctica"], args.map(&.value)
+    assert_equal ["hr", "antarctica"], args
   end
 
   def test_insert_multiple
@@ -16,7 +16,7 @@ class FocusInsertTest < TestBase
     sql, args = stmt.to_sql_with_args
 
     assert_equal "INSERT INTO departments (name, location) VALUES (?, ?), (?, ?)", formatted(sql)
-    assert_equal ["hr", "antarctica", "r&d", "basement"], args.map(&.value)
+    assert_equal ["hr", "antarctica", "r&d", "basement"], args
   end
 
   def test_insert_from_query
@@ -28,7 +28,7 @@ class FocusInsertTest < TestBase
     sql, args = stmt.to_sql_with_args
 
     assert_equal "INSERT INTO departments (name, location) SELECT departments.name, departments.location FROM departments WHERE departments.id = ?", formatted(sql)
-    assert_equal [1], args.map(&.value)
+    assert_equal [1], args
   end
 
   def test_insert_returning

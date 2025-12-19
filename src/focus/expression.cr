@@ -41,7 +41,7 @@ abstract class Focus::Expression
     visitor.to_sql
   end
 
-  def to_sql_with_args : Tuple(String, Array(Focus::Parameter))
+  def to_sql_with_args : Tuple(String, Array(DB::Any))
     visitor = Focus::SqlFormatter.new
     accept(visitor)
     {visitor.to_sql, visitor.parameters}

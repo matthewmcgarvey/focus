@@ -27,12 +27,12 @@ class SQLiteSelectTest < SQLiteTestBase
   def test_passing_sql_and_arguments_to_database
     stmt1 = Departments.select(Departments.id)
     sql1, args1 = stmt1.to_sql_with_args
-    result1 = database.query_all(sql1, args: args1.map(&.value), as: Int32)
+    result1 = database.query_all(sql1, args: args1, as: Int32)
     assert_equal [1, 2], result1
 
     stm2 = Employees.select(Focus.count(Employees.id)).where(Employees.salary.greater_than(60))
     sql2, args2 = stm2.to_sql_with_args
-    result2 = database.query_one(sql2, args: args2.map(&.value), as: Int32)
+    result2 = database.query_one(sql2, args: args2, as: Int32)
     assert_equal 3, result2
   end
 

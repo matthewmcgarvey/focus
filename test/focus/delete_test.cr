@@ -14,7 +14,7 @@ class FocusDeleteTest < TestBase
     sql, args = stmt.to_sql_with_args
 
     assert_equal "DELETE FROM employees WHERE employees.id = ?", formatted(sql)
-    assert_equal [1], args.map(&.value)
+    assert_equal [1], args
   end
 
   def test_delete_returning
