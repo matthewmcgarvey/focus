@@ -33,7 +33,7 @@ class Focus::Template
       file_path = File.join(schema_path, "table", "#{table.name}.cr")
       FileUtils.touch(file_path)
 
-      table_templ = Templates::TableTemplate.new(table)
+      table_templ = Templates::TableTemplate.new(dialect, table)
       File.open(file_path, "w") do |file|
         table_templ.to_s(file)
       end

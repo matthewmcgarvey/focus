@@ -1,4 +1,4 @@
-class <%= title_name %>Table < Focus::Table
+class <%= title_name %>Table < Focus::<%= table_class %>
   <%- columns.each do |column| -%>
   getter <%= column.name %> : Focus::<%= column.column_type %>Column
   <%- end -%>

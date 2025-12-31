@@ -1,4 +1,4 @@
-class EmployeesTable < Focus::Table
+class EmployeesTable < Focus::SQLiteTable
   getter id : Focus::Int32Column
   getter name : Focus::StringColumn
   getter job : Focus::StringColumn

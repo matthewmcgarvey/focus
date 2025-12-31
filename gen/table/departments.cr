@@ -1,4 +1,4 @@
-class DepartmentsTable < Focus::Table
+class DepartmentsTable < Focus::SQLiteTable
   getter id : Focus::Int32Column
   getter name : Focus::StringColumn
   getter location : Focus::StringColumn

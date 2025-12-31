@@ -1,5 +1,6 @@
 require "../executing_test_base"
 require "../../src/sqlite"
+require "../../gen/table/*"
 
 abstract class SQLiteTestBase < ExecutingTestBase
   @database : DB::Database?
