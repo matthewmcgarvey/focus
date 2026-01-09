@@ -1,6 +1,7 @@
 require "minitest"
 require "minitest/focus"
 require "../src/focus"
+
 # require "./support/tables/*"
 
 abstract class TestBase < Minitest::Test

@@ -16,7 +16,6 @@ module Focus::Queryable
     database.query_all(sql, args: args, as: types)
   end
 
-
   def query_all(database : Focus::DBConn, as types : NamedTuple)
     sql, args = to_sql_with_args
     database.query_all(sql, args: args, as: types)

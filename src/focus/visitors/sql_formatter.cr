@@ -228,7 +228,7 @@ class Focus::SqlFormatter < Focus::SqlVisitor
   end
 
   def visit_expression(expression : Focus::ValueExpression) : Nil
-    write "? "
+    write_placeholder
     parameters << expression.value
   end
 
@@ -276,6 +276,10 @@ class Focus::SqlFormatter < Focus::SqlVisitor
 
   protected def remove_last_blank
     sql_string_builder.chomp!(WHITESPACE_BYTE)
+  end
+
+  protected def write_placeholder
+    write "? "
   end
 
   protected def write(str : String)
