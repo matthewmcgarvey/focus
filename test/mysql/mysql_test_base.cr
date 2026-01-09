@@ -1,11 +1,11 @@
-require "../test_base"
+require "../executing_test_base"
 require "../../src/mysql"
 
-abstract class MySqlTestBase < TestBase
-  @database : Focus::MySqlDatabase?
+abstract class MySqlTestBase < ExecutingTestBase
+  @database : DB::Database?
 
-  def database : Focus::MySqlDatabase
-    @database ||= Focus::MySqlDatabase.connect("mysql://root:password@localhost/test")
+  def database : DB::Database
+    @database ||= DB.open("mysql://root:password@localhost/test")
   end
 
   def setup
