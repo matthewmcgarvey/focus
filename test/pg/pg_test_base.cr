@@ -1,18 +1,19 @@
-require "../test_base"
+require "../executing_test_base"
 require "../../src/pg"
+require "../../gen/table/*"
 
-abstract class PGTestBase < TestBase
-  @database : Focus::PGDatabase?
+abstract class PGTestBase < ExecutingTestBase
+  @database : DB::Database?
 
-  def database : Focus::PGDatabase
-    @database ||= Focus::PGDatabase.connect("postgres://postgres:postgres@localhost/test")
+  def database : DB::Database
+    @database ||= DB.open("postgres://postgres:postgres@localhost/test")
   end
 
   def setup
-    exec_sql_script("./test/support/init-pg-data.sql")
+    # exec_sql_script("./test/support/init-pg-data.sql")
   end
 
   def teardown
-    exec_sql_script("./test/support/drop-pg-data.sql")
+    # exec_sql_script("./test/support/drop-pg-data.sql")
   end
 end
