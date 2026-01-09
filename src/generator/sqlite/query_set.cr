@@ -5,7 +5,7 @@ class Focus::SQLiteQuerySet < Focus::QuerySet
   end
 
   # table_type can be "table" or "view"
-  def get_tables_metadata(table_type : String) : Array(Metadata::Table)
+  def get_tables_metadata(schema_name : String, table_type : String) : Array(Metadata::Table)
     query = <<-SQL
       SELECT name
       FROM sqlite_master
