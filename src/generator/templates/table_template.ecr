@@ -1,4 +1,4 @@
-class <%= title_name %>Table < Focus::<%= table_class %>
+class <%= title_name %>Table < Focus::<%= dialect.name %>Table
   <%- columns.each do |column| -%>
   getter <%= column.name %> : Focus::<%= column.column_type %>Column
   <%- end -%>
@@ -8,7 +8,7 @@ class <%= title_name %>Table < Focus::<%= table_class %>
     @<%= column.name %> = Focus::<%= column.column_type %>Column.new("<%= column.name %>", table_name)
     <%- end -%>
     <%- column_list = columns.map { |col| "@#{col.name}" }.join(", ") -%>
-    columns = [<%= column_list %>]
+    columns = [<%= column_list %>].select(Focus::Column) # lame but necessary cast here (fails if all columns are the same type)
 
     super(table_name, table_alias, columns)
   end

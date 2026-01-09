@@ -10,15 +10,6 @@ class Focus::Templates::TableTemplate
     @columns = table.columns.try(&.map { |column| ColumnTemplate.new(dialect, column) }) || [] of ColumnTemplate
   end
 
-  def table_class : String
-    case dialect
-    when Focus::SQLiteDialect
-      "SQLiteTable"
-    else
-      "Table"
-    end
-  end
-
   class ColumnTemplate
     getter dialect : Focus::Dialect
     getter name : String
@@ -33,11 +24,14 @@ class Focus::Templates::TableTemplate
       case data_type.name.upcase
       when "BOOLEAN", "BOOL"
         "Bool"
-      when "INTEGER"
+      when "INTEGER", "INT4"
         "Int32"
-      when "TEXT"
+      when "INT8"
+        "Int64"
+      when "TEXT", "VARCHAR"
         "String"
       else
+        puts "unhandled type #{data_type.name}. defaulting to string"
         "String"
       end
     end
