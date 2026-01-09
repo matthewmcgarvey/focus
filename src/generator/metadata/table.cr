@@ -3,6 +3,6 @@ class Focus::Metadata::Table
   property comment : String?
   property columns : Array(Column)?
 
-  def initialize(@name : String)
+  def initialize(@name : String, @comment : String? = nil)
   end
 end
