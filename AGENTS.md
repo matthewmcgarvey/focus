@@ -56,27 +56,36 @@ focus run -d sqlite3://db.db
 src/
 ├── focus.cr              # Main library entry point
 ├── cli.cr                # CLI entry point
+├── cli/                  # CLI commands
 ├── focus/                # Core library
 │   ├── clauses/          # SQL clause types (SELECT, FROM, WHERE, etc.)
 │   ├── columns/          # Column types (Int32Column, StringColumn, etc.)
-│   ├── dsl/              # DSL helpers
+│   ├── dsl/              # DSL helpers (aggregation functions) (aggregation functions)
 │   ├── expressions/      # SQL expression types
-│   ├── statements/       # Statement builders (SELECT, INSERT, UPDATE, DELETE)
 │   ├── tokens/           # SQL tokens
 │   └── visitors/         # Visitor pattern (SqlFormatter)
 ├── generator/            # Table code generator
+│   ├── pg/               # PostgreSQL schema introspection
+│   ├── sqlite/           # SQLite schema introspection
+│   └── templates/        # Code generation templates
 ├── sqlite/               # SQLite-specific code
+│   ├── sqlite_table.cr   # SQLiteTable class
+│   └── statements/       # SQLite statement builders (SELECT, INSERT, etc.)
 ├── pg/                   # PostgreSQL-specific code
+│   ├── pg_table.cr       # PGTable class
+│   └── statements/       # PostgreSQL statement builders
 
 test/
-├── test_base.cr          # Base class for all tests
+├── test_base.cr          # Base class for unit tests
 ├── executing_test_base.cr # Base for tests that execute SQL
-├── focus/                # Core library tests
+├── focus/                # Core library unit tests
 ├── sqlite/               # SQLite integration tests
+│   ├── sqlite_test_base.cr
+│   └── gen/table/        # Generated SQLite table definitions
 ├── pg/                   # PostgreSQL integration tests
-└── support/              # Test helpers, SQL scripts, table definitions
-
-gen/table/                # Generated table files
+│   ├── pg_test_base.cr
+│   └── gen/table/        # Generated PostgreSQL table definitions
+└── support/              # SQL scripts (init-*.sql, drop-*.sql)
 ```
 
 ## Code Style Guidelines
