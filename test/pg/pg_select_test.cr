@@ -36,7 +36,7 @@ class PGSelectTest < PGTestBase
     assert_equal 3, result2
   end
 
-  focus def test_query_all
+  def test_query_all
     stmt1 = Employees.select(Employees.id, Employees.name)
     result1 = stmt1.query_all(database, as: {id: Int32, name: String})
     assert_equal [

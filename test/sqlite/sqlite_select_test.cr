@@ -58,7 +58,7 @@ class SQLiteSelectTest < SQLiteTestBase
     assert_equal ["vince", "marry"], result3.map(&.name)
   end
 
-  focus def test_query_one
+  def test_query_one
     stmt1 = Employees.select(Employees.name).where(Employees.id.eq(2))
     result1 = stmt1.query_one(database, as: String)
     assert_equal "marry", result1
