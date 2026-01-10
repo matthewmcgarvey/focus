@@ -29,7 +29,9 @@ class Focus::PGTable < Focus::Table
     Focus.update(self)
   end
 
-  def delete : Focus::DeleteStatement
-    Focus.delete(self)
+  def delete : Focus::PG::DeleteStatement
+    table_ref = Focus::TableReferenceExpression.new(table_name, table_alias)
+    delete = Focus::DeleteClause.new(table_ref)
+    Focus::PG::DeleteStatement.new(delete)
   end
 end
