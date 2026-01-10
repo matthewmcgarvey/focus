@@ -67,7 +67,6 @@ src/
 ├── generator/            # Table code generator
 ├── sqlite/               # SQLite-specific code
 ├── pg/                   # PostgreSQL-specific code
-└── mysql/                # MySQL-specific code
 
 test/
 ├── test_base.cr          # Base class for all tests
@@ -132,7 +131,7 @@ gen/table/                # Generated table files
 
 ### Table Definition Pattern
 ```crystal
-class UsersTable < Focus::SQLiteTable  # or Focus::PgTable, Focus::MySQLTable
+class UsersTable < Focus::SQLiteTable  # or Focus::PgTable
   getter id : Focus::Int32Column
   getter name : Focus::StringColumn
 
@@ -174,7 +173,7 @@ Users.delete.where(Users.id.eq(1)).exec(database)
 - `db` (crystal-db) - Database abstraction
 
 **Development:**
-- `sqlite3`, `pg`, `mysql` - Database drivers
+- `sqlite3`, `pg` - Database drivers
 - `minitest` - Testing framework
 - `ameba` - Static code analyzer (linter)
 
@@ -182,6 +181,6 @@ Users.delete.where(Users.id.eq(1)).exec(database)
 
 1. **Minimal macros** - Only `column` macro exists; avoid magic
 2. **Separate models from tables** - Tables build queries, not represent data
-3. **Multi-database support** - SQLite, PostgreSQL, MySQL
+3. **Multi-database support** - SQLite, PostgreSQL
 4. **Type safety** - Leverage Crystal's type system
 5. **Composable queries** - Chain methods fluently

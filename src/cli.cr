@@ -1,6 +1,5 @@
 require "cling"
 require "./focus"
-require "./mysql"
 require "./pg"
 require "./sqlite"
 require "./generator"

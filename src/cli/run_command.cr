@@ -4,7 +4,7 @@ class RunCommand < Cling::Command
     @description = "Generates Focus classes from your database"
 
     add_option 'h', "help", description: "sends help information"
-    add_option 's', "source", description: "postgres, sqlite, mysql", type: :single, required: true
+    add_option 's', "source", description: "postgres, sqlite", type: :single, required: true
     add_option 'd', "db", description: "database url", type: :single, required: true
     add_option 'o', "output", description: "output dir", type: :single, default: "./gen"
     add_option "schema", description: "database schema", type: :single, default: "public"
@@ -28,8 +28,6 @@ class RunCommand < Cling::Command
                 Focus::PGDialect.new
               when "sqlite"
                 Focus::SQLiteDialect.new
-              when "mysql"
-                Focus::MySqlDialect.new
               else
                 stderr.puts "Invalid source '#{source}'"
                 exit_program
@@ -41,8 +39,6 @@ class RunCommand < Cling::Command
                   Focus::PGGenerator.new(db.not_nil!, output_dir, template, schema)
                 when Focus::SQLiteDialect
                   Focus::SQLiteGenerator.new(db.not_nil!, output_dir, template, schema)
-                when Focus::MySqlDialect
-                  Focus::MySqlGenerator.new(db.not_nil!, output_dir, template, schema)
                 else
                   stderr.puts "Error: unknown dialect #{dialect.class}"
                   exit_program
