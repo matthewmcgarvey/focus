@@ -9,7 +9,7 @@ class SQLiteInsertTest < SQLiteTestBase
       .query_all(database, as: Int32)
     assert_equal 2, ids.size
 
-    result = Focus.select(Departments.name).from(Departments).query_all(database, String)
+    result = Departments.select(Departments.name).query_all(database, String)
     assert_equal ["tech", "finance", "r&d", "hr"], result
   end
 end

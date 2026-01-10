@@ -6,8 +6,7 @@ class SQLiteUpdateTest < SQLiteTestBase
       .set(Departments.name, "foo")
       .exec(database)
 
-    result = Focus.select(Departments.name)
-      .from(Departments)
+    result = Departments.select(Departments.name)
       .group_by(Departments.name)
       .query_all(database, String)
     assert_equal ["foo"], result

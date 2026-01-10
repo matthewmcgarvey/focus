@@ -13,7 +13,10 @@ class Focus::Template
   end
 
   def process_schema(dest_dir : String, schema : Metadata::Schema)
-    return if schema.empty?
+    if schema.empty?
+      puts "Nothing found to generate. Exiting..."
+      return
+    end
 
     schema_path = dest_dir
 

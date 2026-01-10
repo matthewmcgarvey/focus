@@ -1,6 +1,6 @@
 require "../executing_test_base"
 require "../../src/pg"
-require "../../gen/table/*"
+require "./gen/table/*"
 
 abstract class PGTestBase < ExecutingTestBase
   @database : DB::Database?

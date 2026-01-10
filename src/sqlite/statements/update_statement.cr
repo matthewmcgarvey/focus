@@ -1,4 +1,4 @@
-class Focus::SQLite::UpdateStatement < Focus::Statement
+class Focus::SQLite::UpdateStatement < Focus::SQLite::Statement
   getter update : Focus::UpdateClause
   getter set : Focus::SetClause?
   getter where : Focus::WhereClause?

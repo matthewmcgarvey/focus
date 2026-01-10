@@ -1,4 +1,4 @@
-class Focus::SQLite::DeleteStatement < Focus::Statement
+class Focus::SQLite::DeleteStatement < Focus::SQLite::Statement
   getter delete : Focus::DeleteClause
   getter where : Focus::WhereClause?
   getter returning : Focus::ReturningClause?

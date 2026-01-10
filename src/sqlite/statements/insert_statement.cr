@@ -1,7 +1,7 @@
-class Focus::SQLite::InsertStatement < Focus::Statement
+class Focus::SQLite::InsertStatement < Focus::SQLite::Statement
   getter insert_clause : Focus::InsertClause
   getter values_clause : Focus::ValuesClause?
-  getter query : Focus::SQLite::SelectStatement?
+  getter query : Focus::QueryClause?
   getter returning : Focus::ReturningClause?
 
   def initialize(@insert_clause : Focus::InsertClause)
@@ -19,8 +19,8 @@ class Focus::SQLite::InsertStatement < Focus::Statement
     self
   end
 
-  def query(query : Focus::SelectStatement) : self
-    @query = query
+  def query(query : Focus::SQLite::SelectStatement) : self
+    @query = Focus::QueryClause.new(query)
     self
   end
 

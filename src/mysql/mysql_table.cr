@@ -10,7 +10,7 @@ class Focus::MySqlTable < Focus::Table
       end
     end.to_a
     select_clause = Focus::SelectClause.new(projections)
-    Focus::MySql::SelectStatement.new(select_clause)
+    Focus::MySql::SelectStatement.new(select_clause).from(self)
   end
 
   def select : Focus::MySql::SelectStatement
