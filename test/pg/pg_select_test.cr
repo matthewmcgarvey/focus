@@ -100,4 +100,95 @@ class PGSelectTest < PGTestBase
     stmt6 = Employees.select(Employees.id, Employees.name).where(Employees.id.eq(2))
     assert_equal({2, "marry"}, stmt6.query_one?(database, as: {Int32, String}))
   end
+
+  def test_select_distinct
+    dept_ids = Employees.select(Employees.department_id)
+      .distinct
+      .order_by(Employees.department_id.asc)
+      .query_all(database, Int32)
+
+    assert_equal [1, 2], dept_ids
+  end
+
+  def test_cross_join
+    stmt = Focus::PG.select.from(
+      Employees.cross_join(Departments, on: Employees.department_id.eq(Departments.id))
+    )
+
+    assert_equal "SELECT * FROM employees CROSS JOIN departments ON employees.department_id = departments.id", stmt.to_sql
+  end
+
+  def test_inner_join
+    stmt = Focus::PG.select.from(
+      Employees.inner_join(Departments, on: Employees.department_id.eq(Departments.id))
+    )
+
+    assert_equal "SELECT * FROM employees INNER JOIN departments ON employees.department_id = departments.id", stmt.to_sql
+  end
+
+  def test_left_join
+    stmt = Focus::PG.select.from(
+      Employees.left_join(Departments, on: Employees.department_id.eq(Departments.id))
+    )
+
+    assert_equal "SELECT * FROM employees LEFT JOIN departments ON employees.department_id = departments.id", stmt.to_sql
+  end
+
+  def test_right_join
+    stmt = Focus::PG.select.from(
+      Employees.right_join(Departments, on: Employees.department_id.eq(Departments.id))
+    )
+
+    assert_equal "SELECT * FROM employees RIGHT JOIN departments ON employees.department_id = departments.id", stmt.to_sql
+  end
+
+  def test_subselect_in_where_clause
+    subquery = Employees.select(Employees.department_id).where(Employees.salary.greater_than(90))
+
+    departments = Departments.select
+      .where(Departments.id.in_list(subquery))
+      .order_by(Departments.id.asc)
+
+    expected_sql = formatted(<<-SQL)
+      SELECT * FROM departments WHERE departments.id IN
+      (SELECT employees.department_id FROM employees WHERE employees.salary > $1)
+      ORDER BY departments.id ASC
+    SQL
+    assert_equal expected_sql, departments.to_sql
+  end
+
+  def test_table_alias
+    aliased_table = Employees.aliased("e")
+    sql = Focus::PG.select(aliased_table.name)
+      .from(aliased_table)
+      .where(aliased_table.salary.greater_than(80))
+      .order_by(aliased_table.id.asc)
+
+    expected_sql = formatted(<<-SQL)
+      SELECT e.name FROM employees e
+      WHERE e.salary > $1
+      ORDER BY e.id ASC
+    SQL
+    assert_equal expected_sql, sql.to_sql
+  end
+
+  def test_subselect_in_from_clause
+    employee_count_col = Focus::Int32Column.new("employee_count")
+    subquery = Employees.select(Employees.department_id, Focus.count(Employees.id).aliased("employee_count"))
+      .group_by(Employees.department_id)
+      .having(employee_count_col.greater_than(1))
+      .aliased("dept_counts")
+
+    query = Focus::PG.select.from(subquery).order_by(employee_count_col.from(subquery).desc)
+
+    expected_sql = formatted(<<-SQL)
+      SELECT * FROM
+      (SELECT employees.department_id, COUNT(employees.id) AS employee_count
+        FROM employees
+        GROUP BY employees.department_id
+        HAVING employee_count > $1) dept_counts
+      ORDER BY dept_counts.employee_count DESC
+    SQL
+    assert_equal expected_sql, query.to_sql
+  end
 end
