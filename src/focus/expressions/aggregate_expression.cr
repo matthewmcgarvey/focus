@@ -12,4 +12,8 @@ class Focus::AggregateExpression < Focus::Expression
 
   def initialize(@type : AggregateType, @argument : Focus::Expression)
   end
+
+  def to_projection : Focus::ProjectionExpression
+    Focus::ProjectionExpression.new(self)
+  end
 end

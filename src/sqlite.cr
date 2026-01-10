@@ -8,14 +8,15 @@ module Focus::SQLite
     Focus::SQLite::SelectStatement.new(select_clause)
   end
 
-  def self.select(*fields : Focus::Column | Focus::ProjectionExpression | Focus::AggregateExpression) : Focus::SQLite::SelectStatement
-    projections = fields.map do |field|
-      if field.is_a?(Focus::ProjectionExpression)
-        field
-      else
-        Focus::ProjectionExpression.new(field)
+  def self.select(*fields : Focus::Column | Focus::ProjectionExpression | Focus::AggregateExpression | Array(Focus::Column)) : Focus::SQLite::SelectStatement
+    projections = [] of Focus::ProjectionExpression
+    fields.each do |field|
+      if field.is_a?(Array(Focus::Column))
+        projections.concat(field.map(&.to_projection))
+      elsif field.is_a?(Focus::Column) || field.is_a?(Focus::AggregateExpression) || field.is_a?(Focus::ProjectionExpression)
+        projections << field.to_projection
       end
-    end.to_a
+    end
     self.select(projections)
   end
 

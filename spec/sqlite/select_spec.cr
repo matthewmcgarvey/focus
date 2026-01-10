@@ -191,4 +191,15 @@ describe "SQLite Select" do
     SQL
     query.to_sql.should eq(expected_sql)
   end
+
+  it "query with all table columns" do
+    query = Departments.select(Departments.columns)
+    names = [] of String
+    SQLITE_DATABASE.query_all(query.to_sql) do |rs|
+      rs.read(Int32)
+      names << rs.read(String)
+    end
+
+    names.should eq(["tech", "finance"])
+  end
 end

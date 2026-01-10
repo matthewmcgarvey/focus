@@ -1,6 +1,9 @@
-.PHONY: test test-pg test-sqlite gen-pg gen-sqlite gen-all
+.PHONY: test test-focus test-pg test-sqlite gen-pg gen-sqlite gen-all
 
-test: test-sqlite test-pg
+test: test-focus test-sqlite test-pg
+
+test-focus:
+	crystal spec spec/focus/
 
 test-pg:
 	crystal spec spec/pg/

@@ -1,7 +1,7 @@
 class Focus::PGTable < Focus::Table
   getter dialect : Focus::Dialect = Focus::PGDialect.new
 
-  def select(*fields : Focus::Column | Focus::ProjectionExpression | Focus::AggregateExpression) : Focus::PG::SelectStatement
+  def select(*fields : Focus::Column | Focus::ProjectionExpression | Focus::AggregateExpression | Array(Focus::Column)) : Focus::PG::SelectStatement
     Focus::PG.select(*fields).from(self)
   end
 

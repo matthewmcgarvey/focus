@@ -89,21 +89,27 @@ class Focus::SqlFormatter < Focus::SqlVisitor
   def visit_expression(expression : Focus::ProjectionExpression) : Nil
     expression.inner.accept(self)
     if proj_alias = expression.projection_alias
-      write "AS #{quoted(proj_alias)} "
+      write "AS "
+      write_identifier(proj_alias)
+      write " "
     end
   end
 
   def visit_expression(expression : Focus::Column) : Nil
     if table_name = expression.table_name
-      write "#{quoted(table_name)}."
+      write_identifier(table_name)
+      write "."
     end
-    write "#{quoted(expression.column_name)} "
+    write_identifier(expression.column_name)
+    write " "
   end
 
   def visit_expression(expression : Focus::TableReferenceExpression) : Nil
-    write "#{quoted(expression.table_name)} "
+    write_identifier(expression.table_name)
+    write " "
     if table_alias = expression.table_alias
-      write "#{quoted(table_alias)} "
+      write_identifier(table_alias)
+      write " "
     end
   end
 
@@ -124,7 +130,8 @@ class Focus::SqlFormatter < Focus::SqlVisitor
 
   def visit_expression(expression : Focus::WildcardExpression) : Nil
     if table_name = expression.table_name
-      write "#{quoted(table_name)}."
+      write_identifier(table_name)
+      write "."
     end
     write "* "
   end
@@ -192,7 +199,8 @@ class Focus::SqlFormatter < Focus::SqlVisitor
   def visit_expression(expression : Focus::SubqueryExpression) : Nil
     wrap_in_parens { expression.subquery.accept(self) }
     if subquery_alias = expression.subquery_alias
-      write "#{quoted(subquery_alias)} "
+      write_identifier subquery_alias
+      write " "
     end
   end
 
@@ -225,7 +233,8 @@ class Focus::SqlFormatter < Focus::SqlVisitor
   end
 
   def visit_token(token : Focus::ColumnToken) : Nil
-    write "#{quoted(token.column)} "
+    write_identifier(token.column)
+    write " "
   end
 
   def visit_token(token : Focus::Token) : Nil
@@ -255,12 +264,28 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     write "? "
   end
 
+  protected def write_identifier(name : String)
+    if should_quote?(name)
+      write quoted(name)
+    else
+      write name
+    end
+  end
+
   protected def write(str : String)
     sql_string_builder << str
   end
 
+  protected def should_quote?(str : String)
+    str.each_char_with_index do |char, idx|
+      next if (char.number? && idx > 0) || char == '_'
+      return true if !char.letter? || char.uppercase?
+    end
+    false
+  end
+
   protected def quoted(str : String)
-    str
+    %["#{str}"]
   end
 
   protected def wrap_in_parens(&)

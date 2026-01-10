@@ -4,4 +4,8 @@ class Focus::ProjectionExpression < Focus::Expression
 
   def initialize(@inner : Focus::Expression, @projection_alias : String? = nil)
   end
+
+  def to_projection : Focus::ProjectionExpression
+    self
+  end
 end

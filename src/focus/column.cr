@@ -37,4 +37,8 @@ abstract class Focus::Column < Focus::Expression
   def greater_than(rhs : Focus::Expression) : Focus::BoolExpression
     binary_op(">", rhs)
   end
+
+  def to_projection : Focus::ProjectionExpression
+    Focus::ProjectionExpression.new(self)
+  end
 end
