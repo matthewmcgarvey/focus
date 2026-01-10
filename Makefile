@@ -1,4 +1,12 @@
-.PHONY: gen-pg gen-sqlite gen-all
+.PHONY: test test-pg test-sqlite gen-pg gen-sqlite gen-all
+
+test: test-sqlite test-pg
+
+test-pg:
+	crystal spec spec/pg/
+
+test-sqlite:
+	crystal spec spec/sqlite/
 
 gen-pg:
 	crystal run src/cli.cr -- run -s postgres -d postgres://postgres:postgres@localhost:5432/test -o spec/pg/gen/

@@ -1,6 +1,0 @@
-#!/bin/bash
-
-echo "SQLite Tests"
-crystal spec spec/sqlite/
-echo "PG Tests"
-crystal spec spec/pg/
