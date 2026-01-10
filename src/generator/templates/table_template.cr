@@ -30,6 +30,8 @@ class Focus::Templates::TableTemplate
         "IntColumn(Int64)"
       when "TEXT", "VARCHAR"
         "StringColumn"
+      when "DATE"
+        "TimeColumn"
       else
         puts "unhandled type #{data_type.name}. defaulting to string"
         "StringColumn"

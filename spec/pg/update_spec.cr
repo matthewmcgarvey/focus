@@ -35,4 +35,13 @@ describe "PG Update" do
       ids.should eq(Departments.select(Departments.id).distinct.where(Departments.name.eq("foo")).query_all(conn, Int32))
     end
   end
+
+  it "updates date column" do
+    in_transaction do |conn|
+      Employees.update.set(Employees.hire_date, Time.utc(2026, 1, 10)).where(Employees.id.eq(1)).exec(conn)
+
+      result = Employees.select(Employees.hire_date).where(Employees.id.eq(1)).query_one(conn, Time)
+      result.should eq(Time.utc(2026, 1, 10))
+    end
+  end
 end
