@@ -2,6 +2,8 @@ require "./spec_helper"
 require "../src/sqlite"
 require "./sqlite/gen/table/*"
 
+include Tables
+
 SQLITE_DATABASE = DB.open("sqlite3://foo.db")
 
 def in_transaction(&)

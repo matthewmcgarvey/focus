@@ -2,6 +2,8 @@ require "./spec_helper"
 require "../src/pg"
 require "./pg/gen/table/*"
 
+include Tables
+
 PG_DATABASE = DB.open("postgres://postgres:postgres@localhost/test")
 
 def in_transaction(&)
