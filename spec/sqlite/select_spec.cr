@@ -202,4 +202,46 @@ describe "SQLite Select" do
 
     names.should eq(["tech", "finance"])
   end
+
+  it "selects department stats with multiple aggregates" do
+    d = Departments.aliased("d")
+    e = Employees.aliased("e")
+
+    # Create a column reference for ordering by alias
+    total_salary_col = Focus::IntColumn(Int32).new("total_salary")
+
+    query = Focus::SQLite.select(
+      d.name.aliased("department_name"),
+      Focus.count(e.id).aliased("employee_count"),
+      Focus.sum(e.salary).aliased("total_salary"),
+      Focus.avg(e.salary).aliased("avg_salary")
+    )
+      .from(d.left_join(e, on: d.id.eq(e.department_id)))
+      .group_by(d.id, d.name)
+      .order_by(total_salary_col.desc)
+
+    expected_sql = formatted(<<-SQL)
+      SELECT d.name AS department_name,
+             COUNT(e.id) AS employee_count,
+             SUM(e.salary) AS total_salary,
+             AVG(e.salary) AS avg_salary
+      FROM departments d
+      LEFT JOIN employees e ON d.id = e.department_id
+      GROUP BY d.id, d.name
+      ORDER BY total_salary DESC
+    SQL
+
+    query.to_sql.should eq(expected_sql)
+
+    # Also verify execution returns correct data
+    results = query.query_all(SQLITE_DATABASE, as: {department_name: String, employee_count: Int32, total_salary: Int32, avg_salary: Float64})
+
+    # finance: tom (200) + penny (100) = 300, avg 150
+    # tech: vince (100) + marry (50) = 150, avg 75
+    results.size.should eq(2)
+    results[0][:department_name].should eq("finance")
+    results[0][:total_salary].should eq(300)
+    results[1][:department_name].should eq("tech")
+    results[1][:total_salary].should eq(150)
+  end
 end

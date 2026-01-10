@@ -13,7 +13,7 @@ abstract class Focus::Table
   end
 
   def as_table_source : Focus::TableSource
-    Focus::TableReferenceExpression.new(table_name)
+    Focus::TableReferenceExpression.new(table_name, table_alias)
   end
 
   def aliased(table_alias : String? = nil) : Focus::Table
