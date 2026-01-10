@@ -19,7 +19,7 @@ class Focus::PG::InsertStatement < Focus::PG::Statement
     self
   end
 
-  def query(query : Focus::SelectStatement) : self
+  def query(query : Focus::PG::SelectStatement) : self
     @query = Focus::QueryClause.new(query)
     self
   end

@@ -58,6 +58,10 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     visit_list clause.rows
   end
 
+  def visit_clause(clause : Focus::QueryClause) : Nil
+    clause.query.accept(self)
+  end
+
   def visit_clause(clause : Focus::ReturningClause) : Nil
     write "RETURNING "
     visit_list clause.columns

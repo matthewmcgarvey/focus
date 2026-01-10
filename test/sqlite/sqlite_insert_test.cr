@@ -14,4 +14,17 @@ class SQLiteInsertTest < SQLiteTestBase
       assert_equal ["tech", "finance", "r&d", "hr"], result
     end
   end
+
+  def test_insert_from_query
+    in_transaction do |conn|
+      Departments.insert(Departments.name, Departments.location)
+        .query(
+          Departments.select(Departments.name, Departments.location)
+            .where(Departments.id.eq(1)))
+        .exec(conn)
+
+      result = Departments.select(Focus.count(Departments.id)).where(Departments.name.eq("tech")).query_one(conn, Int64)
+      assert_equal 2, result
+    end
+  end
 end
