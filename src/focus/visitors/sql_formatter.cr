@@ -4,39 +4,8 @@ class Focus::SqlFormatter < Focus::SqlVisitor
   private getter sql_string_builder = String::Builder.new
   getter parameters = [] of DB::Any
 
-  def visit_statement(statement : Focus::SelectStatement) : Nil
-    statement.select_clause.accept(self)
-    statement.from_clause.try(&.accept(self))
-    statement.where_clause.try(&.accept(self))
-    statement.group_by_clause.try(&.accept(self))
-    statement.having_clause.try(&.accept(self))
-    statement.order_by_clause.try(&.accept(self))
-    statement.limit_clause.try(&.accept(self))
-    statement.offset_clause.try(&.accept(self))
-  end
-
-  def visit_statement(statement : Focus::InsertStatement) : Nil
-    statement.insert_clause.accept(self)
-    statement.values_clause.try(&.accept(self))
-    statement.query.try(&.accept(self))
-    statement.returning.try(&.accept(self))
-  end
-
-  def visit_statement(statement : Focus::UpdateStatement) : Nil
-    statement.update.accept(self)
-    statement.set.try(&.accept(self))
-    statement.where.try(&.accept(self))
-    statement.returning.try(&.accept(self))
-  end
-
-  def visit_statement(statement : Focus::DeleteStatement) : Nil
-    statement.delete.accept(self)
-    statement.where.try(&.accept(self))
-    statement.returning.try(&.accept(self))
-  end
-
   def visit_statement(statement : Focus::Statement) : Nil
-    raise "shouldn't get here. implement #{statement.class} handling"
+    statement.ordered_clauses.each { |clause| clause.accept(self) }
   end
 
   def visit_clause(clause : Focus::SelectClause) : Nil
@@ -235,7 +204,7 @@ class Focus::SqlFormatter < Focus::SqlVisitor
   def visit_expression(expression : Focus::SetColumnExpression) : Nil
     expression.column.accept(self)
     write "= "
-    if expression.value.is_a?(Focus::SelectStatement)
+    if expression.value.is_a?(Focus::Statement)
       wrap_in_parens { expression.value.accept(self) }
     else
       expression.value.accept(self)

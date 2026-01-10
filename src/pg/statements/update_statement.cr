@@ -1,4 +1,4 @@
-class Focus::UpdateStatement < Focus::Statement
+class Focus::PG::UpdateStatement < Focus::Statement
   getter update : Focus::UpdateClause
   getter set : Focus::SetClause?
   getter where : Focus::WhereClause?
@@ -31,5 +31,14 @@ class Focus::UpdateStatement < Focus::Statement
   def returning(*returning_vals : Focus::Expression) : self
     @returning = Focus::ReturningClause.new(returning_vals.select(Focus::Expression))
     self
+  end
+
+  def ordered_clauses : Array(Focus::Clause)
+    [
+      update,
+      set,
+      where,
+      returning
+    ].compact
   end
 end

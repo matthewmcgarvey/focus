@@ -119,6 +119,10 @@ TODO: Write development instructions here
 
 ## Rewrite
 
+- statements need to be formatted according to the dialect that they are connected to 
+  - it's likely that we will need to remove the ability to easily turn all expressions into sql directly
+  - limit it to statements and give statements access to the dialect somehow
+  - I'm still trying to figure out why jet uses "root" and if it's needed here
 - Values table
 - Dialect hooks/changes
 - SELECT FOR UPDATE

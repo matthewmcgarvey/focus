@@ -1,9 +1,9 @@
 class Focus::SubqueryExpression < Focus::Expression
   include Focus::TableSource
 
-  getter subquery : Focus::SelectStatement
+  getter subquery : Focus::Statement
   getter subquery_alias : String?
 
-  def initialize(@subquery : Focus::SelectStatement, @subquery_alias : String? = nil)
+  def initialize(@subquery : Focus::Statement, @subquery_alias : String? = nil)
   end
 end

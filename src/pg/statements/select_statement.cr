@@ -1,4 +1,4 @@
-class Focus::SelectStatement < Focus::Statement
+class Focus::PG::SelectStatement < Focus::PG::Statement
   getter select_clause : Focus::SelectClause
   property from_clause : Focus::FromClause?
   property where_clause : Focus::WhereClause?
@@ -59,5 +59,18 @@ class Focus::SelectStatement < Focus::Statement
 
   def aliased(label : String) : Focus::SubqueryExpression
     Focus::SubqueryExpression.new(self, label)
+  end
+
+  def ordered_clauses : Array(Focus::Clause)
+    [
+      select_clause,
+      from_clause,
+      where_clause,
+      group_by_clause,
+      having_clause,
+      order_by_clause,
+      limit_clause,
+      offset_clause
+    ].compact
   end
 end

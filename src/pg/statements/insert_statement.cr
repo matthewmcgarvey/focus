@@ -1,7 +1,7 @@
-class Focus::InsertStatement < Focus::Statement
+class Focus::PG::InsertStatement < Focus::Statement
   getter insert_clause : Focus::InsertClause
   getter values_clause : Focus::ValuesClause?
-  getter query : Focus::SelectStatement?
+  getter query : Focus::QueryClause?
   getter returning : Focus::ReturningClause?
 
   def initialize(@insert_clause : Focus::InsertClause)
@@ -20,12 +20,21 @@ class Focus::InsertStatement < Focus::Statement
   end
 
   def query(query : Focus::SelectStatement) : self
-    @query = query
+    @query = Focus::QueryClause.new(query)
     self
   end
 
   def returning(*returning_vals : Focus::Expression) : self
     @returning = Focus::ReturningClause.new(returning_vals.select(Focus::Expression))
     self
+  end
+
+  def ordered_clauses : Array(Focus::Clause)
+    [
+      insert_clause,
+      values_clause,
+      query,
+      returning
+    ].compact
   end
 end

@@ -9,7 +9,7 @@ class PGSelectTest < PGTestBase
     property job : String
     property manager_id : Int32?
     property hire_date : Time
-    property salary : Int32
+    property salary : Int64
     property department_id : Int32
     property is_remote : Bool
   end
@@ -24,7 +24,7 @@ class PGSelectTest < PGTestBase
     property mixed_case : String?
   end
 
-  focus def test_passing_sql_and_arguments_to_database
+  def test_passing_sql_and_arguments_to_database
     stmt1 = Departments.select(Departments.id)
     sql1, args1 = stmt1.to_sql_with_args
     result1 = database.query_all(sql1, args: args1, as: Int32)
@@ -32,12 +32,11 @@ class PGSelectTest < PGTestBase
 
     stm2 = Employees.select(Focus.count(Employees.id)).where(Employees.salary.greater_than(60))
     sql2, args2 = stm2.to_sql_with_args
-    pp sql2, args2
-    result2 = database.query_one(sql2, args: args2, as: Int32)
+    result2 = database.query_one(sql2, args: args2, as: Int64)
     assert_equal 3, result2
   end
 
-  def test_query_all
+  focus def test_query_all
     stmt1 = Employees.select(Employees.id, Employees.name)
     result1 = stmt1.query_all(database, as: {id: Int32, name: String})
     assert_equal [

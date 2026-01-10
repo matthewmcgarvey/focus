@@ -1,6 +1,6 @@
 abstract class Focus::Table
-  include Focus::ReadableTable
   include Focus::UpdateableTable
+  include Focus::Joinable
 
   getter table_name : String
   getter table_alias : String?
@@ -14,5 +14,9 @@ abstract class Focus::Table
 
   def as_table_source : Focus::TableSource
     Focus::TableReferenceExpression.new(table_name)
+  end
+
+  def aliased(table_alias : String? = nil) : Focus::Table
+    self.class.new(table_name, table_alias)
   end
 end

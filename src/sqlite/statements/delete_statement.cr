@@ -1,4 +1,4 @@
-class Focus::DeleteStatement < Focus::Statement
+class Focus::SQLite::DeleteStatement < Focus::Statement
   getter delete : Focus::DeleteClause
   getter where : Focus::WhereClause?
   getter returning : Focus::ReturningClause?
@@ -14,5 +14,13 @@ class Focus::DeleteStatement < Focus::Statement
   def returning(*returning_vals : Focus::Expression) : self
     @returning = Focus::ReturningClause.new(returning_vals.select(Focus::Expression))
     self
+  end
+
+  def ordered_clauses : Array(Focus::Clause)
+    [
+      delete,
+      where,
+      returning
+    ].compact
   end
 end
