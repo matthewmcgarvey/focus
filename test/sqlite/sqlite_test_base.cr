@@ -10,10 +10,10 @@ abstract class SQLiteTestBase < ExecutingTestBase
   end
 
   def setup
-    exec_sql_script("./test/support/init-sqlite-data.sql")
+    # exec_sql_script("./test/support/init-sqlite-data.sql")
   end
 
   def teardown
-    exec_sql_script("./test/support/drop-sqlite-data.sql")
+    # exec_sql_script("./test/support/drop-sqlite-data.sql")
   end
 end

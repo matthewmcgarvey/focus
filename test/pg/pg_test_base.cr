@@ -10,10 +10,10 @@ abstract class PGTestBase < ExecutingTestBase
   end
 
   def setup
-    exec_sql_script("./test/support/init-pg-data.sql")
+    # exec_sql_script("./test/support/init-pg-data.sql")
   end
 
   def teardown
-    exec_sql_script("./test/support/drop-pg-data.sql")
+    # exec_sql_script("./test/support/drop-pg-data.sql")
   end
 end

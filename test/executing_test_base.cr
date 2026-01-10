@@ -15,4 +15,11 @@ abstract class ExecutingTestBase < TestBase
         .each { |sql_stmt| conn.exec sql_stmt }
     end
   end
+
+  def in_transaction(&)
+    database.transaction do |txn|
+      yield txn.connection
+      txn.rollback
+    end
+  end
 end

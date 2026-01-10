@@ -2,10 +2,12 @@ require "./sqlite_test_base"
 
 class SQLiteDeleteTest < SQLiteTestBase
   def test_simple_delete
-    refute_nil Employees.select(Employees.id).where(Employees.id.eq(1)).query_one?(database, Int32)
+    in_transaction do |conn|
+      refute_nil Employees.select(Employees.id).where(Employees.id.eq(1)).query_one?(conn, Int32)
 
-    Employees.delete.where(Employees.id.eq(1)).exec(database)
+      Employees.delete.where(Employees.id.eq(1)).exec(conn)
 
-    assert_nil Employees.select(Employees.id).where(Employees.id.eq(1)).query_one?(database, Int32)
+      assert_nil Employees.select(Employees.id).where(Employees.id.eq(1)).query_one?(conn, Int32)
+    end
   end
 end
