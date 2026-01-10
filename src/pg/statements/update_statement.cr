@@ -1,4 +1,4 @@
-class Focus::PG::UpdateStatement < Focus::Statement
+class Focus::PG::UpdateStatement < Focus::PG::Statement
   getter update : Focus::UpdateClause
   getter set : Focus::SetClause?
   getter where : Focus::WhereClause?

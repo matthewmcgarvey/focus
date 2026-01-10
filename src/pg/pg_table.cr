@@ -25,8 +25,10 @@ class Focus::PGTable < Focus::Table
     Focus::PG::InsertStatement.new(expr)
   end
 
-  def update : Focus::UpdateStatement
-    Focus.update(self)
+  def update : Focus::PG::UpdateStatement
+    table_ref = Focus::TableReferenceExpression.new(table_name, table_alias)
+    update = Focus::UpdateClause.new(table_ref)
+    Focus::PG::UpdateStatement.new(update: update)
   end
 
   def delete : Focus::PG::DeleteStatement
