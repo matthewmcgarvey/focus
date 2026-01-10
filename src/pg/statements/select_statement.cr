@@ -70,7 +70,7 @@ class Focus::PG::SelectStatement < Focus::PG::Statement
       having_clause,
       order_by_clause,
       limit_clause,
-      offset_clause
+      offset_clause,
     ].compact
   end
 end

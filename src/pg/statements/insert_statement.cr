@@ -34,7 +34,7 @@ class Focus::PG::InsertStatement < Focus::PG::Statement
       insert_clause,
       values_clause,
       query,
-      returning
+      returning,
     ].compact
   end
 end

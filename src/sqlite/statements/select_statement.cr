@@ -70,7 +70,7 @@ class Focus::SQLite::SelectStatement < Focus::SQLite::Statement
       having_clause,
       order_by_clause,
       limit_clause,
-      offset_clause
+      offset_clause,
     ].compact
   end
 end

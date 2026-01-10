@@ -38,7 +38,7 @@ class Focus::PG::UpdateStatement < Focus::PG::Statement
       update,
       set,
       where,
-      returning
+      returning,
     ].compact
   end
 end

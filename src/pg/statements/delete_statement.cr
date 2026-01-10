@@ -20,7 +20,7 @@ class Focus::PG::DeleteStatement < Focus::PG::Statement
     [
       delete,
       where,
-      returning
+      returning,
     ].compact
   end
 end

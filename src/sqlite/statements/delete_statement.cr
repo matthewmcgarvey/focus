@@ -20,7 +20,7 @@ class Focus::SQLite::DeleteStatement < Focus::SQLite::Statement
     [
       delete,
       where,
-      returning
+      returning,
     ].compact
   end
 end

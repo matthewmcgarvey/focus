@@ -34,7 +34,7 @@ class Focus::SQLite::InsertStatement < Focus::SQLite::Statement
       insert_clause,
       values_clause,
       query,
-      returning
+      returning,
     ].compact
   end
 end

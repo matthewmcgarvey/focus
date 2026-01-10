@@ -38,7 +38,7 @@ class Focus::SQLite::UpdateStatement < Focus::SQLite::Statement
       update,
       set,
       where,
-      returning
+      returning,
     ].compact
   end
 end
