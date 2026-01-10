@@ -117,7 +117,7 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     expression.right.accept(self)
   end
 
-  def visit_expression(expression : Focus::Int32Expression | Focus::Int64Expression) : Nil
+  def visit_expression(expression : Focus::IntExpression) : Nil
     write_placeholder
     parameters << expression.value
   end

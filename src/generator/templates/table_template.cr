@@ -23,16 +23,16 @@ class Focus::Templates::TableTemplate
     private def to_column_type(data_type : Metadata::Column::DataType) : String
       case data_type.name.upcase
       when "BOOLEAN", "BOOL"
-        "Bool"
+        "BoolColumn"
       when "INTEGER", "INT4"
-        "Int32"
+        "IntColumn(Int32)"
       when "INT8"
-        "Int64"
+        "IntColumn(Int64)"
       when "TEXT", "VARCHAR"
-        "String"
+        "StringColumn"
       else
         puts "unhandled type #{data_type.name}. defaulting to string"
-        "String"
+        "StringColumn"
       end
     end
   end

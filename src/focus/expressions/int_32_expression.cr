@@ -1,8 +1,8 @@
-class Focus::Int32Expression < Focus::Expression
+class Focus::IntExpression(INT_TYPE) < Focus::Expression
   include Focus::Parameter
 
-  getter value : Int32
+  getter value : INT_TYPE
 
-  def initialize(@value : Int32)
+  def initialize(@value : INT_TYPE)
   end
 end

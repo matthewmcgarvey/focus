@@ -173,7 +173,7 @@ describe "SQLite Select" do
   end
 
   it "uses subselect in from clause" do
-    employee_count_col = Focus::Int32Column.new("employee_count")
+    employee_count_col = Focus::IntColumn(Int32).new("employee_count")
     subquery = Employees.select(Employees.department_id, Focus.count(Employees.id).aliased("employee_count"))
       .group_by(Employees.department_id)
       .having(employee_count_col.greater_than(1))
