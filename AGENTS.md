@@ -21,14 +21,15 @@ shards install
 ./bin/test
 ```
 
-### Run a Single Test File
+### Run a Single Spec File
 ```bash
-./bin/test ./test/focus/select_test.cr
+crystal spec spec/pg/select_spec.cr
 ```
 
-### Run Tests Matching Pattern
+### Run Specs for a Database
 ```bash
-./bin/test ./test/sqlite/*_test.cr
+crystal spec spec/sqlite/
+crystal spec spec/pg/
 ```
 
 ### Run Linter (Ameba)
@@ -60,7 +61,7 @@ src/
 ├── focus/                # Core library
 │   ├── clauses/          # SQL clause types (SELECT, FROM, WHERE, etc.)
 │   ├── columns/          # Column types (Int32Column, StringColumn, etc.)
-│   ├── dsl/              # DSL helpers (aggregation functions) (aggregation functions)
+│   ├── dsl/              # DSL helpers (aggregation functions)
 │   ├── expressions/      # SQL expression types
 │   ├── tokens/           # SQL tokens
 │   └── visitors/         # Visitor pattern (SqlFormatter)
@@ -75,16 +76,22 @@ src/
 │   ├── pg_table.cr       # PGTable class
 │   └── statements/       # PostgreSQL statement builders
 
-test/
-├── test_base.cr          # Base class for unit tests
-├── executing_test_base.cr # Base for tests that execute SQL
-├── focus/                # Core library unit tests
-├── sqlite/               # SQLite integration tests
-│   ├── sqlite_test_base.cr
-│   └── gen/table/        # Generated SQLite table definitions
-├── pg/                   # PostgreSQL integration tests
-│   ├── pg_test_base.cr
-│   └── gen/table/        # Generated PostgreSQL table definitions
+spec/
+├── spec_helper.cr        # Base spec helper
+├── pg_spec_helper.cr     # PostgreSQL spec helper with database connection
+├── sqlite_spec_helper.cr # SQLite spec helper with database connection
+├── pg/                   # PostgreSQL integration specs
+│   ├── gen/table/        # Generated PostgreSQL table definitions
+│   ├── select_spec.cr
+│   ├── insert_spec.cr
+│   ├── update_spec.cr
+│   └── delete_spec.cr
+├── sqlite/               # SQLite integration specs
+│   ├── gen/table/        # Generated SQLite table definitions
+│   ├── select_spec.cr
+│   ├── insert_spec.cr
+│   ├── update_spec.cr
+│   └── delete_spec.cr
 └── support/              # SQL scripts (init-*.sql, drop-*.sql)
 ```
 
@@ -103,8 +110,7 @@ test/
 - Table classes: `{Name}Table` suffix (e.g., `EmployeesTable`)
 - Table instances: Constant without suffix (e.g., `Employees = EmployeesTable.new`)
 - Column classes: `{Type}Column` (e.g., `Int32Column`, `StringColumn`)
-- Test classes: `{Feature}Test` (e.g., `FocusSelectTest`)
-- Test files: `*_test.cr`
+- Spec files: `*_spec.cr`
 
 ### Imports/Requires
 - Standard library first, then dependencies, then local files
@@ -131,12 +137,12 @@ test/
 - Return `nil` for "not found" cases (e.g., `query_one?`)
 
 ### Testing Conventions
-- Test framework: minitest.cr
-- Test classes extend `TestBase` (unit) or `ExecutingTestBase` (integration)
-- Test method names: `def test_descriptive_name`
-- Use `assert_equal expected, actual`
-- Use `assert_nil` for nil checks
+- Test framework: Crystal's built-in Spec
+- Use `describe` blocks for grouping, `it` blocks for individual tests
+- Use `actual.should eq(expected)` for equality checks
+- Use `value.should be_nil` for nil checks
 - Helper method `formatted(sql)` strips and normalizes whitespace in SQL strings
+- Use `in_transaction` helper for tests that modify data (auto-rollback)
 
 ### Table Definition Pattern
 ```crystal
@@ -183,7 +189,6 @@ Users.delete.where(Users.id.eq(1)).exec(database)
 
 **Development:**
 - `sqlite3`, `pg` - Database drivers
-- `minitest` - Testing framework
 - `ameba` - Static code analyzer (linter)
 
 ## Design Principles

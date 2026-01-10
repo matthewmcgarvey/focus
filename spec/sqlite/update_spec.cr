@@ -1,7 +1,7 @@
-require "./sqlite_test_base"
+require "../sqlite_spec_helper"
 
-class SQLiteUpdateTest < SQLiteTestBase
-  def test_simple_update
+describe "SQLite Update" do
+  it "updates with simple set" do
     in_transaction do |conn|
       Departments.update
         .set(Departments.name, "foo")
@@ -10,29 +10,29 @@ class SQLiteUpdateTest < SQLiteTestBase
       result = Departments.select(Departments.name)
         .group_by(Departments.name)
         .query_all(conn, String)
-      assert_equal ["foo"], result
+      result.should eq(["foo"])
     end
   end
 
-  def test_set_from_select
+  it "sets from select subquery" do
     in_transaction do |conn|
-      assert_equal "tech", Departments.select(Departments.name).where(Departments.id.eq(1)).query_one(conn, String)
+      Departments.select(Departments.name).where(Departments.id.eq(1)).query_one(conn, String).should eq("tech")
 
       Departments.update
         .set(Departments.name, Departments.select(Departments.name).where(Departments.id.eq(2)))
         .where(Departments.id.eq(1))
         .exec(conn)
 
-      assert_equal "finance", Departments.select(Departments.name).where(Departments.id.eq(1)).query_one(conn, String)
+      Departments.select(Departments.name).where(Departments.id.eq(1)).query_one(conn, String).should eq("finance")
     end
   end
 
-  def test_returning
+  it "updates with returning clause" do
     in_transaction do |conn|
       ids = Departments.update.set(Departments.name, "foo").returning(Departments.id).query_all(conn, Int32)
 
-      assert ids.size > 0
-      assert_equal ids, Departments.select(Departments.id).distinct.where(Departments.name.eq("foo")).query_all(conn, Int32)
+      ids.size.should be > 0
+      ids.should eq(Departments.select(Departments.id).distinct.where(Departments.name.eq("foo")).query_all(conn, Int32))
     end
   end
 end

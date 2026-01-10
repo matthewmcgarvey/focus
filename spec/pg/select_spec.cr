@@ -1,148 +1,148 @@
-require "./pg_test_base"
+require "../pg_spec_helper"
 
-class PGSelectTest < PGTestBase
-  class Employee
-    include DB::Serializable
+class Employee
+  include DB::Serializable
 
-    property id : Int32
-    property name : String
-    property job : String
-    property manager_id : Int32?
-    property hire_date : Time
-    property salary : Int64
-    property department_id : Int32
-    property is_remote : Bool
-  end
+  property id : Int32
+  property name : String
+  property job : String
+  property manager_id : Int32?
+  property hire_date : Time
+  property salary : Int64
+  property department_id : Int32
+  property is_remote : Bool
+end
 
-  class Department
-    include DB::Serializable
+class Department
+  include DB::Serializable
 
-    property id : Int32
-    property name : String
-    property location : String
-    @[DB::Field(key: "mixedCase")]
-    property mixed_case : String?
-  end
+  property id : Int32
+  property name : String
+  property location : String
+  @[DB::Field(key: "mixedCase")]
+  property mixed_case : String?
+end
 
-  def test_passing_sql_and_arguments_to_database
+describe "PG Select" do
+  it "passes sql and arguments to database" do
     stmt1 = Departments.select(Departments.id)
     sql1, args1 = stmt1.to_sql_with_args
-    result1 = database.query_all(sql1, args: args1, as: Int32)
-    assert_equal [1, 2], result1
+    result1 = PG_DATABASE.query_all(sql1, args: args1, as: Int32)
+    result1.should eq([1, 2])
 
     stm2 = Employees.select(Focus.count(Employees.id)).where(Employees.salary.greater_than(60))
     sql2, args2 = stm2.to_sql_with_args
-    result2 = database.query_one(sql2, args: args2, as: Int64)
-    assert_equal 3, result2
+    result2 = PG_DATABASE.query_one(sql2, args: args2, as: Int64)
+    result2.should eq(3)
   end
 
-  def test_query_all
+  it "query_all returns all matching rows" do
     stmt1 = Employees.select(Employees.id, Employees.name)
-    result1 = stmt1.query_all(database, as: {id: Int32, name: String})
-    assert_equal [
+    result1 = stmt1.query_all(PG_DATABASE, as: {id: Int32, name: String})
+    result1.should eq([
       {id: 1, name: "vince"},
       {id: 2, name: "marry"},
       {id: 3, name: "tom"},
       {id: 4, name: "penny"},
-    ], result1
+    ])
 
     stmt2 = Departments.select(Departments.name, Departments.location)
-    result2 = stmt2.query_all(database, as: {String, String})
-    assert_equal [
+    result2 = stmt2.query_all(PG_DATABASE, as: {String, String})
+    result2.should eq([
       {"tech", "Guangzhou"},
       {"finance", "Beijing"},
-    ], result2
+    ])
 
     stmt3 = Employees.select.order_by(Employees.id.asc).limit(2)
-    result3 = stmt3.query_all(database, as: Employee)
-    assert_equal ["vince", "marry"], result3.map(&.name)
+    result3 = stmt3.query_all(PG_DATABASE, as: Employee)
+    result3.map(&.name).should eq(["vince", "marry"])
   end
 
-  def test_query_one
+  it "query_one returns single row" do
     stmt1 = Employees.select(Employees.name).where(Employees.id.eq(2))
-    result1 = stmt1.query_one(database, as: String)
-    assert_equal "marry", result1
+    result1 = stmt1.query_one(PG_DATABASE, as: String)
+    result1.should eq("marry")
 
     stmt2 = Departments.select.where(Departments.id.eq(1))
-    result2 = stmt2.query_one(database, as: Department)
-    assert_equal "tech", result2.name
+    result2 = stmt2.query_one(PG_DATABASE, as: Department)
+    result2.name.should eq("tech")
 
     stmt3 = Employees.select(Employees.id, Employees.name).where(Employees.id.eq(3))
-    result3 = stmt3.query_one(database, as: {id: Int32, name: String})
-    assert_equal({id: 3, name: "tom"}, result3)
+    result3 = stmt3.query_one(PG_DATABASE, as: {id: Int32, name: String})
+    result3.should eq({id: 3, name: "tom"})
 
     stmt4 = Departments.select(Departments.name, Departments.location).where(Departments.id.eq(2))
-    result4 = stmt4.query_one(database, as: {String, String})
-    assert_equal({"finance", "Beijing"}, result4)
+    result4 = stmt4.query_one(PG_DATABASE, as: {String, String})
+    result4.should eq({"finance", "Beijing"})
   end
 
-  def test_query_one?
+  it "query_one? returns nil when no rows match" do
     stmt1 = Employees.select(Employees.name).where(Employees.id.eq(5))
-    result1 = stmt1.query_one?(database, as: String)
-    assert_nil result1
+    result1 = stmt1.query_one?(PG_DATABASE, as: String)
+    result1.should be_nil
 
     stmt2 = Departments.select.where(Departments.id.eq(3))
-    result2 = stmt2.query_one?(database, as: Department)
-    assert_nil result2
+    result2 = stmt2.query_one?(PG_DATABASE, as: Department)
+    result2.should be_nil
 
     stmt3 = Employees.select(Employees.id, Employees.name).where(Employees.id.eq(6))
-    result3 = stmt3.query_one?(database, as: {id: Int32, name: String})
-    assert_nil result3
+    result3 = stmt3.query_one?(PG_DATABASE, as: {id: Int32, name: String})
+    result3.should be_nil
 
     stmt4 = Departments.select(Departments.name, Departments.location).where(Departments.id.eq(4))
-    result4 = stmt4.query_one?(database, as: {String, String})
-    assert_nil result4
+    result4 = stmt4.query_one?(PG_DATABASE, as: {String, String})
+    result4.should be_nil
 
     stmt5 = Employees.select(Employees.name).where(Employees.id.eq(2))
-    assert_equal "marry", stmt5.query_one?(database, as: String)
-    assert_equal({name: "marry"}, stmt5.query_one?(database, as: {name: String}))
+    stmt5.query_one?(PG_DATABASE, as: String).should eq("marry")
+    stmt5.query_one?(PG_DATABASE, as: {name: String}).should eq({name: "marry"})
 
     stmt6 = Employees.select(Employees.id, Employees.name).where(Employees.id.eq(2))
-    assert_equal({2, "marry"}, stmt6.query_one?(database, as: {Int32, String}))
+    stmt6.query_one?(PG_DATABASE, as: {Int32, String}).should eq({2, "marry"})
   end
 
-  def test_select_distinct
+  it "selects distinct values" do
     dept_ids = Employees.select(Employees.department_id)
       .distinct
       .order_by(Employees.department_id.asc)
-      .query_all(database, Int32)
+      .query_all(PG_DATABASE, Int32)
 
-    assert_equal [1, 2], dept_ids
+    dept_ids.should eq([1, 2])
   end
 
-  def test_cross_join
+  it "cross joins tables" do
     stmt = Focus::PG.select.from(
       Employees.cross_join(Departments, on: Employees.department_id.eq(Departments.id))
     )
 
-    assert_equal "SELECT * FROM employees CROSS JOIN departments ON employees.department_id = departments.id", stmt.to_sql
+    stmt.to_sql.should eq("SELECT * FROM employees CROSS JOIN departments ON employees.department_id = departments.id")
   end
 
-  def test_inner_join
+  it "inner joins tables" do
     stmt = Focus::PG.select.from(
       Employees.inner_join(Departments, on: Employees.department_id.eq(Departments.id))
     )
 
-    assert_equal "SELECT * FROM employees INNER JOIN departments ON employees.department_id = departments.id", stmt.to_sql
+    stmt.to_sql.should eq("SELECT * FROM employees INNER JOIN departments ON employees.department_id = departments.id")
   end
 
-  def test_left_join
+  it "left joins tables" do
     stmt = Focus::PG.select.from(
       Employees.left_join(Departments, on: Employees.department_id.eq(Departments.id))
     )
 
-    assert_equal "SELECT * FROM employees LEFT JOIN departments ON employees.department_id = departments.id", stmt.to_sql
+    stmt.to_sql.should eq("SELECT * FROM employees LEFT JOIN departments ON employees.department_id = departments.id")
   end
 
-  def test_right_join
+  it "right joins tables" do
     stmt = Focus::PG.select.from(
       Employees.right_join(Departments, on: Employees.department_id.eq(Departments.id))
     )
 
-    assert_equal "SELECT * FROM employees RIGHT JOIN departments ON employees.department_id = departments.id", stmt.to_sql
+    stmt.to_sql.should eq("SELECT * FROM employees RIGHT JOIN departments ON employees.department_id = departments.id")
   end
 
-  def test_subselect_in_where_clause
+  it "uses subselect in where clause" do
     subquery = Employees.select(Employees.department_id).where(Employees.salary.greater_than(90))
 
     departments = Departments.select
@@ -154,10 +154,10 @@ class PGSelectTest < PGTestBase
       (SELECT employees.department_id FROM employees WHERE employees.salary > $1)
       ORDER BY departments.id ASC
     SQL
-    assert_equal expected_sql, departments.to_sql
+    departments.to_sql.should eq(expected_sql)
   end
 
-  def test_table_alias
+  it "uses table alias" do
     aliased_table = Employees.aliased("e")
     sql = Focus::PG.select(aliased_table.name)
       .from(aliased_table)
@@ -169,10 +169,10 @@ class PGSelectTest < PGTestBase
       WHERE e.salary > $1
       ORDER BY e.id ASC
     SQL
-    assert_equal expected_sql, sql.to_sql
+    sql.to_sql.should eq(expected_sql)
   end
 
-  def test_subselect_in_from_clause
+  it "uses subselect in from clause" do
     employee_count_col = Focus::Int32Column.new("employee_count")
     subquery = Employees.select(Employees.department_id, Focus.count(Employees.id).aliased("employee_count"))
       .group_by(Employees.department_id)
@@ -189,6 +189,6 @@ class PGSelectTest < PGTestBase
         HAVING employee_count > $1) dept_counts
       ORDER BY dept_counts.employee_count DESC
     SQL
-    assert_equal expected_sql, query.to_sql
+    query.to_sql.should eq(expected_sql)
   end
 end

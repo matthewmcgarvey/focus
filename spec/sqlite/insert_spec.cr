@@ -1,21 +1,21 @@
-require "./sqlite_test_base"
+require "../sqlite_spec_helper"
 
-class SQLiteInsertTest < SQLiteTestBase
-  def test_simple_insert
+describe "SQLite Insert" do
+  it "inserts with simple values" do
     in_transaction do |conn|
       ids = Departments.insert(Departments.name, Departments.location)
         .values("r&d", "basement")
         .values("hr", "hawaii")
         .returning(Departments.id)
         .query_all(conn, as: Int32)
-      assert_equal 2, ids.size
+      ids.size.should eq(2)
 
       result = Departments.select(Departments.name).query_all(conn, String)
-      assert_equal ["tech", "finance", "r&d", "hr"], result
+      result.should eq(["tech", "finance", "r&d", "hr"])
     end
   end
 
-  def test_insert_from_query
+  it "inserts from query" do
     in_transaction do |conn|
       Departments.insert(Departments.name, Departments.location)
         .query(
@@ -24,7 +24,7 @@ class SQLiteInsertTest < SQLiteTestBase
         .exec(conn)
 
       result = Departments.select(Focus.count(Departments.id)).where(Departments.name.eq("tech")).query_one(conn, Int64)
-      assert_equal 2, result
+      result.should eq(2)
     end
   end
 end
