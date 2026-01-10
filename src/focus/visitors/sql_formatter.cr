@@ -5,7 +5,7 @@ class Focus::SqlFormatter < Focus::SqlVisitor
   getter parameters = [] of DB::Any
 
   def visit_statement(statement : Focus::Statement) : Nil
-    statement.ordered_clauses.each { |clause| clause.accept(self) }
+    statement.ordered_clauses.each(&.accept(self))
   end
 
   def visit_clause(clause : Focus::SelectClause) : Nil

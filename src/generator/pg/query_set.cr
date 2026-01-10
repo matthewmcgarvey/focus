@@ -37,7 +37,6 @@ class Focus::PGQuerySet < Focus::QuerySet
   end
 
   def get_table_columns_metadata(db : Focus::DBConn, schema_name : String, table_name : String) : Array(Metadata::Column)
-    query = "SELECT * FROM pragma_table_xinfo(?);"
     query = <<-SQL
       select
           attr.attname as "column.Name",
