@@ -1,3 +1,9 @@
 class Focus::IntColumn(INT_TYPE) < Focus::Column
-  scalar_wrappers(INT_TYPE, Focus::IntExpression(INT_TYPE), :eq, :greater_than)
+  def eq(value : INT_TYPE) : Focus::BoolExpression
+    eq(Focus::IntExpression(INT_TYPE).new(value))
+  end
+
+  def greater_than(value : INT_TYPE) : Focus::BoolExpression
+    greater_than(Focus::IntExpression(INT_TYPE).new(value))
+  end
 end

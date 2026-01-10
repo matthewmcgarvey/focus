@@ -1,3 +1,5 @@
 class Focus::TimeColumn < Focus::Column
-  scalar_wrappers(Time, Focus::GenericValueExpression(Time), :eq)
+  def eq(value : Time) : Focus::BoolExpression
+    eq(Focus::GenericValueExpression(Time).new(value))
+  end
 end

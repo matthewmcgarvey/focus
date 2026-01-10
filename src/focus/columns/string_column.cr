@@ -1,5 +1,7 @@
 class Focus::StringColumn < Focus::Column
-  scalar_wrappers(String, Focus::GenericValueExpression(String), :eq)
+  def eq(value : String) : Focus::BoolExpression
+    eq(Focus::GenericValueExpression(String).new(value))
+  end
 
   def in_list(*vals : String) : Focus::BoolExpression
     _in_list(*vals)

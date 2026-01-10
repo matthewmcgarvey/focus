@@ -1,6 +1,4 @@
 abstract class Focus::Column < Focus::Expression
-  include Focus::ColumnMacros
-
   property table_name : String?
   getter column_name : String
 

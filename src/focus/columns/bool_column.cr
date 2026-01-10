@@ -1,3 +1,5 @@
 class Focus::BoolColumn < Focus::Column
-  scalar_wrappers(Bool, Focus::GenericValueExpression(Bool), :eq)
+  def eq(value : Bool) : Focus::BoolExpression
+    eq(Focus::GenericValueExpression(Bool).new(value))
+  end
 end
