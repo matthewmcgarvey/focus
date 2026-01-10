@@ -1,10 +1,14 @@
 #!/bin/bash
 
-files=$1
+# files=$1
 
-if [ -z "$files" ]
-then
-  files=$(find ./test -iname "*_test.cr")
-fi
+# if [ -z "$files" ]
+# then
+#   files=$(find ./test -iname "*_test.cr")
+# fi
 
-crystal run $files
+# crystal run $files
+echo "SQLite Tests"
+crystal spec test/sqlite/*
+echo "PG Tests"
+crystal spec test/pg/*
