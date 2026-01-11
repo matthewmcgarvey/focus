@@ -71,6 +71,10 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     visit_list clause.rows
   end
 
+  def visit_clause(clause : Focus::ValuesClause::Row) : Nil
+    wrap_in_parens { visit_list(clause.values) }
+  end
+
   def visit_clause(clause : Focus::QueryClause) : Nil
     clause.query.accept(self)
   end
@@ -202,10 +206,6 @@ class Focus::SqlFormatter < Focus::SqlVisitor
       write_identifier subquery_alias
       write " "
     end
-  end
-
-  def visit_expression(expression : Focus::RowConstructorExpression) : Nil
-    wrap_in_parens { visit_list(expression.values) }
   end
 
   def visit_expression(expression : Focus::ValueExpression) : Nil

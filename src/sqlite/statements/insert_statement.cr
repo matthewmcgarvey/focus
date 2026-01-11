@@ -8,14 +8,12 @@ class Focus::SQLite::InsertStatement < Focus::SQLite::Statement
   end
 
   def values(*raw_values) : self
+    @values_clause ||= Focus::ValuesClause.new
+    clause = self.values_clause
+    raise "unreachable" if clause.nil?
+
     row = raw_values.map { |raw| Focus::GenericValueExpression.new(raw) }.select(Focus::ValueExpression)
-    row_constructor = Focus::RowConstructorExpression.new(row)
-    if clause = self.values_clause
-      clause.rows << row_constructor
-    else
-      clause = Focus::ValuesClause.new([row_constructor])
-      @values_clause = clause
-    end
+    clause.add_row(row)
     self
   end
 
