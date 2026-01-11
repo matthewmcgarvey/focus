@@ -9,7 +9,7 @@ module Tables
       @<%= column.name %> = Focus::<%= column.column_type %>.new("<%= column.name %>", table_name)
       <%- end -%>
       <%- column_list = columns.map { |col| "@#{col.name}" }.join(", ") -%>
-      columns = [<%= column_list %>].select(Focus::Column) # lame but necessary cast here (fails if all columns are the same type)
+      columns = [<%= column_list %>].select(Focus::Expression)
 
       super(table_name, table_alias, columns)
     end

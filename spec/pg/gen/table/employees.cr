@@ -18,7 +18,7 @@ module Tables
       @salary = Focus::IntColumn(Int64).new("salary", table_name)
       @department_id = Focus::IntColumn(Int32).new("department_id", table_name)
       @is_remote = Focus::BoolColumn.new("is_remote", table_name)
-      columns = [@id, @name, @job, @manager_id, @hire_date, @salary, @department_id, @is_remote].select(Focus::Column) # lame but necessary cast here (fails if all columns are the same type)
+      columns = [@id, @name, @job, @manager_id, @hire_date, @salary, @department_id, @is_remote].select(Focus::Expression)
 
       super(table_name, table_alias, columns)
     end

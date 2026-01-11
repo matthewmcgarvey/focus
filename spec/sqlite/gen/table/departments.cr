@@ -10,7 +10,7 @@ module Tables
       @name = Focus::StringColumn.new("name", table_name)
       @location = Focus::StringColumn.new("location", table_name)
       @mixedCase = Focus::StringColumn.new("mixedCase", table_name)
-      columns = [@id, @name, @location, @mixedCase].select(Focus::Column) # lame but necessary cast here (fails if all columns are the same type)
+      columns = [@id, @name, @location, @mixedCase].select(Focus::Expression)
 
       super(table_name, table_alias, columns)
     end

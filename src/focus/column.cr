@@ -1,9 +1,7 @@
-abstract class Focus::Column < Focus::Expression
-  property table_name : String?
-  getter column_name : String
-
-  def initialize(@column_name : String, @table_name : String? = nil)
-  end
+module Focus::Column
+  abstract def table_name : String?
+  abstract def table_name=(table_name : String?)
+  abstract def column_name : String
 
   def asc : Focus::OrderByClause
     Focus::OrderByClause.new(self, Focus::OrderByClause::OrderType::ASCENDING)
@@ -13,7 +11,7 @@ abstract class Focus::Column < Focus::Expression
     Focus::OrderByClause.new(self, Focus::OrderByClause::OrderType::DESCENDING)
   end
 
-  def from(table : Focus::ReadableTable) : Focus::Column
+  def from(table : Focus::ReadableTable) : self
     table_name = if table.is_a?(Focus::Table)
                    table.label || table.table_name
                  elsif table.is_a?(Focus::SelectTable)
@@ -21,7 +19,7 @@ abstract class Focus::Column < Focus::Expression
                  else
                    table.subquery_alias
                  end
-    self.class.new(column_name: @column_name, table_name: table_name)
+    self.class.new(column_name: column_name, table_name: table_name)
   end
 
   # Helper to build simple binary boolean expressions for this column.
@@ -38,5 +36,9 @@ abstract class Focus::Column < Focus::Expression
   # Generic greater-than operator that accepts any SQL expression (including other columns).
   def greater_than(rhs : Focus::Expression) : Focus::BoolExpression
     binary_op(">", rhs)
+  end
+
+  def accept(visitor : SqlVisitor) : Nil
+    visitor.visit_column(self)
   end
 end

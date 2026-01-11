@@ -120,17 +120,8 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     write " "
   end
 
-  def visit_expression(expression : Focus::Column) : Nil
-    if table_name = expression.table_name
-      write_identifier(table_name)
-      write "."
-    end
-    write_identifier(expression.column_name)
-    write " "
-  end
-
   def visit_expression(expression : Focus::BoolExpression) : Nil
-    expression.inner.accept(self)
+    expression.inner.try(&.accept(self))
   end
 
   def visit_expression(expression : Focus::BinaryExpression) : Nil
@@ -139,9 +130,16 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     expression.right.accept(self)
   end
 
-  def visit_expression(expression : Focus::IntExpression) : Nil
-    write_placeholder
-    parameters << expression.value
+  def visit_expression(expression : Focus::IntExpression(T)) : Nil forall T
+    expression.inner.try(&.accept(self))
+  end
+
+  def visit_expression(expression : Focus::StringExpression) : Nil
+    expression.inner.try(&.accept(self))
+  end
+
+  def visit_expression(expression : Focus::TimeExpression) : Nil
+    expression.inner.try(&.accept(self))
   end
 
   def visit_expression(expression : Focus::WildcardExpression) : Nil
@@ -190,6 +188,20 @@ class Focus::SqlFormatter < Focus::SqlVisitor
 
   def visit_expression(expression : Focus::Expression) : Nil
     raise "shouldn't get here. implement #{expression.class} handling"
+  end
+
+  def visit_literal(literal : Focus::Parameter) : Nil
+    write_placeholder
+    parameters << literal.value
+  end
+
+  def visit_column(column : Focus::Column) : Nil
+    if table_name = column.table_name
+      write_identifier(table_name)
+      write "."
+    end
+    write_identifier(column.column_name)
+    write " "
   end
 
   def visit_table(table : Focus::SelectTable) : Nil
