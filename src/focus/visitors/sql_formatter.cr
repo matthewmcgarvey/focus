@@ -115,11 +115,9 @@ class Focus::SqlFormatter < Focus::SqlVisitor
 
   def visit_expression(expression : Focus::AliasedExpression) : Nil
     expression.inner.accept(self)
-    if expr_alias = expression.alias
-      write "AS "
-      write_identifier(expr_alias)
-      write " "
-    end
+    write "AS "
+    write_identifier(expression.alias)
+    write " "
   end
 
   def visit_expression(expression : Focus::Column) : Nil
