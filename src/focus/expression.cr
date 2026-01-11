@@ -3,8 +3,8 @@ abstract class Focus::Expression
     visitor.visit_expression(self)
   end
 
-  def aliased(alias_str : String) : Focus::ProjectionExpression
-    Focus::ProjectionExpression.new(self, alias_str)
+  def aliased(alias_str : String) : Focus::AliasedExpression
+    Focus::AliasedExpression.new(self, alias_str)
   end
 
   def in_list(*expressions : Focus::Expression) : Focus::BoolExpression

@@ -113,11 +113,11 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     raise "shouldn't get here. implement #{clause.class} handling"
   end
 
-  def visit_expression(expression : Focus::ProjectionExpression) : Nil
+  def visit_expression(expression : Focus::AliasedExpression) : Nil
     expression.inner.accept(self)
-    if proj_alias = expression.projection_alias
+    if expr_alias = expression.alias
       write "AS "
-      write_identifier(proj_alias)
+      write_identifier(expr_alias)
       write " "
     end
   end
