@@ -1,7 +1,7 @@
 class Focus::InsertClause < Focus::Clause
-  getter table : Focus::TableReferenceExpression
+  getter table : Focus::ReadableTable
   getter columns : Array(Focus::ColumnToken)
 
-  def initialize(@table : Focus::TableReferenceExpression, @columns : Array(Focus::ColumnToken))
+  def initialize(@table : Focus::ReadableTable, @columns : Array(Focus::ColumnToken))
   end
 end

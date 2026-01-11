@@ -16,7 +16,7 @@ class Focus::SqlFormatter < Focus::SqlVisitor
 
   def visit_clause(clause : Focus::FromClause) : Nil
     write "FROM "
-    clause.table_source.accept(self)
+    clause.table.accept(self)
   end
 
   def visit_clause(clause : Focus::WhereClause) : Nil
@@ -131,15 +131,6 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     write " "
   end
 
-  def visit_expression(expression : Focus::TableReferenceExpression) : Nil
-    write_identifier(expression.table_name)
-    write " "
-    if table_alias = expression.table_alias
-      write_identifier(table_alias)
-      write " "
-    end
-  end
-
   def visit_expression(expression : Focus::BoolExpression) : Nil
     expression.inner.accept(self)
   end
@@ -182,40 +173,11 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     wrap_in_parens { expression.argument.accept(self) }
   end
 
-  def visit_expression(expression : Focus::JoinExpression) : Nil
-    expression.left.accept(self)
-
-    case expression.join_type
-    when Focus::JoinExpression::JoinType::INNER
-      write "INNER JOIN "
-    when Focus::JoinExpression::JoinType::LEFT
-      write "LEFT JOIN "
-    when Focus::JoinExpression::JoinType::RIGHT
-      write "RIGHT JOIN "
-    when Focus::JoinExpression::JoinType::CROSS
-      write "CROSS JOIN "
-    end
-
-    expression.right.accept(self)
-    if condition = expression.condition
-      write "ON "
-      condition.accept(self)
-    end
-  end
-
   def visit_expression(expression : Focus::FunctionExpression) : Nil
     if !expression.name.blank?
       write "#{expression.name} "
     end
     wrap_in_parens { visit_list(expression.parameters) }
-  end
-
-  def visit_expression(expression : Focus::SubqueryExpression) : Nil
-    wrap_in_parens { expression.subquery.accept(self) }
-    if subquery_alias = expression.subquery_alias
-      write_identifier subquery_alias
-      write " "
-    end
   end
 
   def visit_expression(expression : Focus::ValueExpression) : Nil
@@ -230,6 +192,48 @@ class Focus::SqlFormatter < Focus::SqlVisitor
 
   def visit_expression(expression : Focus::Expression) : Nil
     raise "shouldn't get here. implement #{expression.class} handling"
+  end
+
+  def visit_table(table : Focus::SelectTable) : Nil
+    wrap_in_parens { table.statement.accept(self) }
+    if select_alias = table.alias
+      write_identifier select_alias
+      write " "
+    end
+  end
+
+  def visit_table(table : Focus::JoinTable) : Nil
+    table.lhs.accept(self)
+
+    case table.join_type
+    when Focus::JoinTable::JoinType::INNER
+      write "INNER JOIN "
+    when Focus::JoinTable::JoinType::LEFT
+      write "LEFT JOIN "
+    when Focus::JoinTable::JoinType::RIGHT
+      write "RIGHT JOIN "
+    when Focus::JoinTable::JoinType::CROSS
+      write "CROSS JOIN "
+    end
+
+    table.rhs.accept(self)
+    if condition = table.condition
+      write "ON "
+      condition.accept(self)
+    end
+  end
+
+  def visit_table(table : Focus::Table) : Nil
+    write_identifier(table.table_name)
+    write " "
+    if table_alias = table.table_alias
+      write_identifier(table_alias)
+      write " "
+    end
+  end
+
+  def visit_table(table : Focus::SerializableTable) : Nil
+    raise "shouldn't get here. implement #{table.class} handling"
   end
 
   def visit_token(token : Focus::ColumnToken) : Nil

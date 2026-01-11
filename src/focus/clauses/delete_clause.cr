@@ -1,6 +1,6 @@
 class Focus::DeleteClause < Focus::Clause
-  getter table : Focus::TableReferenceExpression
+  getter table : Focus::ReadableTable
 
-  def initialize(@table : Focus::TableReferenceExpression)
+  def initialize(@table : Focus::ReadableTable)
   end
 end

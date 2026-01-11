@@ -13,9 +13,11 @@ abstract class Focus::Column < Focus::Expression
     Focus::OrderByClause.new(self, Focus::OrderByClause::OrderType::DESCENDING)
   end
 
-  def from(table : Focus::Table | Focus::SubqueryExpression) : Focus::Column
+  def from(table : Focus::ReadableTable) : Focus::Column
     table_name = if table.is_a?(Focus::Table)
                    table.label || table.table_name
+                 elsif table.is_a?(Focus::SelectTable)
+                   table.alias
                  else
                    table.subquery_alias
                  end

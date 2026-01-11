@@ -1,6 +1,6 @@
 class Focus::FromClause < Focus::Clause
-  getter table_source : Focus::TableSource
+  getter table : Focus::ReadableTable
 
-  def initialize(@table_source : Focus::TableSource)
+  def initialize(@table : Focus::ReadableTable)
   end
 end

@@ -10,21 +10,18 @@ class Focus::SQLiteTable < Focus::Table
   end
 
   def insert(*columns : Focus::Column) : Focus::SQLite::InsertStatement
-    table_ref = Focus::TableReferenceExpression.new(table_name, table_alias)
     column_names = columns.map { |column| Focus::ColumnToken.new(column.column_name) }
-    expr = Focus::InsertClause.new(table_ref, column_names.to_a)
+    expr = Focus::InsertClause.new(self, column_names.to_a)
     Focus::SQLite::InsertStatement.new(expr)
   end
 
   def update : Focus::SQLite::UpdateStatement
-    table_ref = Focus::TableReferenceExpression.new(table_name, table_alias)
-    update = Focus::UpdateClause.new(table_ref)
+    update = Focus::UpdateClause.new(self)
     Focus::SQLite::UpdateStatement.new(update: update)
   end
 
   def delete : Focus::SQLite::DeleteStatement
-    table_ref = Focus::TableReferenceExpression.new(table_name, table_alias)
-    delete = Focus::DeleteClause.new(table_ref)
+    delete = Focus::DeleteClause.new(self)
     Focus::SQLite::DeleteStatement.new(delete)
   end
 end
