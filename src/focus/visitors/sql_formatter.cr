@@ -94,6 +94,16 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     visit_list clause.set_columns
   end
 
+  def visit_clause(clause : Focus::SetClause::Column) : Nil
+    clause.column.accept(self)
+    write "= "
+    if clause.value.is_a?(Focus::Statement)
+      wrap_in_parens { clause.value.accept(self) }
+    else
+      clause.value.accept(self)
+    end
+  end
+
   def visit_clause(clause : Focus::DeleteClause) : Nil
     write "DELETE FROM "
     clause.table.accept(self)
@@ -211,16 +221,6 @@ class Focus::SqlFormatter < Focus::SqlVisitor
   def visit_expression(expression : Focus::ValueExpression) : Nil
     write_placeholder
     parameters << expression.value
-  end
-
-  def visit_expression(expression : Focus::SetColumnExpression) : Nil
-    expression.column.accept(self)
-    write "= "
-    if expression.value.is_a?(Focus::Statement)
-      wrap_in_parens { expression.value.accept(self) }
-    else
-      expression.value.accept(self)
-    end
   end
 
   def visit_expression(expression : Focus::PostfixOperatorExpression)

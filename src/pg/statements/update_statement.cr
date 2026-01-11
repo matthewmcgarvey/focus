@@ -8,13 +8,12 @@ class Focus::PG::UpdateStatement < Focus::PG::Statement
   end
 
   def set(column : Focus::Column, expr : Focus::Expression) : self
+    @set ||= Focus::SetClause.new
+    set_clause = self.set
+    raise "unreachable" if set_clause.nil?
+
     col_token = Focus::ColumnToken.new(column.column_name)
-    set_column = Focus::SetColumnExpression.new(col_token, expr)
-    if set_clause = self.set
-      set_clause.set_columns << set_column
-    else
-      @set = Focus::SetClause.new([set_column])
-    end
+    set_clause.add_column(col_token, expr)
     self
   end
 
