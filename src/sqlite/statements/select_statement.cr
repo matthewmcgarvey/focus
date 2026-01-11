@@ -4,7 +4,7 @@ class Focus::SQLite::SelectStatement < Focus::SQLite::Statement
   property where_clause : Focus::WhereClause?
   property group_by_clause : Focus::GroupByClause?
   property having_clause : Focus::HavingClause?
-  property order_by_clause : Focus::OrderByClause?
+  property order_by_clauses : Focus::OrderByListClause?
   property limit_clause : Focus::LimitClause?
   property offset_clause : Focus::OffsetClause?
 
@@ -40,10 +40,13 @@ class Focus::SQLite::SelectStatement < Focus::SQLite::Statement
     self
   end
 
-  def order_by(*expressions : Focus::OrderByExpression) : self
-    clause = Focus::OrderByClause.new
-    expressions.each { |expr| clause.order_bys << expr }
-    @order_by_clause = clause
+  def order_by(*clauses : Focus::OrderByClause) : self
+    self.order_by_clauses ||= Focus::OrderByListClause.new
+    if list = self.order_by_clauses
+      clauses.each do |clause|
+        list.order_bys << clause
+      end
+    end
     self
   end
 
@@ -68,7 +71,7 @@ class Focus::SQLite::SelectStatement < Focus::SQLite::Statement
       where_clause,
       group_by_clause,
       having_clause,
-      order_by_clause,
+      order_by_clauses,
       limit_clause,
       offset_clause,
     ].compact

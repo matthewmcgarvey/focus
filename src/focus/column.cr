@@ -5,12 +5,12 @@ abstract class Focus::Column < Focus::Expression
   def initialize(@column_name : String, @table_name : String? = nil)
   end
 
-  def asc : Focus::OrderByExpression
-    Focus::OrderByExpression.new(self, Focus::OrderByExpression::OrderType::ASCENDING)
+  def asc : Focus::OrderByClause
+    Focus::OrderByClause.new(self, Focus::OrderByClause::OrderType::ASCENDING)
   end
 
-  def desc : Focus::OrderByExpression
-    Focus::OrderByExpression.new(self, Focus::OrderByExpression::OrderType::DESCENDING)
+  def desc : Focus::OrderByClause
+    Focus::OrderByClause.new(self, Focus::OrderByClause::OrderType::DESCENDING)
   end
 
   def from(table : Focus::Table | Focus::SubqueryExpression) : Focus::Column

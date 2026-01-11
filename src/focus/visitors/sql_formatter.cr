@@ -24,9 +24,22 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     clause.expression.accept(self)
   end
 
-  def visit_clause(clause : Focus::OrderByClause) : Nil
+  def visit_clause(clause : Focus::OrderByListClause) : Nil
     write "ORDER BY "
     visit_list clause.order_bys
+  end
+
+  def visit_clause(clause : Focus::OrderByClause) : Nil
+    clause.expression.accept(self)
+    case clause.order_type
+    when Focus::OrderByClause::OrderType::ASCENDING
+      write "ASC "
+    when Focus::OrderByClause::OrderType::DESCENDING
+      write "DESC "
+    end
+    clause.is_nulls_first.try do |nulls_first|
+      write "NULLS #{nulls_first ? "FIRST" : "LAST"} "
+    end
   end
 
   def visit_clause(clause : Focus::LimitClause) : Nil
@@ -136,19 +149,6 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     write "* "
   end
 
-  def visit_expression(expression : Focus::OrderByExpression) : Nil
-    expression.inner.accept(self)
-    case expression.order_type
-    when Focus::OrderByExpression::OrderType::ASCENDING
-      write "ASC "
-    when Focus::OrderByExpression::OrderType::DESCENDING
-      write "DESC "
-    end
-    expression.is_nulls_first.try do |nulls_first|
-      write "NULLS #{nulls_first ? "FIRST" : "LAST"} "
-    end
-  end
-
   def visit_expression(expression : Focus::AggregateExpression) : Nil
     method = case expression.type
              when Focus::AggregateExpression::AggregateType::MIN
@@ -245,7 +245,7 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     sql_string_builder.to_s.strip
   end
 
-  protected def visit_list(expressions : Array(Focus::Expression))
+  protected def visit_list(expressions : Array)
     expressions.each_with_index do |expression, idx|
       if idx > 0
         remove_last_blank
