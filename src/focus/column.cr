@@ -1,7 +1,6 @@
 module Focus::Column
-  abstract def table_name : String?
-  abstract def table_name=(table_name : String?)
-  abstract def column_name : String
+  property table_name : String?
+  getter column_name : String
 
   def asc : Focus::OrderByClause
     Focus::OrderByClause.new(self, Focus::OrderByClause::OrderType::ASCENDING)
