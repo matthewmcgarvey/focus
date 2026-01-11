@@ -8,4 +8,8 @@ class Focus::BoolExpression < Focus::Expression
     binary_expr = Focus::BinaryExpression.new(self, right, "AND")
     Focus::BoolExpression.new(binary_expr)
   end
+
+  def eq(value : Bool) : Focus::BoolExpression
+    eq(Focus::BoolLiteral.new(value))
+  end
 end
