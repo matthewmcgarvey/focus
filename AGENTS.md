@@ -18,7 +18,7 @@ shards install
 
 ### Run All Tests
 ```bash
-./bin/test
+make test
 ```
 
 ### Run a Single Spec File
@@ -46,9 +46,9 @@ crystal build src/cli.cr
 
 ### Generate Table Code from Schema
 ```bash
-crystal run test.cr
-# or via CLI
-focus run -d sqlite3://db.db
+make gen-sqlite    # Generate SQLite tables
+make gen-pg        # Generate PostgreSQL tables
+make gen-all       # Generate both
 ```
 
 ## Project Structure
