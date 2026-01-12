@@ -60,12 +60,13 @@ src/
 ├── cli/                  # CLI commands
 ├── focus/                # Core library
 │   ├── clauses/          # SQL clause types (SELECT, FROM, WHERE, etc.)
-│   ├── columns/          # Column types (Int32Column, StringColumn, etc.)
+│   ├── columns/          # Column types (IntColumn, StringColumn, etc.)
 │   ├── dsl/              # DSL helpers (aggregation functions)
 │   ├── expressions/      # SQL expression types
 │   ├── tokens/           # SQL tokens
 │   └── visitors/         # Visitor pattern (SqlFormatter)
 ├── generator/            # Table code generator
+│   ├── metadata/         # Schema metadata types (Column, Table, Schema)
 │   ├── pg/               # PostgreSQL schema introspection
 │   ├── sqlite/           # SQLite schema introspection
 │   └── templates/        # Code generation templates
@@ -76,10 +77,13 @@ src/
 │   ├── pg_table.cr       # PGTable class
 │   └── statements/       # PostgreSQL statement builders
 
+examples/                 # Example usage files
+
 spec/
 ├── spec_helper.cr        # Base spec helper
 ├── pg_spec_helper.cr     # PostgreSQL spec helper with database connection
 ├── sqlite_spec_helper.cr # SQLite spec helper with database connection
+├── focus/                # Unit tests for focus module
 ├── pg/                   # PostgreSQL integration specs
 │   ├── gen/table/        # Generated PostgreSQL table definitions
 │   ├── select_spec.cr
@@ -109,7 +113,7 @@ spec/
 - `PascalCase` for types, classes, modules
 - Table classes: `{Name}Table` suffix (e.g., `EmployeesTable`)
 - Table instances: Constant without suffix (e.g., `Employees = EmployeesTable.new`)
-- Column classes: `{Type}Column` (e.g., `Int32Column`, `StringColumn`)
+- Column classes: `{Type}Column` (e.g., `IntColumn`, `StringColumn`, `BoolColumn`, `TimeColumn`)
 - Spec files: `*_spec.cr`
 
 ### Imports/Requires
@@ -128,7 +132,7 @@ spec/
 ### Classes & Inheritance
 - Use `abstract class` for base classes that shouldn't be instantiated
 - Inherit from `Focus::Table` for new table types
-- Inherit from `Focus::Column` for new column types
+- Include `Focus::Column` module for new column types
 - Inherit from `Focus::Expression` for new expression types
 
 ### Error Handling
@@ -146,14 +150,14 @@ spec/
 
 ### Table Definition Pattern
 ```crystal
-class UsersTable < Focus::SQLiteTable  # or Focus::PgTable
-  getter id : Focus::Int32Column
+class UsersTable < Focus::SQLiteTable  # or Focus::PGTable
+  getter id : Focus::IntColumn(Int32)
   getter name : Focus::StringColumn
 
   def initialize(table_name : String = "users", table_alias : String? = nil)
-    @id = Focus::Int32Column.new("id", table_name)
+    @id = Focus::IntColumn(Int32).new("id", table_name)
     @name = Focus::StringColumn.new("name", table_name)
-    columns = [@id, @name]
+    columns = [@id, @name].select(Focus::Expression)
     super(table_name, table_alias, columns)
   end
 end
