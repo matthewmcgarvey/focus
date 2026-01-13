@@ -8,6 +8,10 @@ class Focus::FloatExpression(FLOAT_TYPE) < Focus::Expression
     eq(Focus::FloatLiteral(FLOAT_TYPE).new(value))
   end
 
+  def eq(rhs : Focus::FloatExpression(FLOAT_TYPE)) : Focus::BoolExpression
+    binary_op("=", rhs)
+  end
+
   def greater_than(value : FLOAT_TYPE) : Focus::BoolExpression
     greater_than(Focus::FloatLiteral(FLOAT_TYPE).new(value))
   end

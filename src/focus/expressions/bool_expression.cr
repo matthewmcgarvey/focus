@@ -9,7 +9,16 @@ class Focus::BoolExpression < Focus::Expression
     Focus::BoolExpression.new(binary_expr)
   end
 
+  def or(right : Focus::BoolExpression) : Focus::BoolExpression
+    binary_expr = Focus::BinaryExpression.new(self, right, "OR")
+    Focus::BoolExpression.new(binary_expr)
+  end
+
   def eq(value : Bool) : Focus::BoolExpression
     eq(Focus::BoolLiteral.new(value))
+  end
+
+  def eq(rhs : Focus::BoolExpression) : Focus::BoolExpression
+    binary_op("=", rhs)
   end
 end

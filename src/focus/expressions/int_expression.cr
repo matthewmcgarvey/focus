@@ -8,6 +8,10 @@ class Focus::IntExpression(INT_TYPE) < Focus::Expression
     eq(Focus::IntLiteral(INT_TYPE).new(value))
   end
 
+  def eq(rhs : Focus::IntExpression(INT_TYPE)) : Focus::BoolExpression
+    binary_op("=", rhs)
+  end
+
   def greater_than(value : INT_TYPE) : Focus::BoolExpression
     greater_than(Focus::IntLiteral(INT_TYPE).new(value))
   end

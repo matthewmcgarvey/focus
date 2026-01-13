@@ -8,6 +8,10 @@ abstract class Focus::Expression
   end
 
   def in_list(*expressions : Focus::Expression) : Focus::BoolExpression
+    in_list(expressions.to_a)
+  end
+
+  def in_list(expressions : Array(Focus::Expression)) : Focus::BoolExpression
     binary = Focus::BinaryExpression.new(
       left: self,
       right: Focus::FunctionExpression.new(name: "", parameters: expressions.select(Focus::Expression)),
@@ -17,6 +21,10 @@ abstract class Focus::Expression
   end
 
   def not_in_list(*expressions : Focus::Expression) : Focus::BoolExpression
+    not_in_list(expressions.to_a)
+  end
+
+  def not_in_list(expressions : Array(Focus::Expression)) : Focus::BoolExpression
     binary = Focus::BinaryExpression.new(
       left: self,
       right: Focus::FunctionExpression.new(name: "", parameters: expressions.select(Focus::Expression)),
@@ -47,14 +55,9 @@ abstract class Focus::Expression
     {visitor.to_sql, visitor.parameters}
   end
 
-  private def _in_list(*vals : T) : Focus::BoolExpression forall T
-    val_exprs = vals.map { |val| Focus::GenericValueExpression.new(val) }.select(Focus::Expression)
-    rhs = Focus::FunctionExpression.new(name: "", parameters: val_exprs)
-    binary = Focus::BinaryExpression.new(
-      left: self,
-      right: rhs,
-      operator: "IN"
-    )
-    Focus::BoolExpression.new(binary)
+  # Helper to build simple binary boolean expressions for this column.
+  private def binary_op(operator : String, rhs : Focus::Expression) : Focus::BoolExpression
+    expression = Focus::BinaryExpression.new(left: self, right: rhs, operator: operator)
+    Focus::BoolExpression.new(expression)
   end
 end
