@@ -134,6 +134,10 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     expression.inner.try(&.accept(self))
   end
 
+  def visit_expression(expression : Focus::FloatExpression(T)) : Nil forall T
+    expression.inner.try(&.accept(self))
+  end
+
   def visit_expression(expression : Focus::StringExpression) : Nil
     expression.inner.try(&.accept(self))
   end
