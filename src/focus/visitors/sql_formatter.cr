@@ -200,7 +200,10 @@ class Focus::SqlFormatter < Focus::SqlVisitor
   end
 
   def visit_column(column : Focus::Column) : Nil
-    if table_name = column.table_name
+    if subquery = column.subquery
+      write_identifier(subquery.alias)
+      write "."
+    elsif table_name = column.table_name
       write_identifier(table_name)
       write "."
     end

@@ -1,6 +1,7 @@
 module Focus::Column
-  property table_name : String?
   getter column_name : String
+  property table_name : String?
+  property subquery : Focus::SelectTable? = nil
 
   def asc : Focus::OrderByClause
     Focus::OrderByClause.new(self, Focus::OrderByClause::OrderType::ASCENDING)
@@ -10,15 +11,10 @@ module Focus::Column
     Focus::OrderByClause.new(self, Focus::OrderByClause::OrderType::DESCENDING)
   end
 
-  def from(table : Focus::ReadableTable) : self
-    table_name = if table.is_a?(Focus::Table)
-                   table.label || table.table_name
-                 elsif table.is_a?(Focus::SelectTable)
-                   table.alias
-                 else
-                   table.subquery_alias
-                 end
-    self.class.new(column_name: column_name, table_name: table_name)
+  def from(table : Focus::SelectTable) : self
+    col = self.class.new(self.column_name, self.table_name)
+    col.subquery = table
+    col
   end
 
   # Generic greater-than operator that accepts any SQL expression (including other columns).
