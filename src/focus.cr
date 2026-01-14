@@ -15,6 +15,8 @@ require "./focus/visitors/*"
 
 module Focus
   extend Focus::Dsl::Aggregation
+  extend Focus::Dsl::Columns
+
   VERSION = "0.1.0"
 
   alias DBConn = DB::Database | DB::Connection
