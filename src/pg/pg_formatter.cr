@@ -1,13 +1,6 @@
 class Focus::PGFormatter < Focus::SqlFormatter
   property argument_counter = 1
 
-  def visit_statement(statement : Focus::PG::WithStatement) : Nil
-    self.statement_type = statement.statement_type
-    write "WITH "
-    visit_list statement.ctes
-    statement.primary_statement.try(&.accept(self))
-  end
-
   protected def write_placeholder
     write "$#{argument_counter} "
     self.argument_counter += 1

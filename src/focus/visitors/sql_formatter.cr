@@ -16,6 +16,13 @@ class Focus::SqlFormatter < Focus::SqlVisitor
   private getter sql_string_builder = String::Builder.new
   getter parameters = [] of DB::Any
 
+  def visit_statement(statement : Focus::WithStatement) : Nil
+    self.statement_type = statement.statement_type
+    write "WITH "
+    visit_list statement.ctes
+    statement.primary_statement.try(&.accept(self))
+  end
+
   def visit_statement(statement : Focus::Statement) : Nil
     self.statement_type = statement.statement_type
     statement.ordered_clauses.each(&.accept(self))
