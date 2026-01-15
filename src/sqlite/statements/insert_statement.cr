@@ -1,4 +1,6 @@
-class Focus::SQLite::InsertStatement < Focus::SQLite::Statement
+class Focus::SQLite::InsertStatement < Focus::Statement
+  include Focus::SQLite::Statement
+
   getter insert_clause : Focus::InsertClause
   getter values_clause : Focus::ValuesClause?
   getter query : Focus::QueryClause?

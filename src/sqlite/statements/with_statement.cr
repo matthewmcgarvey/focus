@@ -1,4 +1,6 @@
-class Focus::SQLite::WithStatement < Focus::SQLite::Statement
+class Focus::SQLite::WithStatement < Focus::Statement
+  include Focus::SQLite::Statement
+
   getter ctes : Array(Focus::CommonTableExpression)
   getter primary_statement : Focus::SQLite::Statement?
 

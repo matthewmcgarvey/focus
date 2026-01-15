@@ -7,9 +7,9 @@ describe Focus::StringColumn do
 
       result = column.in_list("a", "b")
 
-      formatter = Focus::SqlFormatter.new
-      result.accept(formatter)
-      formatter.to_sql.should eq("foo IN (?, ?)")
+      visitor = Focus::SqlFormatter.new
+      result.accept(visitor)
+      visitor.to_sql.should eq("foo IN (?, ?)")
     end
   end
 end

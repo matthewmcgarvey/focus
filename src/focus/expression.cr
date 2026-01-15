@@ -43,18 +43,6 @@ abstract class Focus::Expression
     Focus::BoolExpression.new(postfix)
   end
 
-  def to_sql
-    visitor = Focus::SqlFormatter.new
-    accept(visitor)
-    visitor.to_sql
-  end
-
-  def to_sql_with_args : Tuple(String, Array(DB::Any))
-    visitor = Focus::SqlFormatter.new
-    accept(visitor)
-    {visitor.to_sql, visitor.parameters}
-  end
-
   # Helper to build simple binary boolean expressions for this column.
   private def binary_op(operator : String, rhs : Focus::Expression) : Focus::BoolExpression
     expression = Focus::BinaryExpression.new(left: self, right: rhs, operator: operator)

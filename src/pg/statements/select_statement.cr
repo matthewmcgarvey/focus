@@ -1,4 +1,6 @@
-class Focus::PG::SelectStatement < Focus::PG::Statement
+class Focus::PG::SelectStatement < Focus::Statement
+  include Focus::PG::Statement
+
   getter select_clause : Focus::SelectClause
   property from_clause : Focus::FromClause?
   property where_clause : Focus::WhereClause?

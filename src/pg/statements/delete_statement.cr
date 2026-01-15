@@ -1,4 +1,6 @@
-class Focus::PG::DeleteStatement < Focus::PG::Statement
+class Focus::PG::DeleteStatement < Focus::Statement
+  include Focus::PG::Statement
+
   getter delete : Focus::DeleteClause
   getter where : Focus::WhereClause?
   getter returning : Focus::ReturningClause?

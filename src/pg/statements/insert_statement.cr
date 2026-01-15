@@ -1,4 +1,6 @@
-class Focus::PG::InsertStatement < Focus::PG::Statement
+class Focus::PG::InsertStatement < Focus::Statement
+  include Focus::PG::Statement
+
   getter insert_clause : Focus::InsertClause
   getter values_clause : Focus::ValuesClause?
   getter query : Focus::QueryClause?

@@ -4,4 +4,8 @@ abstract class Focus::Dialect
 
   def initialize(@name : String, @package_name : String)
   end
+
+  def formatter : Focus::SqlFormatter
+    Focus::SqlFormatter.new
+  end
 end

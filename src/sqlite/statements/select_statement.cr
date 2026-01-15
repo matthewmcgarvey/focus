@@ -1,4 +1,6 @@
-class Focus::SQLite::SelectStatement < Focus::SQLite::Statement
+class Focus::SQLite::SelectStatement < Focus::Statement
+  include Focus::SQLite::Statement
+
   getter select_clause : Focus::SelectClause
   property from_clause : Focus::FromClause?
   property where_clause : Focus::WhereClause?

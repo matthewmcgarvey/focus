@@ -1,11 +1,13 @@
-class Focus::PG::WithStatement < Focus::PG::Statement
+class Focus::PG::WithStatement < Focus::Statement
+  include Focus::PG::Statement
+
   getter ctes : Array(Focus::CommonTableExpression)
-  getter primary_statement : Focus::PG::Statement?
+  getter primary_statement : Focus::Statement?
 
   def initialize(@ctes : Array(Focus::CommonTableExpression))
   end
 
-  def statement(stmt : Focus::PG::Statement) : self
+  def statement(stmt : Focus::Statement) : self
     @primary_statement = stmt
     self
   end
