@@ -16,4 +16,8 @@ module Focus::SQLite
   def self.select : Focus::SQLite::SelectStatement
     self.select([Focus::WildcardExpression.new.as(Focus::Expression)])
   end
+
+  def self.with(*ctes : Focus::CommonTableExpression) : Focus::SQLite::WithStatement
+    Focus::SQLite::WithStatement.new(ctes.to_a)
+  end
 end
