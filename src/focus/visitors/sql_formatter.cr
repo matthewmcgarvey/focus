@@ -1,10 +1,23 @@
 class Focus::SqlFormatter < Focus::SqlVisitor
   WHITESPACE_BYTE = 32_u8
 
+  enum StatementType
+    SELECT_STMT_TYPE
+    INSERT_STMT_TYPE
+    UPDATE_STMT_TYPE
+    DELETE_STMT_TYPE
+    SET_STMT_TYPE
+    LOCK_STMT_TYPE
+    UNLOCK_STMT_TYPE
+    WITH_STMT_TYPE
+  end
+
+  private property statement_type : StatementType?
   private getter sql_string_builder = String::Builder.new
   getter parameters = [] of DB::Any
 
   def visit_statement(statement : Focus::Statement) : Nil
+    self.statement_type = statement.statement_type
     statement.ordered_clauses.each(&.accept(self))
   end
 
@@ -211,12 +224,21 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     write " "
   end
 
-  def visit_table(table : Focus::SelectTable) : Nil
-    wrap_in_parens { table.statement.accept(self) }
-    if select_alias = table.alias
-      write_identifier select_alias
+  def visit_table(table : Focus::CommonTableExpression) : Nil
+    if statement_type == StatementType::WITH_STMT_TYPE
+      write_identifier table.alias
+      write " AS "
+      wrap_in_parens { table.statement.accept(self) }
+    else
+      write_identifier table.alias
       write " "
     end
+  end
+
+  def visit_table(table : Focus::SelectTable) : Nil
+    wrap_in_parens { table.statement.accept(self) }
+    write_identifier table.alias
+    write " "
   end
 
   def visit_table(table : Focus::JoinTable) : Nil

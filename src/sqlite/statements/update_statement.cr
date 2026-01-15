@@ -32,6 +32,10 @@ class Focus::SQLite::UpdateStatement < Focus::SQLite::Statement
     self
   end
 
+  def statement_type : Focus::SqlFormatter::StatementType
+    Focus::SqlFormatter::StatementType::UPDATE_STMT_TYPE
+  end
+
   def ordered_clauses : Array(Focus::Clause)
     [
       update,

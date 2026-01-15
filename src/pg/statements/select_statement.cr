@@ -21,11 +21,6 @@ class Focus::PG::SelectStatement < Focus::PG::Statement
     self
   end
 
-  # def from(table_source : Focus::TableSource) : self
-  #   @from_clause = Focus::FromClause.new(table_source)
-  #   self
-  # end
-
   def where(expression : Focus::BoolExpression) : self
     @where_clause = Focus::WhereClause.new(expression)
     self
@@ -63,6 +58,14 @@ class Focus::PG::SelectStatement < Focus::PG::Statement
 
   def aliased(label : String) : Focus::SelectTable
     Focus::SelectTable.new(self, label)
+  end
+
+  def as_cte(label : String) : Focus::CommonTableExpression
+    Focus::CommonTableExpression.new(self, label)
+  end
+
+  def statement_type : Focus::SqlFormatter::StatementType
+    Focus::SqlFormatter::StatementType::SELECT_STMT_TYPE
   end
 
   def ordered_clauses : Array(Focus::Clause)

@@ -16,6 +16,10 @@ class Focus::SQLite::DeleteStatement < Focus::SQLite::Statement
     self
   end
 
+  def statement_type : Focus::SqlFormatter::StatementType
+    Focus::SqlFormatter::StatementType::DELETE_STMT_TYPE
+  end
+
   def ordered_clauses : Array(Focus::Clause)
     [
       delete,

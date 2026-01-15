@@ -60,6 +60,14 @@ class Focus::SQLite::SelectStatement < Focus::SQLite::Statement
     Focus::SelectTable.new(self, label)
   end
 
+  def as_cte(label : String) : Focus::CommonTableExpression
+    Focus::CommonTableExpression.new(self, label)
+  end
+
+  def statement_type : Focus::SqlFormatter::StatementType
+    Focus::SqlFormatter::StatementType::SELECT_STMT_TYPE
+  end
+
   def ordered_clauses : Array(Focus::Clause)
     [
       select_clause,

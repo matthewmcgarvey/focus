@@ -16,4 +16,8 @@ module Focus::PG
   def self.select : Focus::PG::SelectStatement
     self.select([Focus::WildcardExpression.new.as(Focus::Expression)])
   end
+
+  def self.with(*ctes : Focus::CommonTableExpression) : Focus::PG::WithStatement
+    Focus::PG::WithStatement.new(ctes.to_a)
+  end
 end
