@@ -1,14 +1,6 @@
 class Focus::PGTable < Focus::Table
   getter dialect : Focus::Dialect = Focus::PGDialect.new
 
-  def select(*fields : Focus::Expression | Array(Focus::Expression)) : Focus::PG::SelectStatement
-    Focus::PG.select(*fields).from(self)
-  end
-
-  def select : Focus::PG::SelectStatement
-    Focus::PG.select.from(self)
-  end
-
   def insert(*columns : Focus::Column) : Focus::PG::InsertStatement
     column_names = columns.map { |column| Focus::ColumnToken.new(column.column_name) }
     expr = Focus::InsertClause.new(self, column_names.to_a)
