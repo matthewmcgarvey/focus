@@ -1,4 +1,4 @@
-class Focus::IntExpression(INT_TYPE) < Focus::Expression
+class Focus::IntExpression(INT_TYPE) < Focus::NumericExpression
   getter inner : Focus::Expression?
 
   def initialize(@inner : Focus::Expression? = nil)

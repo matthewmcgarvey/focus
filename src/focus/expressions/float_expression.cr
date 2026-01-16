@@ -1,4 +1,4 @@
-class Focus::FloatExpression(FLOAT_TYPE) < Focus::Expression
+class Focus::FloatExpression(FLOAT_TYPE) < Focus::NumericExpression
   getter inner : Focus::Expression?
 
   def initialize(@inner : Focus::Expression? = nil)
@@ -8,7 +8,59 @@ class Focus::FloatExpression(FLOAT_TYPE) < Focus::Expression
     _eq(rhs)
   end
 
+  def not_eq(rhs : Focus::FloatExpression(FLOAT_TYPE)) : Focus::BoolExpression
+    _not_eq(rhs)
+  end
+
+  def is_distinct_from(rhs : Focus::FloatExpression(FLOAT_TYPE)) : Focus::BoolExpression
+    _is_distinct_from(rhs)
+  end
+
+  def is_not_distinct_from(rhs : Focus::FloatExpression(FLOAT_TYPE)) : Focus::BoolExpression
+    _is_not_distinct_from(rhs)
+  end
+
   def greater_than(rhs : Focus::FloatExpression(FLOAT_TYPE)) : Focus::BoolExpression
     _greater_than(rhs)
+  end
+
+  def greater_than_eq(rhs : Focus::FloatExpression(FLOAT_TYPE)) : Focus::BoolExpression
+    _greater_than_eq(rhs)
+  end
+
+  def less_than(rhs : Focus::FloatExpression(FLOAT_TYPE)) : Focus::BoolExpression
+    _less_than(rhs)
+  end
+
+  def less_than_eq(rhs : Focus::FloatExpression(FLOAT_TYPE)) : Focus::BoolExpression
+    _less_than_eq(rhs)
+  end
+
+  def between(min : Focus::FloatExpression(FLOAT_TYPE), max : Focus::FloatExpression(FLOAT_TYPE)) : Focus::BoolExpression
+    _betwen(min, max, negated: false)
+  end
+
+  def not_between(min : Focus::FloatExpression(FLOAT_TYPE), max : Focus::FloatExpression(FLOAT_TYPE)) : Focus::BoolExpression
+    _betwen(min, max, negated: true)
+  end
+
+  def add(rhs : Focus::NumericExpression) : Focus::FloatExpression(FLOAT_EXPRESSION)
+    Focus::FloatExpression(FLOAT_TYPE).new(_add(rhs))
+  end
+
+  def sub(rhs : Focus::NumericExpression) : Focus::FloatExpression(FLOAT_EXPRESSION)
+    Focus::FloatExpression(FLOAT_TYPE).new(_sub(rhs))
+  end
+
+  def mul(rhs : Focus::NumericExpression) : Focus::FloatExpression(FLOAT_EXPRESSION)
+    Focus::FloatExpression(FLOAT_TYPE).new(_mul(rhs))
+  end
+
+  def div(rhs : Focus::NumericExpression) : Focus::FloatExpression(FLOAT_EXPRESSION)
+    Focus::FloatExpression(FLOAT_TYPE).new(_div(rhs))
+  end
+
+  def mod(rhs : Focus::NumericExpression) : Focus::FloatExpression(FLOAT_EXPRESSION)
+    Focus::FloatExpression(FLOAT_TYPE).new(_mod(rhs))
   end
 end
