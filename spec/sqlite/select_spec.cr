@@ -110,6 +110,15 @@ describe "SQLite Select" do
     dept_ids.should eq([1, 2])
   end
 
+  it "selects with limit and offset" do
+    query = Employees.select.limit(10).offset(5)
+    query.exec(SQLITE_DATABASE)
+
+    sql, args = query.to_sql_with_args
+    sql.should eq(formatted("SELECT * FROM employees LIMIT ? OFFSET ?"))
+    args.should eq([10, 5])
+  end
+
   it "cross joins tables" do
     stmt = Focus::SQLite.select.from(
       Employees.cross_join(Departments, on: Employees.department_id.eq(Departments.id))

@@ -63,11 +63,15 @@ class Focus::SqlFormatter < Focus::SqlVisitor
   end
 
   def visit_clause(clause : Focus::LimitClause) : Nil
-    write "LIMIT #{clause.limit} "
+    write "LIMIT "
+    write_placeholder
+    parameters << clause.limit
   end
 
   def visit_clause(clause : Focus::OffsetClause) : Nil
-    write "OFFSET #{clause.offset} "
+    write "OFFSET "
+    write_placeholder
+    parameters << clause.offset
   end
 
   def visit_clause(clause : Focus::GroupByClause) : Nil
