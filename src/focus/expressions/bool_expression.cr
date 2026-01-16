@@ -15,6 +15,6 @@ class Focus::BoolExpression < Focus::Expression
   end
 
   def eq(rhs : Focus::BoolExpression) : Focus::BoolExpression
-    binary_op("=", rhs)
+    _eq(rhs)
   end
 end

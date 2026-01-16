@@ -5,6 +5,6 @@ class Focus::TimeExpression < Focus::Expression
   end
 
   def eq(rhs : Focus::TimeExpression) : Focus::BoolExpression
-    binary_op("=", rhs)
+    _eq(rhs)
   end
 end

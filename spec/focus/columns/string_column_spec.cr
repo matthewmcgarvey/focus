@@ -5,7 +5,7 @@ describe Focus::StringColumn do
     it "works" do
       column = Focus::StringColumn.new("foo")
 
-      result = column.in_list("a", "b")
+      result = column.in_list(Focus.string("a"), Focus.string("b"))
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)

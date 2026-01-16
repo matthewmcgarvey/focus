@@ -43,6 +43,14 @@ abstract class Focus::Expression
     Focus::BoolExpression.new(postfix)
   end
 
+  private def _eq(rhs : Focus::Expression) : Focus::BoolExpression
+    binary_op("=", rhs)
+  end
+
+  private def _greater_than(rhs : Focus::Expression) : Focus::BoolExpression
+    binary_op(">", rhs)
+  end
+
   # Helper to build simple binary boolean expressions for this column.
   private def binary_op(operator : String, rhs : Focus::Expression) : Focus::BoolExpression
     expression = Focus::BinaryExpression.new(left: self, right: rhs, operator: operator)

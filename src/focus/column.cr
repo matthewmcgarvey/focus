@@ -18,9 +18,6 @@ module Focus::Column
   end
 
   # Generic greater-than operator that accepts any SQL expression (including other columns).
-  def greater_than(rhs : Focus::Expression) : Focus::BoolExpression
-    binary_op(">", rhs)
-  end
 
   def accept(visitor : SqlVisitor) : Nil
     visitor.visit_column(self)

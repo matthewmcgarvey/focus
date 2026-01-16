@@ -30,7 +30,7 @@ describe "SQLite Select" do
     result1 = SQLITE_DATABASE.query_all(sql1, args: args1, as: Int32)
     result1.should eq([1, 2])
 
-    stm2 = Employees.select(Focus.count(Employees.id)).where(Employees.salary.greater_than(60))
+    stm2 = Employees.select(Focus.count(Employees.id)).where(Employees.salary.greater_than(Focus.int32(60)))
     sql2, args2 = stm2.to_sql_with_args
     result2 = SQLITE_DATABASE.query_one(sql2, args: args2, as: Int32)
     result2.should eq(3)
@@ -152,7 +152,7 @@ describe "SQLite Select" do
   end
 
   it "uses subselect in where clause" do
-    subquery = Employees.select(Employees.department_id).where(Employees.salary.greater_than(90))
+    subquery = Employees.select(Employees.department_id).where(Employees.salary.greater_than(Focus.int32(90)))
 
     departments = Departments.select
       .where(Departments.id.in_list(subquery))
@@ -170,7 +170,7 @@ describe "SQLite Select" do
     aliased_table = Employees.aliased("e")
     sql = Focus::SQLite.select(aliased_table.name)
       .from(aliased_table)
-      .where(aliased_table.salary.greater_than(80))
+      .where(aliased_table.salary.greater_than(Focus.int32(80)))
       .order_by(aliased_table.id.asc)
 
     expected_sql = formatted(<<-SQL)
@@ -185,7 +185,7 @@ describe "SQLite Select" do
     employee_count_col = Focus.int32_column("employee_count")
     subquery = Employees.select(Employees.department_id, Focus.count(Employees.id).aliased("employee_count"))
       .group_by(Employees.department_id)
-      .having(employee_count_col.greater_than(1))
+      .having(employee_count_col.greater_than(Focus.int32(1)))
       .aliased("dept_counts")
 
     query = Focus::SQLite.select.from(subquery).order_by(employee_count_col.from(subquery).desc)
