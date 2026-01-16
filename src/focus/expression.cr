@@ -47,8 +47,41 @@ abstract class Focus::Expression
     binary_op("=", rhs)
   end
 
+  private def _not_eq(rhs : Focus::Expression) : Focus::BoolExpression
+    binary_op("!=", rhs)
+  end
+
+  private def _is_distinct_from(rhs : Focus::Expression) : Focus::BoolExpression
+    binary_op("IS DISTINCT FROM", rhs)
+  end
+
+  private def _is_not_distinct_from(rhs : Focus::Expression) : Focus::BoolExpression
+    binary_op("IS NOT DISTINCT FROM", rhs)
+  end
+
   private def _greater_than(rhs : Focus::Expression) : Focus::BoolExpression
     binary_op(">", rhs)
+  end
+
+  private def _greater_than_eq(rhs : Focus::Expression) : Focus::BoolExpression
+    binary_op(">=", rhs)
+  end
+
+  private def _less_than(rhs : Focus::Expression) : Focus::BoolExpression
+    binary_op("<", rhs)
+  end
+
+  private def _less_than_eq(rhs : Focus::Expression) : Focus::BoolExpression
+    binary_op("<=", rhs)
+  end
+
+  private def _between(min : Focus::Expression, max : Focus::Expression, negated : Bool) : Focus::BoolExpression
+    Focus::BetweenOperatorExpression.new(
+      self,
+      negated: negated,
+      min: min,
+      max: max
+    )
   end
 
   # Helper to build simple binary boolean expressions for this column.

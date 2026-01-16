@@ -144,6 +144,15 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     write " "
   end
 
+  def visit_expression(expression : Focus::BetweenOperatorExpression) : Nil
+    expression.expression.accept(self)
+    write "NOT " if expression.negated
+    write "BETWEEN "
+    expression.min.accept(self)
+    write "AND "
+    expression.max.accept(self)
+  end
+
   def visit_expression(expression : Focus::BoolExpression) : Nil
     expression.inner.try(&.accept(self))
   end
