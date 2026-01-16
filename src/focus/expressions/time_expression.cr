@@ -4,10 +4,6 @@ class Focus::TimeExpression < Focus::Expression
   def initialize(@inner : Focus::Expression? = nil)
   end
 
-  def eq(value : Time) : Focus::BoolExpression
-    eq(Focus::TimeLiteral.new(value))
-  end
-
   def eq(rhs : Focus::TimeExpression) : Focus::BoolExpression
     binary_op("=", rhs)
   end

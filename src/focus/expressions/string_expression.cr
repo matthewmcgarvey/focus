@@ -4,10 +4,6 @@ class Focus::StringExpression < Focus::Expression
   def initialize(@inner : Focus::Expression? = nil)
   end
 
-  def eq(value : String) : Focus::BoolExpression
-    eq(Focus::StringLiteral.new(value))
-  end
-
   def eq(rhs : Focus::StringExpression) : Focus::BoolExpression
     binary_op("=", rhs)
   end

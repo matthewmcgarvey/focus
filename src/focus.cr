@@ -18,6 +18,7 @@ require "./focus/visitors/*"
 module Focus
   extend Focus::Dsl::Aggregation
   extend Focus::Dsl::Columns
+  extend Focus::Dsl::Types
 
   VERSION = "0.1.0"
 

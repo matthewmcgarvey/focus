@@ -4,10 +4,6 @@ class Focus::IntExpression(INT_TYPE) < Focus::Expression
   def initialize(@inner : Focus::Expression? = nil)
   end
 
-  def eq(value : INT_TYPE) : Focus::BoolExpression
-    eq(Focus::IntLiteral(INT_TYPE).new(value))
-  end
-
   def eq(rhs : Focus::IntExpression(INT_TYPE)) : Focus::BoolExpression
     binary_op("=", rhs)
   end

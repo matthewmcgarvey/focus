@@ -59,45 +59,45 @@ describe "SQLite Select" do
   end
 
   it "query_one returns single row" do
-    stmt1 = Employees.select(Employees.name).where(Employees.id.eq(2))
+    stmt1 = Employees.select(Employees.name).where(Employees.id.eq(Focus.int32(2)))
     result1 = stmt1.query_one(SQLITE_DATABASE, as: String)
     result1.should eq("marry")
 
-    stmt2 = Departments.select.where(Departments.id.eq(1))
+    stmt2 = Departments.select.where(Departments.id.eq(Focus.int32(1)))
     result2 = stmt2.query_one(SQLITE_DATABASE, as: Department)
     result2.name.should eq("tech")
 
-    stmt3 = Employees.select(Employees.id, Employees.name).where(Employees.id.eq(3))
+    stmt3 = Employees.select(Employees.id, Employees.name).where(Employees.id.eq(Focus.int32(3)))
     result3 = stmt3.query_one(SQLITE_DATABASE, as: {id: Int32, name: String})
     result3.should eq({id: 3, name: "tom"})
 
-    stmt4 = Departments.select(Departments.name, Departments.location).where(Departments.id.eq(2))
+    stmt4 = Departments.select(Departments.name, Departments.location).where(Departments.id.eq(Focus.int32(2)))
     result4 = stmt4.query_one(SQLITE_DATABASE, as: {String, String})
     result4.should eq({"finance", "Beijing"})
   end
 
   it "query_one? returns nil when no rows match" do
-    stmt1 = Employees.select(Employees.name).where(Employees.id.eq(5))
+    stmt1 = Employees.select(Employees.name).where(Employees.id.eq(Focus.int32(5)))
     result1 = stmt1.query_one?(SQLITE_DATABASE, as: String)
     result1.should be_nil
 
-    stmt2 = Departments.select.where(Departments.id.eq(3))
+    stmt2 = Departments.select.where(Departments.id.eq(Focus.int32(3)))
     result2 = stmt2.query_one?(SQLITE_DATABASE, as: Department)
     result2.should be_nil
 
-    stmt3 = Employees.select(Employees.id, Employees.name).where(Employees.id.eq(6))
+    stmt3 = Employees.select(Employees.id, Employees.name).where(Employees.id.eq(Focus.int32(6)))
     result3 = stmt3.query_one?(SQLITE_DATABASE, as: {id: Int32, name: String})
     result3.should be_nil
 
-    stmt4 = Departments.select(Departments.name, Departments.location).where(Departments.id.eq(4))
+    stmt4 = Departments.select(Departments.name, Departments.location).where(Departments.id.eq(Focus.int32(4)))
     result4 = stmt4.query_one?(SQLITE_DATABASE, as: {String, String})
     result4.should be_nil
 
-    stmt5 = Employees.select(Employees.name).where(Employees.id.eq(2))
+    stmt5 = Employees.select(Employees.name).where(Employees.id.eq(Focus.int32(2)))
     stmt5.query_one?(SQLITE_DATABASE, as: String).should eq("marry")
     stmt5.query_one?(SQLITE_DATABASE, as: {name: String}).should eq({name: "marry"})
 
-    stmt6 = Employees.select(Employees.id, Employees.name).where(Employees.id.eq(2))
+    stmt6 = Employees.select(Employees.id, Employees.name).where(Employees.id.eq(Focus.int32(2)))
     stmt6.query_one?(SQLITE_DATABASE, as: {Int32, String}).should eq({2, "marry"})
   end
 

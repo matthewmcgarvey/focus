@@ -20,10 +20,10 @@ describe "PG Insert" do
       Departments.insert(Departments.name, Departments.location)
         .query(
           Departments.select(Departments.name, Departments.location)
-            .where(Departments.id.eq(1)))
+            .where(Departments.id.eq(Focus.int32(1))))
         .exec(conn)
 
-      result = Departments.select(Focus.count(Departments.id)).where(Departments.name.eq("tech")).query_one(conn, Int64)
+      result = Departments.select(Focus.count(Departments.id)).where(Departments.name.eq(Focus.string("tech"))).query_one(conn, Int64)
       result.should eq(2)
     end
   end

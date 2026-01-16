@@ -2,6 +2,12 @@
 
 These are for me to jot down some things I'm learning as I reference https://www.ktorm.org and figuring out how to implement something similar in Crystal.
 
+## 2026-01-15
+
+I removed the ability to write `Table.column.eq(5)`. Being able to use raw values would be very simple, but the amount to implement for each type is crazy.
+Plus, in some places we might want to expand the types we accept (where we might want to cast the raw value) and it'd be pretty much impossible
+to implement it in a way where you could use all the methods with that raw value. If I change my mind, it's simple enough to add it back, though.
+
 ## Why?
 
 What are the motivating reasons for making another ORM?

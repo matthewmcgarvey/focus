@@ -16,14 +16,14 @@ describe "PG Update" do
 
   it "sets from select subquery" do
     in_transaction do |conn|
-      Departments.select(Departments.name).where(Departments.id.eq(1)).query_one(conn, String).should eq("tech")
+      Departments.select(Departments.name).where(Departments.id.eq(Focus.int32(1))).query_one(conn, String).should eq("tech")
 
       Departments.update
-        .set(Departments.name, Departments.select(Departments.name).where(Departments.id.eq(2)))
-        .where(Departments.id.eq(1))
+        .set(Departments.name, Departments.select(Departments.name).where(Departments.id.eq(Focus.int32(2))))
+        .where(Departments.id.eq(Focus.int32(1)))
         .exec(conn)
 
-      Departments.select(Departments.name).where(Departments.id.eq(1)).query_one(conn, String).should eq("finance")
+      Departments.select(Departments.name).where(Departments.id.eq(Focus.int32(1))).query_one(conn, String).should eq("finance")
     end
   end
 
@@ -32,15 +32,15 @@ describe "PG Update" do
       ids = Departments.update.set(Departments.name, "foo").returning(Departments.id).query_all(conn, Int32)
 
       ids.size.should be > 0
-      ids.should eq(Departments.select(Departments.id).distinct.where(Departments.name.eq("foo")).query_all(conn, Int32))
+      ids.should eq(Departments.select(Departments.id).distinct.where(Departments.name.eq(Focus.string("foo"))).query_all(conn, Int32))
     end
   end
 
   it "updates date column" do
     in_transaction do |conn|
-      Employees.update.set(Employees.hire_date, Time.utc(2026, 1, 10)).where(Employees.id.eq(1)).exec(conn)
+      Employees.update.set(Employees.hire_date, Time.utc(2026, 1, 10)).where(Employees.id.eq(Focus.int32(1))).exec(conn)
 
-      result = Employees.select(Employees.hire_date).where(Employees.id.eq(1)).query_one(conn, Time)
+      result = Employees.select(Employees.hire_date).where(Employees.id.eq(Focus.int32(1))).query_one(conn, Time)
       result.should eq(Time.utc(2026, 1, 10))
     end
   end
