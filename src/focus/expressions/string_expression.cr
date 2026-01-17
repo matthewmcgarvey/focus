@@ -1,4 +1,9 @@
 class Focus::StringExpression < Focus::Expression
+  def self.new_string_func(func_name : String, *expressions : Focus::Expression) : StringExpression
+    func = Focus::FunctionExpression.new(func_name, expressions.to_a.map(&.as(Focus::Expression)))
+    Focus::StringExpression.new(func)
+  end
+
   getter inner : Focus::Expression?
 
   def initialize(@inner : Focus::Expression? = nil)

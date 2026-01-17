@@ -1,7 +1,7 @@
 require "../../spec_helper"
 
-# Test module that extends Functions to allow calling them
-module TestFunctions
+# Test module that extends MathFunctions to allow calling them
+module TestMathFunctions
   extend Focus::Dsl::MathFunctions
   extend Focus::Dsl::Columns
 end
@@ -10,7 +10,7 @@ describe Focus::Dsl::MathFunctions do
   describe "#abs" do
     it "generates ABS for float expression" do
       col = Focus::FloatColumn(Float64).new("price")
-      result = TestFunctions.abs(col)
+      result = TestMathFunctions.abs(col)
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)
@@ -19,7 +19,7 @@ describe Focus::Dsl::MathFunctions do
 
     it "generates ABS for int expression" do
       col = Focus::IntColumn(Int32).new("quantity")
-      result = TestFunctions.abs(col)
+      result = TestMathFunctions.abs(col)
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)
@@ -30,7 +30,7 @@ describe Focus::Dsl::MathFunctions do
   describe "#ceil" do
     it "generates CEIL for float expression" do
       col = Focus::FloatColumn(Float64).new("price")
-      result = TestFunctions.ceil(col)
+      result = TestMathFunctions.ceil(col)
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)
@@ -41,7 +41,7 @@ describe Focus::Dsl::MathFunctions do
   describe "#floor" do
     it "generates FLOOR for float expression" do
       col = Focus::FloatColumn(Float64).new("price")
-      result = TestFunctions.floor(col)
+      result = TestMathFunctions.floor(col)
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)
@@ -52,7 +52,7 @@ describe Focus::Dsl::MathFunctions do
   describe "#round" do
     it "generates ROUND without precision" do
       col = Focus::FloatColumn(Float64).new("price")
-      result = TestFunctions.round(col)
+      result = TestMathFunctions.round(col)
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)
@@ -62,7 +62,7 @@ describe Focus::Dsl::MathFunctions do
     it "generates ROUND with precision" do
       col = Focus::FloatColumn(Float64).new("price")
       precision = Focus::IntColumn(Int32).new("decimals")
-      result = TestFunctions.round(col, precision)
+      result = TestMathFunctions.round(col, precision)
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)
@@ -73,7 +73,7 @@ describe Focus::Dsl::MathFunctions do
   describe "#trunc" do
     it "generates TRUNC without precision" do
       col = Focus::FloatColumn(Float64).new("price")
-      result = TestFunctions.trunc(col)
+      result = TestMathFunctions.trunc(col)
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)
@@ -83,7 +83,7 @@ describe Focus::Dsl::MathFunctions do
     it "generates TRUNC with precision" do
       col = Focus::FloatColumn(Float64).new("price")
       precision = Focus::IntColumn(Int32).new("decimals")
-      result = TestFunctions.trunc(col, precision)
+      result = TestMathFunctions.trunc(col, precision)
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)
@@ -95,7 +95,7 @@ describe Focus::Dsl::MathFunctions do
     it "generates POW for two numeric expressions" do
       base = Focus::FloatColumn(Float64).new("base")
       exponent = Focus::IntColumn(Int32).new("exp")
-      result = TestFunctions.pow(base, exponent)
+      result = TestMathFunctions.pow(base, exponent)
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)
@@ -107,7 +107,7 @@ describe Focus::Dsl::MathFunctions do
     it "generates POWER for two numeric expressions" do
       base = Focus::IntColumn(Int32).new("x")
       exponent = Focus::IntColumn(Int32).new("y")
-      result = TestFunctions.power(base, exponent)
+      result = TestMathFunctions.power(base, exponent)
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)
@@ -118,7 +118,7 @@ describe Focus::Dsl::MathFunctions do
   describe "#sqrt" do
     it "generates SQRT for numeric expression" do
       col = Focus::IntColumn(Int32).new("value")
-      result = TestFunctions.sqrt(col)
+      result = TestMathFunctions.sqrt(col)
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)
@@ -129,7 +129,7 @@ describe Focus::Dsl::MathFunctions do
   describe "#ln" do
     it "generates LN for numeric expression" do
       col = Focus::FloatColumn(Float64).new("value")
-      result = TestFunctions.ln(col)
+      result = TestMathFunctions.ln(col)
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)
@@ -140,7 +140,7 @@ describe Focus::Dsl::MathFunctions do
   describe "#log" do
     it "generates LOG for single numeric expression" do
       col = Focus::FloatColumn(Float64).new("value")
-      result = TestFunctions.log(col)
+      result = TestMathFunctions.log(col)
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)
@@ -150,7 +150,7 @@ describe Focus::Dsl::MathFunctions do
     it "generates LOG with base and value" do
       base = Focus::IntColumn(Int32).new("base")
       value = Focus::FloatColumn(Float64).new("value")
-      result = TestFunctions.log(base, value)
+      result = TestMathFunctions.log(base, value)
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)
@@ -161,7 +161,7 @@ describe Focus::Dsl::MathFunctions do
   describe "#sign" do
     it "generates SIGN for float expression" do
       col = Focus::FloatColumn(Float64).new("amount")
-      result = TestFunctions.sign(col)
+      result = TestMathFunctions.sign(col)
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)
@@ -170,7 +170,7 @@ describe Focus::Dsl::MathFunctions do
 
     it "generates SIGN for int expression" do
       col = Focus::IntColumn(Int32).new("amount")
-      result = TestFunctions.sign(col)
+      result = TestMathFunctions.sign(col)
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)
@@ -180,7 +180,7 @@ describe Focus::Dsl::MathFunctions do
 
   describe "#pi" do
     it "generates PI()" do
-      result = TestFunctions.pi
+      result = TestMathFunctions.pi
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)
@@ -191,7 +191,7 @@ describe Focus::Dsl::MathFunctions do
   describe "function chaining" do
     it "can use function result in another expression" do
       col = Focus::FloatColumn(Float64).new("price")
-      abs_result = TestFunctions.abs(col)
+      abs_result = TestMathFunctions.abs(col)
       comparison = abs_result.greater_than(Focus::FloatLiteral.new(10.0))
 
       visitor = Focus::SqlFormatter.new
@@ -201,7 +201,7 @@ describe Focus::Dsl::MathFunctions do
 
     it "can nest function calls" do
       col = Focus::FloatColumn(Float64).new("value")
-      result = TestFunctions.abs(TestFunctions.floor(col))
+      result = TestMathFunctions.abs(TestMathFunctions.floor(col))
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)

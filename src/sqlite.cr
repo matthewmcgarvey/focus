@@ -7,6 +7,7 @@ module Focus::SQLite
   extend Focus::Dsl::Columns
   extend Focus::Dsl::Types
   extend Focus::Dsl::MathFunctions
+  extend Focus::Dsl::StringFunctions
 
   def self.select(expressions : Array(Focus::Expression)) : Focus::SQLite::SelectStatement
     select_clause = Focus::SelectClause.new(expressions.select(Focus::Expression))
