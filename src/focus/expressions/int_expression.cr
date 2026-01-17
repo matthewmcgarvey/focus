@@ -93,14 +93,6 @@ class Focus::IntExpression(INT_TYPE) < Focus::NumericExpression
     new_int_expr(Focus::BinaryOperatorExpression.new(self, rhs, ">>"))
   end
 
-  def pow(rhs : Focus::NumericExpression) : Focus::IntExpression(INT_TYPE)
-    new_int_expr(_pow(rhs))
-  end
-
-  def abs : Focus::IntExpression(INT_TYPE)
-    new_int_expr(_abs)
-  end
-
   private def new_int_expr(expr : Focus::Expression) : Focus::IntExpression(INT_TYPE)
     Focus::IntExpression(INT_TYPE).new(expr)
   end

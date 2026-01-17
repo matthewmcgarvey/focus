@@ -22,12 +22,4 @@ abstract class Focus::NumericExpression < Focus::Expression
   private def _mod(rhs : Focus::NumericExpression) : Focus::BinaryOperatorExpression
     Focus::BinaryOperatorExpression.new(self, rhs, "%")
   end
-
-  private def _pow(exponent : Focus::NumericExpression) : Focus::FunctionExpression
-    Focus::FunctionExpression.new("POW", [self, exponent])
-  end
-
-  private def _abs : Focus::FunctionExpression
-    Focus::FunctionExpression.new("ABS", [self])
-  end
 end

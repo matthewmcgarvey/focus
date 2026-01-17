@@ -69,14 +69,6 @@ class Focus::FloatExpression(FLOAT_TYPE) < Focus::NumericExpression
     new_float_expr(_mod(rhs))
   end
 
-  def pow(rhs : Focus::NumericExpression) : Focus::FloatExpression(FLOAT_TYPE)
-    new_float_expr(_pow(rhs))
-  end
-
-  def abs : Focus::FloatExpression(FLOAT_TYPE)
-    new_float_expr(_abs)
-  end
-
   private def new_float_expr(expr : Focus::Expression) : Focus::FloatExpression(FLOAT_TYPE)
     Focus::FloatExpression(FLOAT_TYPE).new(expr)
   end
