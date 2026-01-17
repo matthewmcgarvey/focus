@@ -163,20 +163,11 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     expression.right.accept(self)
   end
 
-  # The visitor pattern seems to fail with generic types
-  # which is why every option is spelled out here explicitly
-  # https://forum.crystal-lang.org/t/incorrect-overload-selected-with-freevar-and-generic-inheritance/3625
-  def visit_expression(expression : Focus::IntExpression(Int8) |
-                                    Focus::IntExpression(Int16) |
-                                    Focus::IntExpression(Int32) |
-                                    Focus::IntExpression(Int64) |
-                                    Focus::IntExpression(UInt16) |
-                                    Focus::IntExpression(UInt32) |
-                                    Focus::IntExpression(UInt64)) : Nil
+  def visit_expression(expression : Focus::IntExpression(T)) : Nil forall T
     expression.inner.try(&.accept(self))
   end
 
-  def visit_expression(expression : Focus::FloatExpression(Float64) | Focus::FloatExpression(Float32)) : Nil
+  def visit_expression(expression : Focus::FloatExpression(T)) : Nil forall T
     expression.inner.try(&.accept(self))
   end
 

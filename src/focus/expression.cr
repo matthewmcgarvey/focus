@@ -1,5 +1,9 @@
 abstract class Focus::Expression
+  # The visitor pattern seems to fail with generic types
+  # the {% @type %} here is to force the compiler to instantiate a separate def for each generic instance
+  # https://forum.crystal-lang.org/t/incorrect-overload-selected-with-freevar-and-generic-inheritance/3625
   def accept(visitor : SqlVisitor) : Nil
+    {% @type %}
     visitor.visit_expression(self)
   end
 
