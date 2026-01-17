@@ -3,6 +3,10 @@ require "./sqlite/*"
 require "./sqlite/statements/*"
 
 module Focus::SQLite
+  extend Focus::Dsl::Aggregation
+  extend Focus::Dsl::Columns
+  extend Focus::Dsl::Types
+
   def self.select(expressions : Array(Focus::Expression)) : Focus::SQLite::SelectStatement
     select_clause = Focus::SelectClause.new(expressions.select(Focus::Expression))
     Focus::SQLite::SelectStatement.new(select_clause)

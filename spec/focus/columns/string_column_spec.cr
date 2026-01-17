@@ -4,8 +4,10 @@ describe Focus::StringColumn do
   describe "#in_list" do
     it "works" do
       column = Focus::StringColumn.new("foo")
+      str_a = Focus::StringLiteral.new("a")
+      str_b = Focus::StringLiteral.new("b")
 
-      result = column.in_list(Focus.string("a"), Focus.string("b"))
+      result = column.in_list(str_a, str_b)
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)
@@ -16,7 +18,9 @@ describe Focus::StringColumn do
   describe "#between" do
     it "works" do
       column = Focus::StringColumn.new("foo")
-      result = column.between(Focus.string("a"), Focus.string("z"))
+      str_a = Focus::StringLiteral.new("a")
+      str_z = Focus::StringLiteral.new("z")
+      result = column.between(str_a, str_z)
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)
@@ -27,7 +31,8 @@ describe Focus::StringColumn do
   describe "#like" do
     it "works" do
       column = Focus::StringColumn.new("foo")
-      result = column.like(Focus.string("%abc%"))
+      str_like = Focus::StringLiteral.new("%abc%")
+      result = column.like(str_like)
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)
@@ -38,7 +43,8 @@ describe Focus::StringColumn do
   describe "#concat" do
     it "works" do
       column = Focus::StringColumn.new("foo")
-      result = column.concat(Focus.string("abc"))
+      str_abc = Focus::StringLiteral.new("abc")
+      result = column.concat(str_abc)
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)

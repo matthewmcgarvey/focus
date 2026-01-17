@@ -30,7 +30,7 @@ describe "PG Select" do
     result1 = PG_DATABASE.query_all(sql1, args: args1, as: Int32)
     result1.should eq([1, 2])
 
-    stm2 = Employees.select(Focus.count(Employees.id)).where(Employees.salary.greater_than(Focus.int64(60)))
+    stm2 = Employees.select(Focus::PG.count(Employees.id)).where(Employees.salary.greater_than(Focus::PG.int64(60)))
     sql2, args2 = stm2.to_sql_with_args
     result2 = PG_DATABASE.query_one(sql2, args: args2, as: Int64)
     result2.should eq(3)
@@ -59,45 +59,45 @@ describe "PG Select" do
   end
 
   it "query_one returns single row" do
-    stmt1 = Employees.select(Employees.name).where(Employees.id.eq(Focus.int32(2)))
+    stmt1 = Employees.select(Employees.name).where(Employees.id.eq(Focus::PG.int32(2)))
     result1 = stmt1.query_one(PG_DATABASE, as: String)
     result1.should eq("marry")
 
-    stmt2 = Departments.select.where(Departments.id.eq(Focus.int32(1)))
+    stmt2 = Departments.select.where(Departments.id.eq(Focus::PG.int32(1)))
     result2 = stmt2.query_one(PG_DATABASE, as: Department)
     result2.name.should eq("tech")
 
-    stmt3 = Employees.select(Employees.id, Employees.name).where(Employees.id.eq(Focus.int32(3)))
+    stmt3 = Employees.select(Employees.id, Employees.name).where(Employees.id.eq(Focus::PG.int32(3)))
     result3 = stmt3.query_one(PG_DATABASE, as: {id: Int32, name: String})
     result3.should eq({id: 3, name: "tom"})
 
-    stmt4 = Departments.select(Departments.name, Departments.location).where(Departments.id.eq(Focus.int32(2)))
+    stmt4 = Departments.select(Departments.name, Departments.location).where(Departments.id.eq(Focus::PG.int32(2)))
     result4 = stmt4.query_one(PG_DATABASE, as: {String, String})
     result4.should eq({"finance", "Beijing"})
   end
 
   it "query_one? returns nil when no rows match" do
-    stmt1 = Employees.select(Employees.name).where(Employees.id.eq(Focus.int32(5)))
+    stmt1 = Employees.select(Employees.name).where(Employees.id.eq(Focus::PG.int32(5)))
     result1 = stmt1.query_one?(PG_DATABASE, as: String)
     result1.should be_nil
 
-    stmt2 = Departments.select.where(Departments.id.eq(Focus.int32(3)))
+    stmt2 = Departments.select.where(Departments.id.eq(Focus::PG.int32(3)))
     result2 = stmt2.query_one?(PG_DATABASE, as: Department)
     result2.should be_nil
 
-    stmt3 = Employees.select(Employees.id, Employees.name).where(Employees.id.eq(Focus.int32(6)))
+    stmt3 = Employees.select(Employees.id, Employees.name).where(Employees.id.eq(Focus::PG.int32(6)))
     result3 = stmt3.query_one?(PG_DATABASE, as: {id: Int32, name: String})
     result3.should be_nil
 
-    stmt4 = Departments.select(Departments.name, Departments.location).where(Departments.id.eq(Focus.int32(4)))
+    stmt4 = Departments.select(Departments.name, Departments.location).where(Departments.id.eq(Focus::PG.int32(4)))
     result4 = stmt4.query_one?(PG_DATABASE, as: {String, String})
     result4.should be_nil
 
-    stmt5 = Employees.select(Employees.name).where(Employees.id.eq(Focus.int32(2)))
+    stmt5 = Employees.select(Employees.name).where(Employees.id.eq(Focus::PG.int32(2)))
     stmt5.query_one?(PG_DATABASE, as: String).should eq("marry")
     stmt5.query_one?(PG_DATABASE, as: {name: String}).should eq({name: "marry"})
 
-    stmt6 = Employees.select(Employees.id, Employees.name).where(Employees.id.eq(Focus.int32(2)))
+    stmt6 = Employees.select(Employees.id, Employees.name).where(Employees.id.eq(Focus::PG.int32(2)))
     stmt6.query_one?(PG_DATABASE, as: {Int32, String}).should eq({2, "marry"})
   end
 
@@ -143,7 +143,7 @@ describe "PG Select" do
   end
 
   it "uses subselect in where clause" do
-    subquery = Employees.select(Employees.department_id).where(Employees.salary.greater_than(Focus.int64(90)))
+    subquery = Employees.select(Employees.department_id).where(Employees.salary.greater_than(Focus::PG.int64(90)))
 
     departments = Departments.select
       .where(Departments.id.in_list(subquery))
@@ -161,7 +161,7 @@ describe "PG Select" do
     aliased_table = Employees.aliased("e")
     sql = Focus::PG.select(aliased_table.name)
       .from(aliased_table)
-      .where(aliased_table.salary.greater_than(Focus.int64(80)))
+      .where(aliased_table.salary.greater_than(Focus::PG.int64(80)))
       .order_by(aliased_table.id.asc)
 
     expected_sql = formatted(<<-SQL)
@@ -174,9 +174,9 @@ describe "PG Select" do
 
   it "uses subselect in from clause" do
     employee_count_col = Focus::IntColumn(Int32).new("employee_count")
-    subquery = Employees.select(Employees.department_id, Focus.count(Employees.id).aliased("employee_count"))
+    subquery = Employees.select(Employees.department_id, Focus::PG.count(Employees.id).aliased("employee_count"))
       .group_by(Employees.department_id)
-      .having(employee_count_col.greater_than(Focus.int32(1)))
+      .having(employee_count_col.greater_than(Focus::PG.int32(1)))
       .aliased("dept_counts")
 
     query = Focus::PG.select.from(subquery).order_by(employee_count_col.from(subquery).desc)
@@ -205,7 +205,7 @@ describe "PG Select" do
 
   it "handles casts" do
     result = Employees.select(Employees.name)
-      .where(Employees.id.eq(Focus::PG.cast(Focus.string("1")).as_integer))
+      .where(Employees.id.eq(Focus::PG.cast(Focus::PG.string("1")).as_integer))
       .query_one(PG_DATABASE, String)
     result.should eq("vince")
   end
