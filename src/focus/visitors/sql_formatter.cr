@@ -213,6 +213,14 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     wrap_in_parens { visit_list(expression.parameters) }
   end
 
+  def visit_expression(expression : Focus::CastExpression) : Nil
+    write "CAST("
+    expression.expression.accept(self)
+    write "AS "
+    write expression.cast_type.not_nil!
+    write ") "
+  end
+
   def visit_expression(expression : Focus::ValueExpression) : Nil
     write_placeholder
     parameters << expression.value

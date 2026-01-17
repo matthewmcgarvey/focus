@@ -20,4 +20,8 @@ module Focus::SQLite
   def self.with(*ctes : Focus::CommonTableExpression) : Focus::SQLite::WithStatement
     Focus::SQLite::WithStatement.new(ctes.to_a)
   end
+
+  def self.cast(expression : Focus::Expression) : Focus::CastExpression
+    Focus::CastExpression.new(expression)
+  end
 end

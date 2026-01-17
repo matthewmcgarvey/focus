@@ -202,4 +202,11 @@ describe "PG Select" do
 
     names.should eq(["tech", "finance"])
   end
+
+  it "handles casts" do
+    result = Employees.select(Employees.name)
+      .where(Employees.id.eq(Focus::PG.cast(Focus.string("1")).as_integer))
+      .query_one(PG_DATABASE, String)
+    result.should eq("vince")
+  end
 end

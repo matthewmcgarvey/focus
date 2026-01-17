@@ -20,4 +20,8 @@ module Focus::PG
   def self.with(*ctes : Focus::CommonTableExpression) : Focus::PG::WithStatement
     Focus::PG::WithStatement.new(ctes.to_a)
   end
+
+  def self.cast(expression : Focus::Expression) : Focus::CastExpression
+    Focus::CastExpression.new(expression)
+  end
 end
