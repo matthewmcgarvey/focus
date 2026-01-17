@@ -1,22 +1,22 @@
 module Focus::Dsl::Aggregation
-  def count(column : Focus::Column? = nil) : AggregateExpression
-    arg = column || Focus::WildcardExpression.new
-    AggregateExpression.new(Focus::AggregateExpression::AggregateType::COUNT, arg)
+  def count(expr : Focus::Expression? = nil) : AggregateExpression
+    arg = expr || Focus::WildcardExpression.new
+    AggregateExpression.new("COUNT", arg)
   end
 
-  def sum(column : Focus::Column) : AggregateExpression
-    AggregateExpression.new(Focus::AggregateExpression::AggregateType::SUM, column)
+  def sum(expr : Focus::Expression) : AggregateExpression
+    AggregateExpression.new("SUM", expr)
   end
 
-  def avg(column : Focus::Column) : AggregateExpression
-    AggregateExpression.new(Focus::AggregateExpression::AggregateType::AVG, column)
+  def avg(expr : Focus::Expression) : AggregateExpression
+    AggregateExpression.new("AVG", expr)
   end
 
-  def min(column : Focus::Column) : AggregateExpression
-    AggregateExpression.new(Focus::AggregateExpression::AggregateType::MIN, column)
+  def min(expr : Focus::Expression) : AggregateExpression
+    AggregateExpression.new("MIN", expr)
   end
 
-  def max(column : Focus::Column) : AggregateExpression
-    AggregateExpression.new(Focus::AggregateExpression::AggregateType::MAX, column)
+  def max(expr : Focus::Expression) : AggregateExpression
+    AggregateExpression.new("MAX", expr)
   end
 end

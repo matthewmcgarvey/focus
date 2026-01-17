@@ -10,6 +10,7 @@ class Focus::AggregateExpression < Focus::Expression
   getter type : AggregateType
   getter argument : Focus::Expression
 
-  def initialize(@type : AggregateType, @argument : Focus::Expression)
+  def initialize(type : String, @argument : Focus::Expression)
+    @type = AggregateType.parse(type)
   end
 end
