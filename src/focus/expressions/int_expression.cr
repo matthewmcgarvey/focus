@@ -1,4 +1,9 @@
 class Focus::IntExpression(INT_TYPE) < Focus::NumericExpression
+  def self.new_int_func(func_name : String, *expressions : Focus::Expression) : IntExpression(INT_TYPE)
+    func = Focus::FunctionExpression.new(func_name, expressions.to_a.map(&.as(Focus::Expression)))
+    Focus::IntExpression(INT_TYPE).new(func)
+  end
+
   getter inner : Focus::Expression?
 
   def initialize(@inner : Focus::Expression? = nil)

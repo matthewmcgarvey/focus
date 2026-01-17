@@ -1,4 +1,9 @@
 class Focus::FloatExpression(FLOAT_TYPE) < Focus::NumericExpression
+  def self.new_float_func(func_name : String, *expressions : Focus::Expression) : FloatExpression(FLOAT_TYPE)
+    func = Focus::FunctionExpression.new(func_name, expressions.to_a.map(&.as(Focus::Expression)))
+    Focus::FloatExpression(FLOAT_TYPE).new(func)
+  end
+
   getter inner : Focus::Expression?
 
   def initialize(@inner : Focus::Expression? = nil)

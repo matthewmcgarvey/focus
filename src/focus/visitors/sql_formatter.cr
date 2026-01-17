@@ -167,7 +167,7 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     expression.inner.try(&.accept(self))
   end
 
-  def visit_expression(expression : Focus::FloatExpression(T)) : Nil forall T
+  def visit_expression(expression : Focus::FloatExpression(Float64) | Focus::FloatExpression(Float32)) : Nil
     expression.inner.try(&.accept(self))
   end
 
@@ -208,7 +208,7 @@ class Focus::SqlFormatter < Focus::SqlVisitor
 
   def visit_expression(expression : Focus::FunctionExpression) : Nil
     if !expression.name.blank?
-      write "#{expression.name} "
+      write expression.name
     end
     wrap_in_parens { visit_list(expression.parameters) }
   end
@@ -232,7 +232,7 @@ class Focus::SqlFormatter < Focus::SqlVisitor
   end
 
   def visit_expression(expression : Focus::Expression) : Nil
-    raise "shouldn't get here. implement #{expression.class} handling"
+    raise "shouldn't get here. implement visit_expression for #{expression.class}"
   end
 
   def visit_literal(literal : Focus::Parameter) : Nil
