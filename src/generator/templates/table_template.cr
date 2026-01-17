@@ -35,7 +35,11 @@ class Focus::Templates::TableTemplate
       when "TEXT", "VARCHAR"
         "StringColumn"
       when "DATE"
-        "TimeColumn"
+        "DateColumn"
+      when "TIMESTAMP", "TIMESTAMP WITHOUT TIME ZONE"
+        "TimestampColumn"
+      when "TIMESTAMPTZ", "TIMESTAMP WITH TIME ZONE"
+        "TimestampTzColumn"
       else
         puts "unhandled type #{data_type.name}. defaulting to string"
         "StringColumn"

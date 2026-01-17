@@ -59,9 +59,9 @@ describe Focus::Dsl::ConditionalFunctions do
       visitor.to_sql.should eq("COALESCE(active1, active2)")
     end
 
-    it "generates COALESCE for time expressions" do
-      col1 = Focus::TimeColumn.new("created_at")
-      col2 = Focus::TimeColumn.new("updated_at")
+    it "generates COALESCE for timestamp expressions" do
+      col1 = Focus::TimestampTzColumn.new("created_at")
+      col2 = Focus::TimestampTzColumn.new("updated_at")
       result = TestConditionalFunctions.coalesce(col1, col2)
 
       visitor = Focus::SqlFormatter.new
@@ -111,9 +111,9 @@ describe Focus::Dsl::ConditionalFunctions do
       visitor.to_sql.should eq("NULLIF(flag1, flag2)")
     end
 
-    it "generates NULLIF for time expressions" do
-      col1 = Focus::TimeColumn.new("timestamp1")
-      col2 = Focus::TimeColumn.new("timestamp2")
+    it "generates NULLIF for timestamp expressions" do
+      col1 = Focus::TimestampTzColumn.new("timestamp1")
+      col2 = Focus::TimestampTzColumn.new("timestamp2")
       result = TestConditionalFunctions.nullif(col1, col2)
 
       visitor = Focus::SqlFormatter.new
@@ -164,9 +164,9 @@ describe Focus::Dsl::ConditionalFunctions do
       visitor.to_sql.should eq("GREATEST(name1, name2)")
     end
 
-    it "generates GREATEST for time expressions" do
-      col1 = Focus::TimeColumn.new("date1")
-      col2 = Focus::TimeColumn.new("date2")
+    it "generates GREATEST for timestamp expressions" do
+      col1 = Focus::TimestampTzColumn.new("date1")
+      col2 = Focus::TimestampTzColumn.new("date2")
       result = TestConditionalFunctions.greatest(col1, col2)
 
       visitor = Focus::SqlFormatter.new
@@ -217,9 +217,9 @@ describe Focus::Dsl::ConditionalFunctions do
       visitor.to_sql.should eq("LEAST(name1, name2)")
     end
 
-    it "generates LEAST for time expressions" do
-      col1 = Focus::TimeColumn.new("date1")
-      col2 = Focus::TimeColumn.new("date2")
+    it "generates LEAST for timestamp expressions" do
+      col1 = Focus::TimestampTzColumn.new("date1")
+      col2 = Focus::TimestampTzColumn.new("date2")
       result = TestConditionalFunctions.least(col1, col2)
 
       visitor = Focus::SqlFormatter.new

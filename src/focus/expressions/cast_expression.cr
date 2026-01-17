@@ -21,4 +21,16 @@ class Focus::CastExpression < Focus::Expression
   def as_integer : Focus::IntExpression(Int32)
     Focus::IntExpression(Int32).new(as_type("INTEGER"))
   end
+
+  def as_date : Focus::DateExpression
+    Focus::DateExpression.new(as_type("DATE"))
+  end
+
+  def as_timestamp : Focus::TimestampExpression
+    Focus::TimestampExpression.new(as_type("TIMESTAMP"))
+  end
+
+  def as_timestamptz : Focus::TimestampTzExpression
+    Focus::TimestampTzExpression.new(as_type("TIMESTAMPTZ"))
+  end
 end

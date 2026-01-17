@@ -47,8 +47,16 @@ module Focus::Dsl::Types
     Focus::StringLiteral.new(value)
   end
 
-  def time(value : Time) : Focus::TimeExpression
-    Focus::TimeLiteral.new(value)
+  def date(value : Time) : Focus::DateExpression
+    Focus::DateLiteral.new(value)
+  end
+
+  def timestamp(value : Time) : Focus::TimestampExpression
+    Focus::TimestampLiteral.new(value)
+  end
+
+  def timestamptz(value : Time) : Focus::TimestampTzExpression
+    Focus::TimestampTzLiteral.new(value)
   end
 
   def null : Focus::NullLiteral

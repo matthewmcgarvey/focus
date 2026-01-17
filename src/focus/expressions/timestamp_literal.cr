@@ -1,4 +1,4 @@
-class Focus::TimeLiteral < Focus::TimeExpression
+class Focus::TimestampLiteral < Focus::TimestampExpression
   include Focus::Parameter
 
   getter value : Time

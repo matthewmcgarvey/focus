@@ -24,10 +24,22 @@ module Focus::Dsl::ConditionalFunctions
     Focus::BoolExpression.new(func)
   end
 
-  def coalesce(first : Focus::TimeExpression, *rest : Focus::TimeExpression) : Focus::TimeExpression
+  def coalesce(first : Focus::DateExpression, *rest : Focus::DateExpression) : Focus::DateExpression
     args = [first.as(Focus::Expression)] + rest.to_a.map(&.as(Focus::Expression))
     func = Focus::FunctionExpression.new("COALESCE", args)
-    Focus::TimeExpression.new(func)
+    Focus::DateExpression.new(func)
+  end
+
+  def coalesce(first : Focus::TimestampExpression, *rest : Focus::TimestampExpression) : Focus::TimestampExpression
+    args = [first.as(Focus::Expression)] + rest.to_a.map(&.as(Focus::Expression))
+    func = Focus::FunctionExpression.new("COALESCE", args)
+    Focus::TimestampExpression.new(func)
+  end
+
+  def coalesce(first : Focus::TimestampTzExpression, *rest : Focus::TimestampTzExpression) : Focus::TimestampTzExpression
+    args = [first.as(Focus::Expression)] + rest.to_a.map(&.as(Focus::Expression))
+    func = Focus::FunctionExpression.new("COALESCE", args)
+    Focus::TimestampTzExpression.new(func)
   end
 
   def coalesce(first : Focus::Expression, *rest : Focus::Expression) : Focus::Expression
@@ -56,9 +68,19 @@ module Focus::Dsl::ConditionalFunctions
     Focus::BoolExpression.new(func)
   end
 
-  def nullif(first : Focus::TimeExpression, second : Focus::TimeExpression) : Focus::TimeExpression
+  def nullif(first : Focus::DateExpression, second : Focus::DateExpression) : Focus::DateExpression
     func = Focus::FunctionExpression.new("NULLIF", [first.as(Focus::Expression), second.as(Focus::Expression)])
-    Focus::TimeExpression.new(func)
+    Focus::DateExpression.new(func)
+  end
+
+  def nullif(first : Focus::TimestampExpression, second : Focus::TimestampExpression) : Focus::TimestampExpression
+    func = Focus::FunctionExpression.new("NULLIF", [first.as(Focus::Expression), second.as(Focus::Expression)])
+    Focus::TimestampExpression.new(func)
+  end
+
+  def nullif(first : Focus::TimestampTzExpression, second : Focus::TimestampTzExpression) : Focus::TimestampTzExpression
+    func = Focus::FunctionExpression.new("NULLIF", [first.as(Focus::Expression), second.as(Focus::Expression)])
+    Focus::TimestampTzExpression.new(func)
   end
 
   def nullif(first : Focus::Expression, second : Focus::Expression) : Focus::Expression
@@ -84,10 +106,22 @@ module Focus::Dsl::ConditionalFunctions
     Focus::StringExpression.new(func)
   end
 
-  def greatest(first : Focus::TimeExpression, *rest : Focus::TimeExpression) : Focus::TimeExpression
+  def greatest(first : Focus::DateExpression, *rest : Focus::DateExpression) : Focus::DateExpression
     args = [first.as(Focus::Expression)] + rest.to_a.map(&.as(Focus::Expression))
     func = Focus::FunctionExpression.new("GREATEST", args)
-    Focus::TimeExpression.new(func)
+    Focus::DateExpression.new(func)
+  end
+
+  def greatest(first : Focus::TimestampExpression, *rest : Focus::TimestampExpression) : Focus::TimestampExpression
+    args = [first.as(Focus::Expression)] + rest.to_a.map(&.as(Focus::Expression))
+    func = Focus::FunctionExpression.new("GREATEST", args)
+    Focus::TimestampExpression.new(func)
+  end
+
+  def greatest(first : Focus::TimestampTzExpression, *rest : Focus::TimestampTzExpression) : Focus::TimestampTzExpression
+    args = [first.as(Focus::Expression)] + rest.to_a.map(&.as(Focus::Expression))
+    func = Focus::FunctionExpression.new("GREATEST", args)
+    Focus::TimestampTzExpression.new(func)
   end
 
   def greatest(first : Focus::Expression, *rest : Focus::Expression) : Focus::Expression
@@ -114,10 +148,22 @@ module Focus::Dsl::ConditionalFunctions
     Focus::StringExpression.new(func)
   end
 
-  def least(first : Focus::TimeExpression, *rest : Focus::TimeExpression) : Focus::TimeExpression
+  def least(first : Focus::DateExpression, *rest : Focus::DateExpression) : Focus::DateExpression
     args = [first.as(Focus::Expression)] + rest.to_a.map(&.as(Focus::Expression))
     func = Focus::FunctionExpression.new("LEAST", args)
-    Focus::TimeExpression.new(func)
+    Focus::DateExpression.new(func)
+  end
+
+  def least(first : Focus::TimestampExpression, *rest : Focus::TimestampExpression) : Focus::TimestampExpression
+    args = [first.as(Focus::Expression)] + rest.to_a.map(&.as(Focus::Expression))
+    func = Focus::FunctionExpression.new("LEAST", args)
+    Focus::TimestampExpression.new(func)
+  end
+
+  def least(first : Focus::TimestampTzExpression, *rest : Focus::TimestampTzExpression) : Focus::TimestampTzExpression
+    args = [first.as(Focus::Expression)] + rest.to_a.map(&.as(Focus::Expression))
+    func = Focus::FunctionExpression.new("LEAST", args)
+    Focus::TimestampTzExpression.new(func)
   end
 
   def least(first : Focus::Expression, *rest : Focus::Expression) : Focus::Expression

@@ -201,7 +201,15 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     expression.inner.try(&.accept(self))
   end
 
-  def visit_expression(expression : Focus::TimeExpression) : Nil
+  def visit_expression(expression : Focus::DateExpression) : Nil
+    expression.inner.try(&.accept(self))
+  end
+
+  def visit_expression(expression : Focus::TimestampExpression) : Nil
+    expression.inner.try(&.accept(self))
+  end
+
+  def visit_expression(expression : Focus::TimestampTzExpression) : Nil
     expression.inner.try(&.accept(self))
   end
 

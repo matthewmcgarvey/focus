@@ -23,7 +23,15 @@ module Focus::Dsl::Columns
     Focus::StringColumn.new(name)
   end
 
-  def time_column(name : String) : Focus::TimeColumn
-    Focus::TimeColumn.new(name)
+  def date_column(name : String) : Focus::DateColumn
+    Focus::DateColumn.new(name)
+  end
+
+  def timestamp_column(name : String) : Focus::TimestampColumn
+    Focus::TimestampColumn.new(name)
+  end
+
+  def timestamptz_column(name : String) : Focus::TimestampTzColumn
+    Focus::TimestampTzColumn.new(name)
   end
 end
