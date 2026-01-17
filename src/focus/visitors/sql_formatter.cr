@@ -133,6 +133,32 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     clause.table.accept(self)
   end
 
+  def visit_clause(clause : Focus::ForClause) : Nil
+    write "FOR "
+    case clause.strength
+    when .update?        then write "UPDATE "
+    when .no_key_update? then write "NO KEY UPDATE "
+    when .share?         then write "SHARE "
+    when .key_share?     then write "KEY SHARE "
+    end
+
+    tables = clause.tables
+    if tables && !tables.empty?
+      remove_last_blank
+      write " OF "
+      visit_list tables
+    end
+
+    case clause.wait_policy
+    when .nil?
+      # do nothing
+    when .nowait?
+      write "NOWAIT "
+    when .skip_locked?
+      write "SKIP LOCKED "
+    end
+  end
+
   def visit_clause(clause : Focus::Clause) : Nil
     raise "shouldn't get here. implement #{clause.class} handling"
   end

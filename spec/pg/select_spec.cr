@@ -209,4 +209,40 @@ describe "PG Select" do
       .query_one(PG_DATABASE, String)
     result.should eq("vince")
   end
+
+  it "generates FOR UPDATE clause" do
+    stmt = Employees.select.for(:update)
+    stmt.to_sql.should eq("SELECT * FROM employees FOR UPDATE")
+    stmt.query_all(PG_DATABASE, as: Employee).size.should eq(4)
+  end
+
+  it "generates FOR SHARE clause" do
+    stmt = Employees.select.for(:share)
+    stmt.to_sql.should eq("SELECT * FROM employees FOR SHARE")
+    stmt.query_all(PG_DATABASE, as: Employee).size.should eq(4)
+  end
+
+  it "generates FOR UPDATE NOWAIT clause" do
+    stmt = Employees.select.for(:update, :nowait)
+    stmt.to_sql.should eq("SELECT * FROM employees FOR UPDATE NOWAIT")
+    stmt.query_all(PG_DATABASE, as: Employee).size.should eq(4)
+  end
+
+  it "generates FOR UPDATE SKIP LOCKED clause" do
+    stmt = Employees.select.for(:update, :skip_locked)
+    stmt.to_sql.should eq("SELECT * FROM employees FOR UPDATE SKIP LOCKED")
+    stmt.query_all(PG_DATABASE, as: Employee).size.should eq(4)
+  end
+
+  it "generates FOR UPDATE OF table clause" do
+    stmt = Employees.select.for(:update, of: [Employees])
+    stmt.to_sql.should eq("SELECT * FROM employees FOR UPDATE OF employees")
+    stmt.query_all(PG_DATABASE, as: Employee).size.should eq(4)
+  end
+
+  it "generates FOR UPDATE OF multiple tables clause" do
+    stmt = Employees.join(Departments, on: Departments.id.eq(Employees.department_id)).select(Employees.name).for(:update, of: [Employees, Departments])
+    stmt.to_sql.should eq("SELECT employees.name FROM employees INNER JOIN departments ON departments.id = employees.department_id FOR UPDATE OF employees, departments")
+    stmt.query_all(PG_DATABASE, as: String).size.should eq(4)
+  end
 end
