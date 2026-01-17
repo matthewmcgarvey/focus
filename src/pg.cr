@@ -8,6 +8,7 @@ module Focus::PG
   extend Focus::Dsl::Types
   extend Focus::Dsl::MathFunctions
   extend Focus::Dsl::StringFunctions
+  extend Focus::Dsl::ConditionalFunctions
 
   def self.select(expressions : Array(Focus::Expression)) : Focus::PG::SelectStatement
     select_clause = Focus::SelectClause.new(expressions.select(Focus::Expression))
