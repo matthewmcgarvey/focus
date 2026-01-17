@@ -44,27 +44,35 @@ class Focus::FloatExpression(FLOAT_TYPE) < Focus::NumericExpression
     _betwen(min, max, negated: true)
   end
 
-  def add(rhs : Focus::NumericExpression) : Focus::FloatExpression(FLOAT_EXPRESSION)
-    Focus::FloatExpression(FLOAT_TYPE).new(_add(rhs))
+  def add(rhs : Focus::NumericExpression) : Focus::FloatExpression(FLOAT_TYPE)
+    new_float_expr(_add(rhs))
   end
 
-  def sub(rhs : Focus::NumericExpression) : Focus::FloatExpression(FLOAT_EXPRESSION)
-    Focus::FloatExpression(FLOAT_TYPE).new(_sub(rhs))
+  def sub(rhs : Focus::NumericExpression) : Focus::FloatExpression(FLOAT_TYPE)
+    new_float_expr(_sub(rhs))
   end
 
-  def mul(rhs : Focus::NumericExpression) : Focus::FloatExpression(FLOAT_EXPRESSION)
-    Focus::FloatExpression(FLOAT_TYPE).new(_mul(rhs))
+  def mul(rhs : Focus::NumericExpression) : Focus::FloatExpression(FLOAT_TYPE)
+    new_float_expr(_mul(rhs))
   end
 
-  def div(rhs : Focus::NumericExpression) : Focus::FloatExpression(FLOAT_EXPRESSION)
-    Focus::FloatExpression(FLOAT_TYPE).new(_div(rhs))
+  def div(rhs : Focus::NumericExpression) : Focus::FloatExpression(FLOAT_TYPE)
+    new_float_expr(_div(rhs))
   end
 
-  def mod(rhs : Focus::NumericExpression) : Focus::FloatExpression(FLOAT_EXPRESSION)
-    Focus::FloatExpression(FLOAT_TYPE).new(_mod(rhs))
+  def mod(rhs : Focus::NumericExpression) : Focus::FloatExpression(FLOAT_TYPE)
+    new_float_expr(_mod(rhs))
   end
 
-  def pow(rhs : Focus::NumericExpression) : Focus::FloatExpression(FLOAT_EXPRESSION)
-    _pow(rhs)
+  def pow(rhs : Focus::NumericExpression) : Focus::FloatExpression(FLOAT_TYPE)
+    new_float_expr(_pow(rhs))
+  end
+
+  def abs : Focus::FloatExpression(FLOAT_TYPE)
+    new_float_expr(_abs)
+  end
+
+  private def new_float_expr(expr : Focus::Expression) : Focus::FloatExpression(FLOAT_TYPE)
+    Focus::FloatExpression(FLOAT_TYPE).new(expr)
   end
 end

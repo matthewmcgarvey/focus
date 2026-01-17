@@ -23,8 +23,11 @@ abstract class Focus::NumericExpression < Focus::Expression
     Focus::BinaryOperatorExpression.new(self, rhs, "%")
   end
 
-  private def _pow(exponent : Focus::NumericExpression) : Focus::FloatExpression(Float64)
-    expression = Focus::FunctionExpression.new("POW", [self, exponent])
-    Focus::FloatExpression(Float64).new(expression)
+  private def _pow(exponent : Focus::NumericExpression) : Focus::FunctionExpression
+    Focus::FunctionExpression.new("POW", [self, exponent])
+  end
+
+  private def _abs : Focus::FunctionExpression
+    Focus::FunctionExpression.new("ABS", [self])
   end
 end

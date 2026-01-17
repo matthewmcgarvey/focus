@@ -45,51 +45,58 @@ class Focus::IntExpression(INT_TYPE) < Focus::NumericExpression
   end
 
   def add(rhs : Focus::IntExpression(INT_TYPE)) : Focus::IntExpression(INT_TYPE)
-    Focus::IntExpression(INT_TYPE).new(_add(rhs))
+    new_int_expr(_add(rhs))
   end
 
   def sub(rhs : Focus::IntExpression(INT_TYPE)) : Focus::IntExpression(INT_TYPE)
-    Focus::IntExpression(INT_TYPE).new(_sub(rhs))
+    new_int_expr(_sub(rhs))
   end
 
   def mul(rhs : Focus::IntExpression(INT_TYPE)) : Focus::IntExpression(INT_TYPE)
-    Focus::IntExpression(INT_TYPE).new(_mul(rhs))
+    new_int_expr(_mul(rhs))
   end
 
   def div(rhs : Focus::IntExpression(INT_TYPE)) : Focus::IntExpression(INT_TYPE)
-    Focus::IntExpression(INT_TYPE).new(_div(rhs))
+    new_int_expr(_div(rhs))
   end
 
   def mod(rhs : Focus::IntExpression(INT_TYPE)) : Focus::IntExpression(INT_TYPE)
-    Focus::IntExpression(INT_TYPE).new(_mod(rhs))
+    new_int_expr(_mod(rhs))
   end
 
   def mod(rhs : Focus::IntExpression(INT_TYPE)) : Focus::IntExpression(INT_TYPE)
-    Focus::IntExpression(INT_TYPE).new(_pow(rhs))
+    new_int_expr(_pow(rhs))
   end
 
   def bit_and(rhs : Focus::IntExpression(INT_TYPE)) : Focus::IntExpression(INT_TYPE)
-    expression = Focus::BinaryOperatorExpression.new(self, rhs, "&")
-    Focus::IntExpression(INT_TYPE).new(expression)
+    new_int_expr(Focus::BinaryOperatorExpression.new(self, rhs, "&"))
   end
 
   def bit_or(rhs : Focus::IntExpression(INT_TYPE)) : Focus::IntExpression(INT_TYPE)
-    expression = Focus::BinaryOperatorExpression.new(self, rhs, "|")
-    Focus::IntExpression(INT_TYPE).new(expression)
+    new_int_expr(Focus::BinaryOperatorExpression.new(self, rhs, "|"))
   end
 
   def bit_xor(rhs : Focus::IntExpression(INT_TYPE)) : Focus::IntExpression(INT_TYPE)
-    expression = Focus::BinaryOperatorExpression.new(self, rhs, "#")
-    Focus::IntExpression(INT_TYPE).new(expression)
+    new_int_expr(Focus::BinaryOperatorExpression.new(self, rhs, "#"))
   end
 
   def bit_shift_left(rhs : Focus::IntExpression(INT_TYPE)) : Focus::IntExpression(INT_TYPE)
-    expression = Focus::BinaryOperatorExpression.new(self, rhs, "<<")
-    Focus::IntExpression(INT_TYPE).new(expression)
+    new_int_expr(Focus::BinaryOperatorExpression.new(self, rhs, "<<"))
   end
 
   def bit_shift_right(rhs : Focus::IntExpression(INT_TYPE)) : Focus::IntExpression(INT_TYPE)
-    expression = Focus::BinaryOperatorExpression.new(self, rhs, ">>")
-    Focus::IntExpression(INT_TYPE).new(expression)
+    new_int_expr(Focus::BinaryOperatorExpression.new(self, rhs, ">>"))
+  end
+
+  def pow(rhs : Focus::NumericExpression) : Focus::IntExpression(INT_TYPE)
+    new_int_expr(_pow(rhs))
+  end
+
+  def abs : Focus::IntExpression(INT_TYPE)
+    new_int_expr(_abs)
+  end
+
+  private def new_int_expr(expr : Focus::Expression) : Focus::IntExpression(INT_TYPE)
+    Focus::IntExpression(INT_TYPE).new(expr)
   end
 end
