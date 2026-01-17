@@ -4,7 +4,7 @@ require "./sqlite/gen/table/*"
 
 include Tables
 
-SQLITE_DATABASE = DB.open("sqlite3://foo.db")
+SQLITE_DATABASE = DB.open("sqlite3://spec/support/test.db")
 
 def in_transaction(&)
   SQLITE_DATABASE.transaction do |txn|

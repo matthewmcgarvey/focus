@@ -1,0 +1,22 @@
+module Tables
+  class PassengersTable < Focus::SQLiteTable
+    getter id : Focus::IntColumn(Int32)
+    getter first_name : Focus::StringColumn
+    getter last_name : Focus::StringColumn
+    getter email : Focus::StringColumn
+    getter birth_date : Focus::StringColumn
+
+    def initialize(table_name : String = "passengers", table_alias : String? = nil)
+      @id = Focus::IntColumn(Int32).new("id", table_name)
+      @first_name = Focus::StringColumn.new("first_name", table_name)
+      @last_name = Focus::StringColumn.new("last_name", table_name)
+      @email = Focus::StringColumn.new("email", table_name)
+      @birth_date = Focus::StringColumn.new("birth_date", table_name)
+      columns = [@id, @first_name, @last_name, @email, @birth_date].select(Focus::Expression)
+
+      super(table_name, table_alias, columns)
+    end
+  end
+
+  Passengers = PassengersTable.new
+end

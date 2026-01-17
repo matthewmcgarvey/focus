@@ -7,7 +7,7 @@ class Employee
   property name : String
   property job : String
   property manager_id : Int32?
-  property hire_date : Time
+  property hire_date : String
   property salary : Int32
   property department_id : Int32
   property is_remote : Bool
