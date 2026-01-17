@@ -136,6 +136,7 @@ TODO: Write development instructions here
 - Int32 vs Int64 primary keys
   - Error when using Int32 keys is very confusing, solution is to switch to Int64 but you wouldn't know it
 - Write good tests
+- interval support (handled differently between database types)
 - Custom data types (i.e. postgis)
 - Custom queries (i.e. jsonb queries)
 - Add overloads to query methods that can be given a block
