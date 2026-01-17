@@ -6,7 +6,7 @@ module Focus::PG
   extend Focus::Dsl::Aggregation
   extend Focus::Dsl::Columns
   extend Focus::Dsl::Types
-  extend Focus::Dsl::Functions
+  extend Focus::Dsl::MathFunctions
 
   def self.select(expressions : Array(Focus::Expression)) : Focus::PG::SelectStatement
     select_clause = Focus::SelectClause.new(expressions.select(Focus::Expression))

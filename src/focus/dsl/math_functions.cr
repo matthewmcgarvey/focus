@@ -1,4 +1,4 @@
-module Focus::Dsl::Functions
+module Focus::Dsl::MathFunctions
   # abs - Absolute value
   def abs(expr : Focus::FloatExpression(T)) : Focus::FloatExpression(T) forall T
     Focus::FloatExpression(T).new_float_func("ABS", expr)

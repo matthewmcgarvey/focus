@@ -2,11 +2,11 @@ require "../../spec_helper"
 
 # Test module that extends Functions to allow calling them
 module TestFunctions
-  extend Focus::Dsl::Functions
+  extend Focus::Dsl::MathFunctions
   extend Focus::Dsl::Columns
 end
 
-describe Focus::Dsl::Functions do
+describe Focus::Dsl::MathFunctions do
   describe "#abs" do
     it "generates ABS for float expression" do
       col = Focus::FloatColumn(Float64).new("price")
