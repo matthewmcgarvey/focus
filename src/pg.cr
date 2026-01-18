@@ -1,6 +1,7 @@
 require "pg"
 require "./pg/*"
 require "./pg/statements/*"
+require "./pg/dsl/*"
 
 module Focus::PG
   extend Focus::Dsl::Aggregation
@@ -9,6 +10,7 @@ module Focus::PG
   extend Focus::Dsl::MathFunctions
   extend Focus::Dsl::StringFunctions
   extend Focus::Dsl::ConditionalFunctions
+  extend Focus::PG::Dsl::Types
 
   def self.select(expressions : Array(Focus::Expression)) : Focus::PG::SelectStatement
     select_clause = Focus::SelectClause.new(expressions.select(Focus::Expression))
