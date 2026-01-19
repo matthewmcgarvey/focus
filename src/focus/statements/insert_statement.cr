@@ -12,7 +12,14 @@ abstract class Focus::InsertStatement < Focus::Statement
     clause = self.values_clause
     raise "unreachable" if clause.nil?
 
-    row = raw_values.map { |raw| Focus::GenericValueExpression.new(raw) }.select(Focus::ValueExpression)
+    row = [] of Focus::Expression
+    raw_values.each do |raw|
+      row << if raw.is_a?(Focus::Expression)
+        raw
+      else
+        Focus::GenericValueExpression.new(raw)
+      end
+    end
     clause.add_row(row)
     self
   end

@@ -27,4 +27,24 @@ describe "PG Insert" do
       result.should eq(2)
     end
   end
+
+  it "inserts booking with booked_at as now() - 7 days" do
+    in_transaction do |conn|
+      seven_days_ago = Focus::PG.now.sub(Focus::PG.interval("7 days"))
+
+      id = Bookings.insert(Bookings.passenger_id, Bookings.booked_at, Bookings.total_amount, Bookings.status)
+        .values(1, seven_days_ago, 100.0, "pending")
+        .returning(Bookings.id)
+        .query_one(conn, Int32)
+
+      # Verify the booking was created with a timestamp approximately 7 days ago
+      result = Bookings.select(Bookings.booked_at)
+        .where(Bookings.id.eq(Focus::PG.int32(id)))
+        .query_one(conn, Time)
+
+      expected_time = Time.utc - 7.days
+      # Allow 1 minute tolerance for test execution time
+      (result - expected_time).abs.should be < 1.minute
+    end
+  end
 end

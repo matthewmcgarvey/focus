@@ -100,7 +100,7 @@ describe Focus::PG::Dsl::Types do
 
       visitor = Focus::PG::Formatter.new
       interval.accept(visitor)
-      visitor.to_sql.should eq("INTERVAL $1")
+      visitor.to_sql.should eq("CAST($1 AS INTERVAL)")
       visitor.parameters.should eq(["1 day 2 hours 30 minutes 45 seconds"])
     end
 
@@ -110,7 +110,7 @@ describe Focus::PG::Dsl::Types do
 
       visitor = Focus::PG::Formatter.new
       interval.accept(visitor)
-      visitor.to_sql.should eq("INTERVAL $1")
+      visitor.to_sql.should eq("CAST($1 AS INTERVAL)")
       visitor.parameters.should eq(["3 days 5 hours"])
     end
 
@@ -119,7 +119,7 @@ describe Focus::PG::Dsl::Types do
 
       visitor = Focus::PG::Formatter.new
       interval.accept(visitor)
-      visitor.to_sql.should eq("INTERVAL $1")
+      visitor.to_sql.should eq("CAST($1 AS INTERVAL)")
       visitor.parameters.should eq(["1 day 2 hours"])
     end
 
@@ -129,7 +129,7 @@ describe Focus::PG::Dsl::Types do
 
       visitor = Focus::PG::Formatter.new
       interval.accept(visitor)
-      visitor.to_sql.should eq("INTERVAL $1")
+      visitor.to_sql.should eq("CAST($1 AS INTERVAL)")
       visitor.parameters.should eq(["0 seconds"])
     end
   end
@@ -142,7 +142,7 @@ describe Focus::PG::Dsl::Types do
 
       visitor = Focus::PG::Formatter.new
       result.accept(visitor)
-      visitor.to_sql.should eq("created_at + INTERVAL $1")
+      visitor.to_sql.should eq("created_at + CAST($1 AS INTERVAL)")
       visitor.parameters.should eq(["1 day"])
     end
 
@@ -153,7 +153,7 @@ describe Focus::PG::Dsl::Types do
 
       visitor = Focus::PG::Formatter.new
       result.accept(visitor)
-      visitor.to_sql.should eq("created_at - INTERVAL $1")
+      visitor.to_sql.should eq("created_at - CAST($1 AS INTERVAL)")
       visitor.parameters.should eq(["2 hours"])
     end
 
@@ -164,7 +164,7 @@ describe Focus::PG::Dsl::Types do
 
       visitor = Focus::PG::Formatter.new
       result.accept(visitor)
-      visitor.to_sql.should eq("INTERVAL $1 + INTERVAL $2")
+      visitor.to_sql.should eq("CAST($1 AS INTERVAL) + CAST($2 AS INTERVAL)")
       visitor.parameters.should eq(["1 day", "2 hours"])
     end
   end

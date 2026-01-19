@@ -55,8 +55,7 @@ module Focus::PG::Dsl::Types
 
   def interval(value : String) : Focus::IntervalExpression
     literal = Focus::LiteralExpression.new(value)
-    prefix_expr = Focus::PrefixOperatorExpression.new("INTERVAL", literal)
-    Focus::IntervalExpression.new(prefix_expr)
+    Focus::PG.cast(literal).as_interval
   end
 
   private def format_nanoseconds(nanoseconds : Int32)
