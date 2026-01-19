@@ -60,7 +60,8 @@ create table passengers(
   first_name varchar(128) not null,
   last_name varchar(128) not null,
   email varchar(255) not null,
-  birth_date date not null
+  birth_date date not null,
+  preferences jsonb
 );
 
 create table bookings(
@@ -110,12 +111,12 @@ values ('FX200', 2, 2, 3, '2024-04-02 13:15:00', '2024-04-03 17:45:00', 'delayed
 insert into flights(flight_number, aircraft_id, depart_airport_id, arrive_airport_id, depart_time, arrive_time, status)
 values ('FX300', 3, 3, 1, '2024-04-05 09:50:00', '2024-04-05 16:25:00', 'scheduled');
 
-insert into passengers(first_name, last_name, email, birth_date)
-values ('Avery', 'Nguyen', 'avery.nguyen@example.com', '1990-06-15');
-insert into passengers(first_name, last_name, email, birth_date)
-values ('Lena', 'Ortiz', 'lena.ortiz@example.com', '1985-11-23');
-insert into passengers(first_name, last_name, email, birth_date)
-values ('Miles', 'Patel', 'miles.patel@example.com', '1997-03-04');
+insert into passengers(first_name, last_name, email, birth_date, preferences)
+values ('Avery', 'Nguyen', 'avery.nguyen@example.com', '1990-06-15', '{"seat": "window", "meal": "vegetarian", "notifications": true}');
+insert into passengers(first_name, last_name, email, birth_date, preferences)
+values ('Lena', 'Ortiz', 'lena.ortiz@example.com', '1985-11-23', '{"seat": "aisle", "meal": "standard", "notifications": false}');
+insert into passengers(first_name, last_name, email, birth_date, preferences)
+values ('Miles', 'Patel', 'miles.patel@example.com', '1997-03-04', null);
 
 insert into bookings(passenger_id, booked_at, total_amount, status)
 values (1, '2024-03-20 12:00:00', 280.00, 'confirmed');
@@ -168,18 +169,18 @@ values ('FX190', 5, 9, 1, '2024-04-14 07:45:00', '2024-04-14 15:30:00', 'schedul
 insert into flights(flight_number, aircraft_id, depart_airport_id, arrive_airport_id, depart_time, arrive_time, status)
 values ('FX195', 5, 1, 9, '2024-04-15 22:15:00', '2024-04-16 06:30:00', 'scheduled');
 
-insert into passengers(first_name, last_name, email, birth_date)
-values ('Nora', 'Kim', 'nora.kim@example.com', '1992-02-10');
-insert into passengers(first_name, last_name, email, birth_date)
-values ('Theo', 'Wright', 'theo.wright@example.com', '1980-09-14');
-insert into passengers(first_name, last_name, email, birth_date)
-values ('Isla', 'Garcia', 'isla.garcia@example.com', '1978-12-03');
-insert into passengers(first_name, last_name, email, birth_date)
-values ('Omar', 'Ali', 'omar.ali@example.com', '1995-07-22');
-insert into passengers(first_name, last_name, email, birth_date)
-values ('Sophie', 'Davis', 'sophie.davis@example.com', '1988-05-19');
-insert into passengers(first_name, last_name, email, birth_date)
-values ('Jun', 'Ito', 'jun.ito@example.com', '1993-01-09');
+insert into passengers(first_name, last_name, email, birth_date, preferences)
+values ('Nora', 'Kim', 'nora.kim@example.com', '1992-02-10', '{"seat": "window", "meal": "kosher", "notifications": true, "loyalty_tier": "gold"}');
+insert into passengers(first_name, last_name, email, birth_date, preferences)
+values ('Theo', 'Wright', 'theo.wright@example.com', '1980-09-14', '{"seat": "aisle", "meal": "standard", "notifications": true}');
+insert into passengers(first_name, last_name, email, birth_date, preferences)
+values ('Isla', 'Garcia', 'isla.garcia@example.com', '1978-12-03', '{"seat": "window", "meal": "vegan", "notifications": false, "loyalty_tier": "platinum"}');
+insert into passengers(first_name, last_name, email, birth_date, preferences)
+values ('Omar', 'Ali', 'omar.ali@example.com', '1995-07-22', '{"seat": "aisle", "meal": "halal", "notifications": true}');
+insert into passengers(first_name, last_name, email, birth_date, preferences)
+values ('Sophie', 'Davis', 'sophie.davis@example.com', '1988-05-19', null);
+insert into passengers(first_name, last_name, email, birth_date, preferences)
+values ('Jun', 'Ito', 'jun.ito@example.com', '1993-01-09', '{"seat": "window", "meal": "standard", "notifications": false, "loyalty_tier": "silver"}');
 
 insert into bookings(passenger_id, booked_at, total_amount, status)
 values (4, '2024-03-23 08:05:00', 450.00, 'confirmed');

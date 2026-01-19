@@ -47,4 +47,33 @@ describe "PG Insert" do
       (result - expected_time).abs.should be < 1.minute
     end
   end
+
+  it "inserts passenger with jsonb preferences" do
+    in_transaction do |conn|
+      preferences = JSON.parse(%({"seat": "window", "meal": "vegan", "notifications": true}))
+
+      stmt = Passengers.insert(Passengers.first_name, Passengers.last_name, Passengers.email, Passengers.birth_date, Passengers.preferences)
+        .values("Test", "User", "test@example.com", Focus::PG.date(1990, 1, 1), Focus::PG.jsonb(preferences))
+        .returning(Passengers.id)
+
+      stmt.to_sql.should eq(%(INSERT INTO passengers (first_name, last_name, email, birth_date, preferences) VALUES ($1, $2, $3, CAST($4 AS DATE), $5) RETURNING passengers.id))
+
+      id = stmt.query_one(conn, Int32)
+
+      # Verify the passenger was created with the correct jsonb preferences
+      result = Passengers.select(Passengers.preferences.get_text(Focus::PG.string("meal")))
+        .where(Passengers.id.eq(Focus::PG.int32(id)))
+        .query_one(conn, String)
+
+      result.should eq("vegan")
+
+      # Verify containment query works on inserted data
+      contains_result = Passengers.select(Passengers.first_name)
+        .where(Passengers.preferences.contains(Focus::PG.jsonb(JSON.parse(%({"seat": "window"})))))
+        .where(Passengers.id.eq(Focus::PG.int32(id)))
+        .query_one(conn, String)
+
+      contains_result.should eq("Test")
+    end
+  end
 end

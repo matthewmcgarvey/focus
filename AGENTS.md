@@ -352,6 +352,13 @@ Users.with(
 - `pg` (will/crystal-pg) 0.29.0 - PostgreSQL driver
 - `ameba` (crystal-ameba/ameba) - Static code analyzer (linter)
 
+## Important Notes
+
+### Generated Files - Do Not Edit
+Files in `spec/pg/gen/table/` and `spec/sqlite/gen/table/` are **auto-generated** from the database schema. Never edit these files manually - they will be overwritten when regenerating tables with `make gen-pg` or `make gen-sqlite`.
+
+If you need a table with custom columns for testing, define the table class directly in your spec file instead.
+
 ## Design Principles
 
 1. **Minimal macros** - Only `column` macro exists; avoid magic

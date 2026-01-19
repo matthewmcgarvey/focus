@@ -42,6 +42,8 @@ class Focus::Templates::TableTemplate
         "TimestampTzColumn"
       when "TIME", "TIME WITHOUT TIME ZONE"
         "TimeColumn"
+      when "JSONB"
+        "JsonbColumn"
       else
         puts "unhandled type #{data_type.name}. defaulting to string"
         "StringColumn"

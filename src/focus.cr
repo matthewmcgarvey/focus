@@ -1,4 +1,5 @@
 require "db"
+require "json"
 
 require "./focus/queryable"
 require "./focus/expression"

@@ -58,6 +58,10 @@ module Focus::PG::Dsl::Types
     Focus::PG.cast(literal).as_interval
   end
 
+  def jsonb(value : JSON::Any) : Focus::JsonbExpression
+    Focus::JsonbLiteral.new(value)
+  end
+
   private def format_nanoseconds(nanoseconds : Int32)
     return "" if nanoseconds == 0
 

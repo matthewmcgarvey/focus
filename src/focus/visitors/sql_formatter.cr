@@ -221,6 +221,10 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     expression.inner.try(&.accept(self))
   end
 
+  def visit_expression(expression : Focus::JsonbExpression) : Nil
+    expression.inner.try(&.accept(self))
+  end
+
   def visit_expression(expression : Focus::WildcardExpression) : Nil
     if table_name = expression.table_name
       write_identifier(table_name)
@@ -282,6 +286,11 @@ class Focus::SqlFormatter < Focus::SqlVisitor
 
   def visit_expression(expression : Focus::Expression) : Nil
     raise "shouldn't get here. implement visit_expression for #{expression.class}"
+  end
+
+  def visit_literal(literal : Focus::JsonbLiteral) : Nil
+    write_placeholder
+    parameters << literal.value.to_json
   end
 
   def visit_literal(literal : Focus::Parameter) : Nil

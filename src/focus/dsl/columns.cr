@@ -42,4 +42,8 @@ module Focus::Dsl::Columns
   def interval_column(name : String) : Focus::IntervalColumn
     Focus::IntervalColumn.new(name)
   end
+
+  def jsonb_column(name : String) : Focus::JsonbColumn
+    Focus::JsonbColumn.new(name)
+  end
 end
