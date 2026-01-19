@@ -1,10 +1,11 @@
 class Focus::Templates::TableTemplate
+  getter module_name : String
   getter dialect : Focus::Dialect
   getter table_name : String
   getter title_name : String
   getter columns : Array(ColumnTemplate)
 
-  def initialize(@dialect : Focus::Dialect, table : Metadata::Table)
+  def initialize(@module_name : String, @dialect : Focus::Dialect, table : Metadata::Table)
     @table_name = table.name
     @title_name = table.name.camelcase
     @columns = table.columns.try(&.map { |column| ColumnTemplate.new(dialect, column) }) || [] of ColumnTemplate

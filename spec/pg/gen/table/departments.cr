@@ -1,4 +1,4 @@
-module Tables
+module Table
   class DepartmentsTable < Focus::PG::Table
     getter id : Focus::IntColumn(Int32)
     getter name : Focus::StringColumn

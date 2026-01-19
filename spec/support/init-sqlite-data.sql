@@ -256,3 +256,24 @@ join booking_flights bf on bf.booking_id = b.id
 join flights f on f.id = bf.flight_id
 join airports da on da.id = f.depart_airport_id
 join airports aa on aa.id = f.arrive_airport_id;
+
+create view flight_details as
+select
+  f.id as flight_id,
+  f.flight_number,
+  a.tail_number,
+  a.model as aircraft_model,
+  a.seat_capacity,
+  da.code as depart_code,
+  da.name as depart_airport,
+  da.city as depart_city,
+  aa.code as arrive_code,
+  aa.name as arrive_airport,
+  aa.city as arrive_city,
+  f.depart_time,
+  f.arrive_time,
+  f.status
+from flights f
+join aircrafts a on a.id = f.aircraft_id
+join airports da on da.id = f.depart_airport_id
+join airports aa on aa.id = f.arrive_airport_id;

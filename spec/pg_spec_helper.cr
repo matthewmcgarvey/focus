@@ -1,8 +1,10 @@
 require "./spec_helper"
 require "../src/pg"
 require "./pg/gen/table/*"
+require "./pg/gen/view/*"
 
-include Tables
+include Table
+include View
 
 PG_DATABASE = DB.open("postgres://postgres:postgres@localhost/test")
 

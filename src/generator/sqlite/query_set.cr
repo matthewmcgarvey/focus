@@ -5,7 +5,7 @@ class Focus::SQLite::QuerySet < Focus::QuerySet
   end
 
   # table_type can be "table" or "view"
-  def get_tables_metadata(schema_name : String, table_type : String) : Array(Metadata::Table)
+  def get_tables_metadata(schema_name : String, table_type : TableType) : Array(Metadata::Table)
     query = <<-SQL
       SELECT name
       FROM sqlite_master
@@ -13,7 +13,14 @@ class Focus::SQLite::QuerySet < Focus::QuerySet
       ORDER BY name;
     SQL
 
-    table_names = db.query_all(query, args: [table_type], as: String)
+    table_type_str = case table_type
+                     when .base_table?
+                       "table"
+                     when .view_table?
+                       "view"
+                     end
+
+    table_names = db.query_all(query, args: [table_type_str], as: String)
     tables = table_names.map { |table_name| Metadata::Table.new(table_name) }
 
     tables.each do |table|

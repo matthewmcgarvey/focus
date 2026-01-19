@@ -25,18 +25,19 @@ class Focus::Template
 
     FileUtils.rm_rf(schema_path)
 
-    generate_table_models(schema_path, schema)
+    generate_table_models("table", schema_path, schema.tables_metadata)
+    generate_table_models("view", schema_path, schema.views_metadata)
   end
 
-  private def generate_table_models(schema_path : String, schema : Metadata::Schema)
-    puts "Generating table models"
+  private def generate_table_models(name : String, schema_path : String, tables : Array(Metadata::Table))
+    puts "Generating #{name} models"
 
-    schema.tables_metadata.each do |table|
-      FileUtils.mkdir_p(File.join(schema_path, "table"))
-      file_path = File.join(schema_path, "table", "#{table.name}.cr")
+    tables.each do |table|
+      FileUtils.mkdir_p(File.join(schema_path, name))
+      file_path = File.join(schema_path, name, "#{table.name}.cr")
       FileUtils.touch(file_path)
 
-      table_templ = Templates::TableTemplate.new(dialect, table)
+      table_templ = Templates::TableTemplate.new(name.capitalize, dialect, table)
       File.open(file_path, "w") do |file|
         table_templ.to_s(file)
       end

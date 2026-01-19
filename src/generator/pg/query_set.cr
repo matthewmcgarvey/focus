@@ -5,16 +5,15 @@ class Focus::PG::QuerySet < Focus::QuerySet
   end
 
   # table_type can be "table" or "view"
-  def get_tables_metadata(schema_name : String, table_type : String) : Array(Metadata::Table)
+  def get_tables_metadata(schema_name : String, table_type : TableType) : Array(Metadata::Table)
     query = <<-SQL
       SELECT table_name, obj_description((quote_ident(table_schema)||'.'||quote_ident(table_name))::regclass) AS table_comment
       FROM information_schema.tables
       WHERE table_schema = $1 AND table_type = $2
       ORDER BY table_name;
     SQL
-    table_type = "BASE TABLE" if table_type == "table"
 
-    table_names_and_comments = db.query_all(query, args: [schema_name, table_type], as: {String, String?})
+    table_names_and_comments = db.query_all(query, args: [schema_name, table_type.to_sql], as: {String, String?})
     tables = table_names_and_comments.map { |(table_name, comment)| Metadata::Table.new(table_name, comment).as(Metadata::Table) }
     tables.concat(get_materialized_views(schema_name))
 

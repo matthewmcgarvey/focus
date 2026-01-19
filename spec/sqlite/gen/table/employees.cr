@@ -1,4 +1,4 @@
-module Tables
+module Table
   class EmployeesTable < Focus::SQLite::Table
     getter id : Focus::IntColumn(Int32)
     getter name : Focus::StringColumn
