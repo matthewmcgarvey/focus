@@ -1,6 +1,6 @@
 class Focus::CastExpression < Focus::Expression
   getter expression : Focus::Expression
-  getter cast_type : String?
+  getter! cast_type : String
 
   def initialize(@expression : Focus::Expression, @cast_type : String? = nil)
   end

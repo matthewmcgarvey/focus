@@ -251,7 +251,7 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     write "CAST("
     expression.expression.accept(self)
     write "AS "
-    write expression.cast_type.not_nil!
+    write expression.cast_type
     write ") "
   end
 
