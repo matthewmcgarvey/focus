@@ -37,4 +37,8 @@ class Focus::CastExpression < Focus::Expression
   def as_time : Focus::TimeExpression
     Focus::TimeExpression.new(as_type("TIME"))
   end
+
+  def as_interval : Focus::IntervalExpression
+    Focus::IntervalExpression.new(as_type("INTERVAL"))
+  end
 end

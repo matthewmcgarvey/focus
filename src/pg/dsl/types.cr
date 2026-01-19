@@ -49,9 +49,28 @@ module Focus::PG::Dsl::Types
     Focus::PG.cast(time_expr).as_time
   end
 
+  def interval(span : Time::Span) : Focus::IntervalExpression
+    interval(format_interval(span))
+  end
+
+  def interval(value : String) : Focus::IntervalExpression
+    literal = Focus::LiteralExpression.new(value)
+    prefix_expr = Focus::PrefixOperatorExpression.new("INTERVAL", literal)
+    Focus::IntervalExpression.new(prefix_expr)
+  end
+
   private def format_nanoseconds(nanoseconds : Int32)
     return "" if nanoseconds == 0
 
     '.' + sprintf("%09d", nanoseconds).rstrip('0')
+  end
+
+  private def format_interval(span : Time::Span) : String
+    parts = [] of String
+    parts << "#{span.days} #{span.days == 1 ? "day" : "days"}" if span.days != 0
+    parts << "#{span.hours} #{span.hours == 1 ? "hour" : "hours"}" if span.hours != 0
+    parts << "#{span.minutes} #{span.minutes == 1 ? "minute" : "minutes"}" if span.minutes != 0
+    parts << "#{span.seconds} #{span.seconds == 1 ? "second" : "seconds"}" if span.seconds != 0
+    parts.empty? ? "0 seconds" : parts.join(" ")
   end
 end

@@ -217,6 +217,10 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     expression.inner.try(&.accept(self))
   end
 
+  def visit_expression(expression : Focus::IntervalExpression) : Nil
+    expression.inner.try(&.accept(self))
+  end
+
   def visit_expression(expression : Focus::WildcardExpression) : Nil
     if table_name = expression.table_name
       write_identifier(table_name)
@@ -267,6 +271,11 @@ class Focus::SqlFormatter < Focus::SqlVisitor
   def visit_expression(expression : Focus::PostfixOperatorExpression)
     expression.expression.accept(self)
     write "#{expression.operator} "
+  end
+
+  def visit_expression(expression : Focus::PrefixOperatorExpression)
+    write "#{expression.operator} "
+    expression.expression.accept(self)
   end
 
   def visit_expression(expression : Focus::Expression) : Nil

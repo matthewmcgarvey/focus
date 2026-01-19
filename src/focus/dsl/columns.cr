@@ -38,4 +38,8 @@ module Focus::Dsl::Columns
   def time_column(name : String) : Focus::TimeColumn
     Focus::TimeColumn.new(name)
   end
+
+  def interval_column(name : String) : Focus::IntervalColumn
+    Focus::IntervalColumn.new(name)
+  end
 end

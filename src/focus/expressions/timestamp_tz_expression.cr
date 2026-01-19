@@ -43,4 +43,12 @@ class Focus::TimestampTzExpression < Focus::Expression
   def not_between(min : Focus::TimestampTzExpression, max : Focus::TimestampTzExpression) : Focus::BoolExpression
     _between(min, max, negated: true)
   end
+
+  def add(interval : Focus::IntervalExpression) : Focus::TimestampTzExpression
+    Focus::TimestampTzExpression.new(Focus::BinaryExpression.new(left: self, right: interval, operator: "+"))
+  end
+
+  def sub(interval : Focus::IntervalExpression) : Focus::TimestampTzExpression
+    Focus::TimestampTzExpression.new(Focus::BinaryExpression.new(left: self, right: interval, operator: "-"))
+  end
 end
