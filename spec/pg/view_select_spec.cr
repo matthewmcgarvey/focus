@@ -19,7 +19,8 @@ describe "PG view select" do
   it "filters flight_details by status" do
     rows = FlightDetails
       .select(FlightDetails.flight_number)
-      .where(FlightDetails.status.eq(Focus::PG.string("scheduled")))
+      # uses the FlightStatus enum
+      .where(FlightDetails.status.eq(FlightStatus::Scheduled.to_expression))
       .order_by(FlightDetails.flight_number.asc)
       .query_all(PG_DATABASE, as: String)
 

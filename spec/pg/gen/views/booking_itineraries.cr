@@ -1,5 +1,5 @@
-module View
-  class BookingItinerariesTable < Focus::SQLite::Table
+module Views
+  class BookingItinerariesTable < Focus::PG::Table
     getter booking_id : Focus::IntColumn(Int32)
     getter passenger_id : Focus::IntColumn(Int32)
     getter first_name : Focus::StringColumn
@@ -8,8 +8,8 @@ module View
     getter flight_number : Focus::StringColumn
     getter depart_airport_code : Focus::StringColumn
     getter arrive_airport_code : Focus::StringColumn
-    getter depart_time : Focus::StringColumn
-    getter arrive_time : Focus::StringColumn
+    getter depart_time : Focus::TimestampColumn
+    getter arrive_time : Focus::TimestampColumn
     getter service_class : Focus::StringColumn
     getter seat : Focus::StringColumn
     getter price : Focus::FloatColumn(Float64)
@@ -24,8 +24,8 @@ module View
       @flight_number = Focus::StringColumn.new("flight_number", table_name)
       @depart_airport_code = Focus::StringColumn.new("depart_airport_code", table_name)
       @arrive_airport_code = Focus::StringColumn.new("arrive_airport_code", table_name)
-      @depart_time = Focus::StringColumn.new("depart_time", table_name)
-      @arrive_time = Focus::StringColumn.new("arrive_time", table_name)
+      @depart_time = Focus::TimestampColumn.new("depart_time", table_name)
+      @arrive_time = Focus::TimestampColumn.new("arrive_time", table_name)
       @service_class = Focus::StringColumn.new("service_class", table_name)
       @seat = Focus::StringColumn.new("seat", table_name)
       @price = Focus::FloatColumn(Float64).new("price", table_name)

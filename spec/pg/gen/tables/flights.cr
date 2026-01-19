@@ -1,4 +1,4 @@
-module Table
+module Tables
   class FlightsTable < Focus::PG::Table
     getter id : Focus::IntColumn(Int32)
     getter flight_number : Focus::StringColumn

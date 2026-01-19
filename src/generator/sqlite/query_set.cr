@@ -56,4 +56,9 @@ class Focus::SQLite::QuerySet < Focus::QuerySet
       )
     end
   end
+
+  # sqlite does not have enums
+  def get_enums_metadata(schema_name : String) : Array(Metadata::Enum)
+    [] of Metadata::Enum
+  end
 end

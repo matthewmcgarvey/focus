@@ -44,6 +44,8 @@ create table aircrafts(
   seat_capacity int not null
 );
 
+create type flight_status as enum ('scheduled', 'delayed', 'cancelled');
+
 create table flights(
   id serial primary key,
   flight_number varchar(16) not null,
@@ -52,7 +54,7 @@ create table flights(
   arrive_airport_id int not null,
   depart_time timestamp not null,
   arrive_time timestamp not null,
-  status varchar(16) default 'scheduled'
+  status flight_status default 'scheduled'
 );
 
 create table passengers(

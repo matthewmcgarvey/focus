@@ -1,10 +1,10 @@
 require "./spec_helper"
 require "../src/sqlite"
-require "./sqlite/gen/table/*"
-require "./sqlite/gen/view/*"
+require "./sqlite/gen/tables/*"
+require "./sqlite/gen/views/*"
 
-include Table
-include View
+include Tables
+include Views
 
 SQLITE_DATABASE = DB.open("sqlite3://spec/support/test.db")
 

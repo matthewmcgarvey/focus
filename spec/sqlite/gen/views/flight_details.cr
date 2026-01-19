@@ -1,4 +1,4 @@
-module View
+module Views
   class FlightDetailsTable < Focus::SQLite::Table
     getter flight_id : Focus::IntColumn(Int32)
     getter flight_number : Focus::StringColumn

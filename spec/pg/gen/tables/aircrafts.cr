@@ -1,4 +1,4 @@
-module Table
+module Tables
   class AircraftsTable < Focus::PG::Table
     getter id : Focus::IntColumn(Int32)
     getter tail_number : Focus::StringColumn

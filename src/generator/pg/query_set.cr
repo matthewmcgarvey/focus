@@ -92,4 +92,23 @@ class Focus::PG::QuerySet < Focus::QuerySet
       )
     end
   end
+
+  def get_enums_metadata(schema_name : String) : Array(Metadata::Enum)
+    query = <<-SQL
+      SELECT t.typname, STRING_AGG(e.enumlabel, ', ')
+      FROM pg_catalog.pg_type t
+        JOIN pg_catalog.pg_enum e on t.oid = e.enumtypid
+        JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace
+      WHERE n.nspname = $1
+      GROUP BY t.typname
+      ORDER BY t.typname;
+    SQL
+    results = db.query_all(query, args: [schema_name], as: {String, String})
+    results.map do |result|
+      Metadata::Enum.new(
+        name: result[0],
+        values: result[1].split(", ")
+      )
+    end
+  end
 end

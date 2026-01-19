@@ -1,0 +1,17 @@
+module Enums
+  enum <%= enum_name %>
+    <%- enum_values.each do |val| -%>
+    <%= val.camelcase %>
+    <%- end %>
+    def to_expression : Focus::StringExpression
+      case self
+      <%- enum_values.each do |val| -%>
+      when <%= val.camelcase %>
+        Focus::<%= dialect.name %>.string("<%= val %>")
+      <%- end -%>
+      else
+        raise "unreachable"
+      end
+    end
+  end
+end
