@@ -51,4 +51,8 @@ class Focus::TimestampTzExpression < Focus::Expression
   def sub(interval : Focus::IntervalExpression) : Focus::TimestampTzExpression
     Focus::TimestampTzExpression.new(Focus::BinaryExpression.new(left: self, right: interval, operator: "-"))
   end
+
+  def sub(rhs : Focus::TimestampTzExpression) : Focus::IntervalExpression
+    Focus::IntervalExpression.new(Focus::BinaryExpression.new(left: self, right: rhs, operator: "-"))
+  end
 end
