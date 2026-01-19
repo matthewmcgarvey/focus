@@ -249,10 +249,12 @@ class Focus::SqlFormatter < Focus::SqlVisitor
   end
 
   def visit_expression(expression : Focus::FunctionExpression) : Nil
-    if !expression.name.blank?
-      write expression.name
+    name = expression.name.presence
+    write name if name
+
+    if !expression.no_brackets
+      wrap_in_parens { visit_list(expression.parameters) }
     end
-    wrap_in_parens { visit_list(expression.parameters) }
   end
 
   def visit_expression(expression : Focus::CastExpression) : Nil

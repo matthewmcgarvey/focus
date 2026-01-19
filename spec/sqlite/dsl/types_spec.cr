@@ -70,6 +70,5 @@ describe Focus::SQLite::Dsl::Types do
       visitor.to_sql.should eq("TIME(?)")
       visitor.parameters.should eq(["10:25:30.0000001"])
     end
-
   end
 end

@@ -11,6 +11,7 @@ module Focus::PG
   extend Focus::Dsl::StringFunctions
   extend Focus::Dsl::ConditionalFunctions
   extend Focus::PG::Dsl::Types
+  extend Focus::PG::Dsl::TimeFunctions
 
   def self.select(expressions : Array(Focus::Expression)) : Focus::PG::SelectStatement
     select_clause = Focus::SelectClause.new(expressions.select(Focus::Expression))

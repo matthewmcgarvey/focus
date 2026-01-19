@@ -11,6 +11,7 @@ module Focus::SQLite
   extend Focus::Dsl::StringFunctions
   extend Focus::Dsl::ConditionalFunctions
   extend Focus::SQLite::Dsl::Types
+  extend Focus::SQLite::Dsl::TimeFunctions
 
   def self.select(expressions : Array(Focus::Expression)) : Focus::SQLite::SelectStatement
     select_clause = Focus::SelectClause.new(expressions.select(Focus::Expression))
