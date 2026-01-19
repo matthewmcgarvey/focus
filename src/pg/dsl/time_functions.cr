@@ -18,4 +18,24 @@ module Focus::PG::Dsl::TimeFunctions
     func = Focus::FunctionExpression.new("NOW", parameters: [] of Focus::Expression)
     Focus::TimestampTzExpression.new(func)
   end
+
+  def age(timestamp : Focus::TimestampExpression) : Focus::IntervalExpression
+    func = Focus::FunctionExpression.new("AGE", parameters: [timestamp] of Focus::Expression)
+    Focus::IntervalExpression.new(func)
+  end
+
+  def age(timestamp : Focus::TimestampTzExpression) : Focus::IntervalExpression
+    func = Focus::FunctionExpression.new("AGE", parameters: [timestamp] of Focus::Expression)
+    Focus::IntervalExpression.new(func)
+  end
+
+  def age(timestamp1 : Focus::TimestampExpression, timestamp2 : Focus::TimestampExpression) : Focus::IntervalExpression
+    func = Focus::FunctionExpression.new("AGE", parameters: [timestamp1, timestamp2] of Focus::Expression)
+    Focus::IntervalExpression.new(func)
+  end
+
+  def age(timestamp1 : Focus::TimestampTzExpression, timestamp2 : Focus::TimestampTzExpression) : Focus::IntervalExpression
+    func = Focus::FunctionExpression.new("AGE", parameters: [timestamp1, timestamp2] of Focus::Expression)
+    Focus::IntervalExpression.new(func)
+  end
 end
