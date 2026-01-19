@@ -1,5 +1,5 @@
 module Tables
-  class <%= title_name %>Table < Focus::<%= dialect.name %>Table
+  class <%= title_name %>Table < Focus::<%= dialect.name %>::Table
     <%- columns.each do |column| -%>
     getter <%= column.name %> : Focus::<%= column.column_type %>
     <%- end -%>

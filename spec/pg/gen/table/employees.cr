@@ -1,5 +1,5 @@
 module Tables
-  class EmployeesTable < Focus::PGTable
+  class EmployeesTable < Focus::PG::Table
     getter id : Focus::IntColumn(Int32)
     getter name : Focus::StringColumn
     getter job : Focus::StringColumn

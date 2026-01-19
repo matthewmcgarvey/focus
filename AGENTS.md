@@ -332,12 +332,12 @@ Users.with(
 ### Visitor Pattern
 - SQL generation uses the visitor pattern
 - `SqlFormatter` is the main visitor for SQL string generation
-- Each database has its own formatter (`SQLiteFormatter`, `PGFormatter`)
+- Each database has its own formatter (`SQLiteFormatter`, `PG::Formatter`)
 - Override `visit_expression`, `visit_clause`, `visit_statement` for custom types
 - All expressions implement `accept(visitor : SqlVisitor)`
 
 ### Dialect Pattern
-- Each database has a dialect class (`SQLiteDialect`, `PGDialect`)
+- Each database has a dialect class (`SQLiteDialect`, `PG::Dialect`)
 - Dialects provide the appropriate formatter for SQL generation
 - Database-specific features (e.g., `iLIKE` for PostgreSQL) are in dialect modules
 

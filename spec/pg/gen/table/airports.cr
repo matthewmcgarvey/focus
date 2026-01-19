@@ -1,5 +1,5 @@
 module Tables
-  class AirportsTable < Focus::PGTable
+  class AirportsTable < Focus::PG::Table
     getter id : Focus::IntColumn(Int32)
     getter code : Focus::StringColumn
     getter name : Focus::StringColumn

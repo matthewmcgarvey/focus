@@ -1,5 +1,5 @@
 module Tables
-  class PassengersTable < Focus::PGTable
+  class PassengersTable < Focus::PG::Table
     getter id : Focus::IntColumn(Int32)
     getter first_name : Focus::StringColumn
     getter last_name : Focus::StringColumn

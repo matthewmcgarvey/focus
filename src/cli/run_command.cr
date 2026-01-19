@@ -25,7 +25,7 @@ class RunCommand < Cling::Command
 
     dialect = case source
               when "postgres"
-                Focus::PGDialect.new
+                Focus::PG::Dialect.new
               when "sqlite"
                 Focus::SQLiteDialect.new
               else
@@ -35,8 +35,8 @@ class RunCommand < Cling::Command
     db = DB.open(db_url)
     template = Focus::Template.dialect(dialect)
     generator = case dialect
-                when Focus::PGDialect
-                  Focus::PGGenerator.new(db.not_nil!, output_dir, template, schema)
+                when Focus::PG::Dialect
+                  Focus::PG::Generator.new(db.not_nil!, output_dir, template, schema)
                 when Focus::SQLiteDialect
                   Focus::SQLiteGenerator.new(db.not_nil!, output_dir, template, schema)
                 else

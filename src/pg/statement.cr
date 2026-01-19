@@ -1,5 +1,5 @@
 module Focus::PG::Statement
   def dialect : Focus::Dialect
-    Focus::PGDialect.new
+    Focus::PG::Dialect.new
   end
 end

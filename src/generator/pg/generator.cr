@@ -1,4 +1,4 @@
-class Focus::PGGenerator
+class Focus::PG::Generator
   private getter db : Focus::DBConn
   private getter dest_dir : String
   private getter template : Focus::Template
@@ -8,7 +8,7 @@ class Focus::PGGenerator
   end
 
   def generate
-    query_set = Focus::PGQuerySet.new(db)
+    query_set = Focus::PG::QuerySet.new(db)
     schema_metadata = query_set.get_schema(schema)
     template.process_schema(dest_dir, schema_metadata)
   end

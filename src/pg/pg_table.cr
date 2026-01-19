@@ -1,5 +1,5 @@
-class Focus::PGTable < Focus::Table
-  getter dialect : Focus::Dialect = Focus::PGDialect.new
+class Focus::PG::Table < Focus::Table
+  getter dialect : Focus::Dialect = Focus::PG::Dialect.new
 
   def insert(*columns : Focus::Column) : Focus::PG::InsertStatement
     column_names = columns.map { |column| Focus::ColumnToken.new(column.column_name) }

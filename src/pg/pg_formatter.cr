@@ -1,4 +1,4 @@
-class Focus::PGFormatter < Focus::SqlFormatter
+class Focus::PG::Formatter < Focus::SqlFormatter
   property argument_counter = 1
 
   protected def write_placeholder

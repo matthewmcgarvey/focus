@@ -1,5 +1,5 @@
 module Tables
-  class BookingsTable < Focus::PGTable
+  class BookingsTable < Focus::PG::Table
     getter id : Focus::IntColumn(Int32)
     getter passenger_id : Focus::IntColumn(Int32)
     getter booked_at : Focus::TimestampColumn

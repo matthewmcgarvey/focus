@@ -1,4 +1,4 @@
-class Focus::PGQuerySet < Focus::QuerySet
+class Focus::PG::QuerySet < Focus::QuerySet
   getter db : Focus::DBConn
 
   def initialize(@db)

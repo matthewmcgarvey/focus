@@ -5,7 +5,7 @@ describe Focus::PG::Dsl::TimeFunctions do
     it "does not include parenthesis" do
       expr = Focus::PG.current_date
 
-      visitor = Focus::PGFormatter.new
+      visitor = Focus::PG::Formatter.new
       expr.accept(visitor)
       visitor.to_sql.should eq("CURRENT_DATE")
     end
@@ -15,7 +15,7 @@ describe Focus::PG::Dsl::TimeFunctions do
     it "does not include parenthesis" do
       expr = Focus::PG.current_time
 
-      visitor = Focus::PGFormatter.new
+      visitor = Focus::PG::Formatter.new
       expr.accept(visitor)
       visitor.to_sql.should eq("CURRENT_TIME")
     end
@@ -25,7 +25,7 @@ describe Focus::PG::Dsl::TimeFunctions do
     it "does not include parenthesis" do
       expr = Focus::PG.current_timestamp
 
-      visitor = Focus::PGFormatter.new
+      visitor = Focus::PG::Formatter.new
       expr.accept(visitor)
       visitor.to_sql.should eq("CURRENT_TIMESTAMP")
     end
@@ -35,7 +35,7 @@ describe Focus::PG::Dsl::TimeFunctions do
     it "does include parenthesis" do
       expr = Focus::PG.now
 
-      visitor = Focus::PGFormatter.new
+      visitor = Focus::PG::Formatter.new
       expr.accept(visitor)
       visitor.to_sql.should eq("NOW()")
     end
