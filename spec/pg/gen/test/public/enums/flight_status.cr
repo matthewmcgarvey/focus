@@ -1,4 +1,4 @@
-module Enums
+module Gen::Test::Public::Enums
   enum FlightStatus
     Cancelled
     Delayed

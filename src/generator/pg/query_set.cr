@@ -4,6 +4,13 @@ class Focus::PG::QuerySet < Focus::QuerySet
   def initialize(@db)
   end
 
+  def get_schema(schema : String) : Metadata::Schema
+    tables_metadata = get_tables_metadata(schema, TableType::BaseTable)
+    views_metadata = get_tables_metadata(schema, TableType::ViewTable)
+    enums_metadata = get_enums_metadata(schema)
+    Metadata::Schema.new(schema, tables_metadata, views_metadata, enums_metadata)
+  end
+
   # table_type can be "table" or "view"
   def get_tables_metadata(schema_name : String, table_type : TableType) : Array(Metadata::Table)
     query = <<-SQL

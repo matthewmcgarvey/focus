@@ -1,4 +1,4 @@
-module Enums
+module <%= module_name %>::Enums
   enum <%= enum_name %>
     <%- enum_values.each do |val| -%>
     <%= val.camelcase %>

@@ -1,4 +1,4 @@
-module Tables
+module Gen::Test::Public::Tables
   class TicketsTable < Focus::PG::Table
     getter id : Focus::IntColumn(Int32)
     getter booking_id : Focus::IntColumn(Int32)

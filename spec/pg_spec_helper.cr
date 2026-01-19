@@ -1,12 +1,10 @@
 require "./spec_helper"
 require "../src/pg"
-require "./pg/gen/tables/*"
-require "./pg/gen/views/*"
-require "./pg/gen/enums/*"
+require "./pg/gen/test/public/**"
 
-include Tables
-include Views
-include Enums
+include Gen::Test::Public::Tables
+include Gen::Test::Public::Views
+include Gen::Test::Public::Enums
 
 PG_DATABASE = DB.open("postgres://postgres:postgres@localhost/test")
 

@@ -1,5 +1,5 @@
-module Tables
-  class DepartmentsTable < Focus::PG::Table
+module Gen::Test::Tables
+  class DepartmentsTable < Focus::SQLite::Table
     getter id : Focus::IntColumn(Int32)
     getter name : Focus::StringColumn
     getter location : Focus::StringColumn

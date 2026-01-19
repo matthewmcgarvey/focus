@@ -1,4 +1,4 @@
-module <%= module_name %>
+module <%= module_name %>::<%= table_type_module_name %>
   class <%= title_name %>Table < Focus::<%= dialect.name %>::Table
     <%- columns.each do |column| -%>
     getter <%= column.name %> : Focus::<%= column.column_type %>

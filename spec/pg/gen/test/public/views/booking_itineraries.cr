@@ -1,4 +1,4 @@
-module Views
+module Gen::Test::Public::Views
   class BookingItinerariesTable < Focus::PG::Table
     getter booking_id : Focus::IntColumn(Int32)
     getter passenger_id : Focus::IntColumn(Int32)

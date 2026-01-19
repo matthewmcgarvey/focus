@@ -4,8 +4,14 @@ class Focus::SQLite::QuerySet < Focus::QuerySet
   def initialize(@db)
   end
 
+  def get_schema : Metadata::Schema
+    tables_metadata = get_tables_metadata(TableType::BaseTable)
+    views_metadata = get_tables_metadata(TableType::ViewTable)
+    Metadata::Schema.new(nil, tables_metadata, views_metadata, [] of Metadata::Enum)
+  end
+
   # table_type can be "table" or "view"
-  def get_tables_metadata(schema_name : String, table_type : TableType) : Array(Metadata::Table)
+  def get_tables_metadata(table_type : TableType) : Array(Metadata::Table)
     query = <<-SQL
       SELECT name
       FROM sqlite_master
@@ -55,10 +61,5 @@ class Focus::SQLite::QuerySet < Focus::QuerySet
         data_type: data_type
       )
     end
-  end
-
-  # sqlite does not have enums
-  def get_enums_metadata(schema_name : String) : Array(Metadata::Enum)
-    [] of Metadata::Enum
   end
 end

@@ -1,4 +1,4 @@
-module Views
+module Gen::Test::Views
   class BookingItinerariesTable < Focus::SQLite::Table
     getter booking_id : Focus::IntColumn(Int32)
     getter passenger_id : Focus::IntColumn(Int32)

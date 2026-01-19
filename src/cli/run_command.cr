@@ -32,13 +32,12 @@ class RunCommand < Cling::Command
                 stderr.puts "Invalid source '#{source}'"
                 exit_program
               end
-    db = DB.open(db_url)
     template = Focus::Template.dialect(dialect)
     generator = case dialect
                 when Focus::PG::Dialect
-                  Focus::PG::Generator.new(db.not_nil!, output_dir, template, schema)
+                  Focus::PG::Generator.from_url(db_url, output_dir, template, schema)
                 when Focus::SQLite::Dialect
-                  Focus::SQLite::Generator.new(db.not_nil!, output_dir, template, schema)
+                  Focus::SQLite::Generator.from_url(db_url, output_dir, template)
                 else
                   stderr.puts "Error: unknown dialect #{dialect.class}"
                   exit_program

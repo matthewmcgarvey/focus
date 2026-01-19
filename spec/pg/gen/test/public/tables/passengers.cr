@@ -1,4 +1,4 @@
-module Tables
+module Gen::Test::Public::Tables
   class PassengersTable < Focus::PG::Table
     getter id : Focus::IntColumn(Int32)
     getter first_name : Focus::StringColumn

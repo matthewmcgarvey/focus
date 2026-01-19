@@ -1,4 +1,4 @@
-module Tables
+module Gen::Test::Tables
   class FlightsTable < Focus::SQLite::Table
     getter id : Focus::IntColumn(Int32)
     getter flight_number : Focus::StringColumn

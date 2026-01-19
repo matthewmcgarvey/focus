@@ -1,5 +1,5 @@
-module Views
-  class FlightDetailsTable < Focus::SQLite::Table
+module Gen::Test::Public::Views
+  class FlightDetailsTable < Focus::PG::Table
     getter flight_id : Focus::IntColumn(Int32)
     getter flight_number : Focus::StringColumn
     getter tail_number : Focus::StringColumn
@@ -11,8 +11,8 @@ module Views
     getter arrive_code : Focus::StringColumn
     getter arrive_airport : Focus::StringColumn
     getter arrive_city : Focus::StringColumn
-    getter depart_time : Focus::StringColumn
-    getter arrive_time : Focus::StringColumn
+    getter depart_time : Focus::TimestampColumn
+    getter arrive_time : Focus::TimestampColumn
     getter status : Focus::StringColumn
 
     def initialize(table_name : String = "flight_details", table_alias : String? = nil)
@@ -27,8 +27,8 @@ module Views
       @arrive_code = Focus::StringColumn.new("arrive_code", table_name)
       @arrive_airport = Focus::StringColumn.new("arrive_airport", table_name)
       @arrive_city = Focus::StringColumn.new("arrive_city", table_name)
-      @depart_time = Focus::StringColumn.new("depart_time", table_name)
-      @arrive_time = Focus::StringColumn.new("arrive_time", table_name)
+      @depart_time = Focus::TimestampColumn.new("depart_time", table_name)
+      @arrive_time = Focus::TimestampColumn.new("arrive_time", table_name)
       @status = Focus::StringColumn.new("status", table_name)
       columns = [@flight_id, @flight_number, @tail_number, @aircraft_model, @seat_capacity, @depart_code, @depart_airport, @depart_city, @arrive_code, @arrive_airport, @arrive_city, @depart_time, @arrive_time, @status].select(Focus::Expression)
 
