@@ -34,4 +34,8 @@ module Focus::Dsl::Columns
   def timestamptz_column(name : String) : Focus::TimestampTzColumn
     Focus::TimestampTzColumn.new(name)
   end
+
+  def time_column(name : String) : Focus::TimeColumn
+    Focus::TimeColumn.new(name)
+  end
 end

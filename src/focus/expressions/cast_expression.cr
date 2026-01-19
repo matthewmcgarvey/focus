@@ -33,4 +33,8 @@ class Focus::CastExpression < Focus::Expression
   def as_timestamp_tz : Focus::TimestampTzExpression
     Focus::TimestampTzExpression.new(as_type("TIMESTAMPTZ"))
   end
+
+  def as_time : Focus::TimeExpression
+    Focus::TimeExpression.new(as_type("TIME"))
+  end
 end

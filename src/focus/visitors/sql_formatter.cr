@@ -213,6 +213,10 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     expression.inner.try(&.accept(self))
   end
 
+  def visit_expression(expression : Focus::TimeExpression) : Nil
+    expression.inner.try(&.accept(self))
+  end
+
   def visit_expression(expression : Focus::WildcardExpression) : Nil
     if table_name = expression.table_name
       write_identifier(table_name)

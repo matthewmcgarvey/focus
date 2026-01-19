@@ -40,6 +40,8 @@ class Focus::Templates::TableTemplate
         "TimestampColumn"
       when "TIMESTAMPTZ", "TIMESTAMP WITH TIME ZONE"
         "TimestampTzColumn"
+      when "TIME", "TIME WITHOUT TIME ZONE"
+        "TimeColumn"
       else
         puts "unhandled type #{data_type.name}. defaulting to string"
         "StringColumn"

@@ -72,4 +72,25 @@ describe Focus::PG::Dsl::Types do
       visitor.parameters.should eq([time])
     end
   end
+
+  describe ".time" do
+    it "supports separate args" do
+      time = Focus::PG.time(10, 25, 30)
+
+      visitor = Focus::PGFormatter.new
+      time.accept(visitor)
+      visitor.to_sql.should eq("CAST($1 AS TIME)")
+      visitor.parameters.should eq(["10:25:30"])
+    end
+
+    it "supports separate args with nanoseconds" do
+      time = Focus::PG.time(10, 25, 30, nanoseconds: 100)
+
+      visitor = Focus::PGFormatter.new
+      time.accept(visitor)
+      visitor.to_sql.should eq("CAST($1 AS TIME)")
+      visitor.parameters.should eq(["10:25:30.0000001"])
+    end
+
+  end
 end

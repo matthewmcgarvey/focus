@@ -26,8 +26,14 @@ module Focus::SQLite::Dsl::Types
     Focus::TimestampExpression.new(func)
   end
 
-  # max is 999
-  # value like 300 will have trailing '0's removed leaving only '3'
+  def time(hour : Int8, minute : Int8, second : Int8, nanoseconds : Int32? = nil) : Focus::TimeExpression
+    time_str = sprintf("%02d:%02d:%02d", {hour, minute, second})
+    time_str += format_nanoseconds(nanoseconds) if nanoseconds
+    literal = Focus::LiteralExpression.new(time_str)
+    func = Focus::FunctionExpression.new("TIME", [literal] of Focus::Expression)
+    Focus::TimeExpression.new(func)
+  end
+
   private def format_nanoseconds(nanoseconds : Int32)
     return "" if nanoseconds == 0
 

@@ -41,8 +41,14 @@ module Focus::PG::Dsl::Types
     Focus::PG.cast(timestamp_expr).as_timestamp_tz
   end
 
-  # max is 999
-  # value like 300 will have trailing '0's removed leaving only '3'
+  def time(hour : Int8, minute : Int8, second : Int8, nanoseconds : Int32? = nil) : Focus::TimeExpression
+    time_str = sprintf("%02d:%02d:%02d", {hour, minute, second})
+    time_str += format_nanoseconds(nanoseconds) if nanoseconds
+    literal = Focus::LiteralExpression.new(time_str)
+    time_expr = Focus::TimeExpression.new(literal)
+    Focus::PG.cast(time_expr).as_time
+  end
+
   private def format_nanoseconds(nanoseconds : Int32)
     return "" if nanoseconds == 0
 
