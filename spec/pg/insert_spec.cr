@@ -76,4 +76,22 @@ describe "PG Insert" do
       contains_result.should eq("Test")
     end
   end
+
+  it "inserts ticket with generated uuid" do
+    in_transaction do |conn|
+      stmt = Tickets.insert(Tickets.booking_id, Tickets.passenger_id, Tickets.issued_at, Tickets.status, Tickets.is_refundable, Tickets.uuid)
+        .values(1, 1, Focus::PG.timestamp(2024, 3, 20, 12, 15, 0), "issued", true, Focus::PG.gen_random_uuid)
+        .returning(Tickets.id)
+
+      stmt.to_sql.should eq(%(INSERT INTO tickets (booking_id, passenger_id, issued_at, status, is_refundable, uuid) VALUES ($1, $2, CAST($3 AS TIMESTAMP), $4, $5, gen_random_uuid()) RETURNING tickets.id))
+
+      id = stmt.query_one(conn, Int32)
+
+      stmt = Tickets.select(Tickets.status)
+        .where(Tickets.id.eq(Focus::PG.int32(id)))
+
+      result = stmt.query_one(conn, String)
+      result.should eq("issued")
+    end
+  end
 end

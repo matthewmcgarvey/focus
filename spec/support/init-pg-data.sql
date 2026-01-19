@@ -88,6 +88,7 @@ create table tickets(
   booking_id int not null,
   passenger_id int not null,
   issued_at timestamp not null,
+  uuid uuid not null,
   status varchar(16) not null,
   is_refundable boolean default true
 );
@@ -218,24 +219,24 @@ values (8, 12, null, 'economy', 420.00);
 insert into booking_flights(booking_id, flight_id, seat, service_class, price)
 values (9, 13, '20E', 'economy', 500.00);
 
-insert into tickets(booking_id, passenger_id, issued_at, status, is_refundable)
-values (1, 1, '2024-03-20 12:10:00', 'issued', true);
-insert into tickets(booking_id, passenger_id, issued_at, status, is_refundable)
-values (2, 2, '2024-03-21 09:40:00', 'issued', true);
-insert into tickets(booking_id, passenger_id, issued_at, status, is_refundable)
-values (3, 3, '2024-03-22 16:05:00', 'held', true);
-insert into tickets(booking_id, passenger_id, issued_at, status, is_refundable)
-values (4, 4, '2024-03-23 08:20:00', 'issued', true);
-insert into tickets(booking_id, passenger_id, issued_at, status, is_refundable)
-values (5, 5, '2024-03-24 20:55:00', 'issued', false);
-insert into tickets(booking_id, passenger_id, issued_at, status, is_refundable)
-values (6, 6, '2024-03-25 11:30:00', 'voided', false);
-insert into tickets(booking_id, passenger_id, issued_at, status, is_refundable)
-values (7, 7, '2024-03-26 17:40:00', 'issued', true);
-insert into tickets(booking_id, passenger_id, issued_at, status, is_refundable)
-values (8, 8, '2024-03-27 08:05:00', 'held', true);
-insert into tickets(booking_id, passenger_id, issued_at, status, is_refundable)
-values (9, 9, '2024-03-28 13:50:00', 'issued', false);
+insert into tickets(booking_id, passenger_id, issued_at, uuid, status, is_refundable)
+values (1, 1, '2024-03-20 12:10:00', gen_random_uuid(), 'issued', true);
+insert into tickets(booking_id, passenger_id, issued_at, uuid, status, is_refundable)
+values (2, 2, '2024-03-21 09:40:00', gen_random_uuid(), 'issued', true);
+insert into tickets(booking_id, passenger_id, issued_at, uuid, status, is_refundable)
+values (3, 3, '2024-03-22 16:05:00', gen_random_uuid(), 'held', true);
+insert into tickets(booking_id, passenger_id, issued_at, uuid, status, is_refundable)
+values (4, 4, '2024-03-23 08:20:00', gen_random_uuid(), 'issued', true);
+insert into tickets(booking_id, passenger_id, issued_at, uuid, status, is_refundable)
+values (5, 5, '2024-03-24 20:55:00', gen_random_uuid(), 'issued', false);
+insert into tickets(booking_id, passenger_id, issued_at, uuid, status, is_refundable)
+values (6, 6, '2024-03-25 11:30:00', gen_random_uuid(), 'voided', false);
+insert into tickets(booking_id, passenger_id, issued_at, uuid, status, is_refundable)
+values (7, 7, '2024-03-26 17:40:00', gen_random_uuid(), 'issued', true);
+insert into tickets(booking_id, passenger_id, issued_at, uuid, status, is_refundable)
+values (8, 8, '2024-03-27 08:05:00', gen_random_uuid(), 'held', true);
+insert into tickets(booking_id, passenger_id, issued_at, uuid, status, is_refundable)
+values (9, 9, '2024-03-28 13:50:00', gen_random_uuid(), 'issued', false);
 
 create view booking_itineraries as
 select

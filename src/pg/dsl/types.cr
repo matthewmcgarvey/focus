@@ -58,6 +58,10 @@ module Focus::PG::Dsl::Types
     Focus::PG.cast(literal).as_interval
   end
 
+  def string(value : UUID) : Focus::StringExpression
+    Focus::StringLiteral.new(value.to_s)
+  end
+
   def jsonb(value : JSON::Any) : Focus::JsonbExpression
     Focus::JsonbLiteral.new(value)
   end

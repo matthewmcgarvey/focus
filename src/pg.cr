@@ -1,4 +1,5 @@
 require "pg"
+require "uuid"
 require "./pg/*"
 require "./pg/statements/*"
 require "./pg/dsl/*"
@@ -12,6 +13,7 @@ module Focus::PG
   extend Focus::Dsl::ConditionalFunctions
   extend Focus::PG::Dsl::Types
   extend Focus::PG::Dsl::TimeFunctions
+  extend Focus::PG::Dsl::UuidFunctions
 
   def self.select(expressions : Array(Focus::Expression)) : Focus::PG::SelectStatement
     select_clause = Focus::SelectClause.new(expressions.select(Focus::Expression))
