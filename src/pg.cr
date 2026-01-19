@@ -34,4 +34,8 @@ module Focus::PG
   def self.cast(expression : Focus::Expression) : Focus::CastExpression
     Focus::CastExpression.new(expression)
   end
+
+  def self.sql(&)
+    with self yield
+  end
 end
