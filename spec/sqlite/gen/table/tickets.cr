@@ -1,5 +1,5 @@
 module Tables
-  class TicketsTable < Focus::SQLiteTable
+  class TicketsTable < Focus::SQLite::Table
     getter id : Focus::IntColumn(Int32)
     getter booking_id : Focus::IntColumn(Int32)
     getter passenger_id : Focus::IntColumn(Int32)

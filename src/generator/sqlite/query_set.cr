@@ -1,4 +1,4 @@
-class Focus::SQLiteQuerySet < Focus::QuerySet
+class Focus::SQLite::QuerySet < Focus::QuerySet
   getter db : Focus::DBConn
 
   def initialize(@db)

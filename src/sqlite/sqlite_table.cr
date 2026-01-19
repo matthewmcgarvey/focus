@@ -1,5 +1,5 @@
-class Focus::SQLiteTable < Focus::Table
-  getter dialect : Focus::Dialect = Focus::SQLiteDialect.new
+class Focus::SQLite::Table < Focus::Table
+  getter dialect : Focus::Dialect = Focus::SQLite::Dialect.new
 
   def insert(*columns : Focus::Column) : Focus::SQLite::InsertStatement
     column_names = columns.map { |column| Focus::ColumnToken.new(column.column_name) }

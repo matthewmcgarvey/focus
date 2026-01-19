@@ -1,2 +1,2 @@
-class Focus::SQLiteFormatter < Focus::SqlFormatter
+class Focus::SQLite::Formatter < Focus::SqlFormatter
 end

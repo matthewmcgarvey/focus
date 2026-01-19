@@ -1,5 +1,5 @@
 module Tables
-  class AirportsTable < Focus::SQLiteTable
+  class AirportsTable < Focus::SQLite::Table
     getter id : Focus::IntColumn(Int32)
     getter code : Focus::StringColumn
     getter name : Focus::StringColumn

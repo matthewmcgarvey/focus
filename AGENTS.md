@@ -231,8 +231,8 @@ spec/
 |--------------|----------|-------------|
 | `Focus` | `src/focus.cr` | Main module, defines VERSION and DBConn alias |
 | `Focus::Table` | `src/focus/table.cr` | Abstract base class for tables |
-| `Focus::SQLiteTable` | `src/sqlite/sqlite_table.cr` | SQLite table class |
-| `Focus::PGTable` | `src/pg/pg_table.cr` | PostgreSQL table class |
+| `Focus::SQLite::Table` | `src/sqlite/sqlite_table.cr` | SQLite table class |
+| `Focus::PG::Table` | `src/pg/pg_table.cr` | PostgreSQL table class |
 | `Focus::Expression` | `src/focus/expression.cr` | Abstract base for all expressions |
 | `Focus::Column` | `src/focus/column.cr` | Module included by column types |
 | `Focus::Statement` | `src/focus/statement.cr` | Abstract base for statements |
@@ -293,7 +293,7 @@ spec/
 
 ### Table Definition Pattern
 ```crystal
-class UsersTable < Focus::SQLiteTable  # or Focus::PGTable
+class UsersTable < Focus::SQLite::Table  # or Focus::PG::Table
   getter id : Focus::IntColumn(Int32)
   getter name : Focus::StringColumn
 
@@ -332,12 +332,12 @@ Users.with(
 ### Visitor Pattern
 - SQL generation uses the visitor pattern
 - `SqlFormatter` is the main visitor for SQL string generation
-- Each database has its own formatter (`SQLiteFormatter`, `PG::Formatter`)
+- Each database has its own formatter (`SQLite::Formatter`, `PG::Formatter`)
 - Override `visit_expression`, `visit_clause`, `visit_statement` for custom types
 - All expressions implement `accept(visitor : SqlVisitor)`
 
 ### Dialect Pattern
-- Each database has a dialect class (`SQLiteDialect`, `PG::Dialect`)
+- Each database has a dialect class (`SQLite::Dialect`, `PG::Dialect`)
 - Dialects provide the appropriate formatter for SQL generation
 - Database-specific features (e.g., `iLIKE` for PostgreSQL) are in dialect modules
 

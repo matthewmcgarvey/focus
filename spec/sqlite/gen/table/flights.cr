@@ -1,5 +1,5 @@
 module Tables
-  class FlightsTable < Focus::SQLiteTable
+  class FlightsTable < Focus::SQLite::Table
     getter id : Focus::IntColumn(Int32)
     getter flight_number : Focus::StringColumn
     getter aircraft_id : Focus::IntColumn(Int32)

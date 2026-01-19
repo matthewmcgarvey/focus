@@ -5,7 +5,7 @@ describe Focus::SQLite::Dsl::Types do
     it "supports separate args" do
       date = Focus::SQLite.date(2026, 1, 17)
 
-      visitor = Focus::SQLiteFormatter.new
+      visitor = Focus::SQLite::Formatter.new
       date.accept(visitor)
       visitor.to_sql.should eq("DATE(?)")
       visitor.parameters.should eq(["2026-01-17"])
@@ -15,7 +15,7 @@ describe Focus::SQLite::Dsl::Types do
       time = Time.utc
       date = Focus::SQLite.date(time)
 
-      visitor = Focus::SQLiteFormatter.new
+      visitor = Focus::SQLite::Formatter.new
       date.accept(visitor)
       visitor.to_sql.should eq("DATE(?)")
       visitor.parameters.should eq([time])
@@ -26,7 +26,7 @@ describe Focus::SQLite::Dsl::Types do
     it "supports separate args" do
       datetime = Focus::SQLite.datetime(2026, 1, 17, hour: 10, minute: 25, second: 30)
 
-      visitor = Focus::SQLiteFormatter.new
+      visitor = Focus::SQLite::Formatter.new
       datetime.accept(visitor)
       visitor.to_sql.should eq("DATETIME(?)")
       visitor.parameters.should eq(["2026-01-17 10:25:30"])
@@ -35,7 +35,7 @@ describe Focus::SQLite::Dsl::Types do
     it "supports separate args with nanoseconds" do
       datetime = Focus::SQLite.datetime(2026, 1, 17, hour: 10, minute: 25, second: 30, nanoseconds: 100)
 
-      visitor = Focus::SQLiteFormatter.new
+      visitor = Focus::SQLite::Formatter.new
       datetime.accept(visitor)
       visitor.to_sql.should eq("DATETIME(?)")
       visitor.parameters.should eq(["2026-01-17 10:25:30.0000001"])
@@ -45,7 +45,7 @@ describe Focus::SQLite::Dsl::Types do
       time = Time.utc
       timestamp = Focus::SQLite.datetime(time)
 
-      visitor = Focus::SQLiteFormatter.new
+      visitor = Focus::SQLite::Formatter.new
       timestamp.accept(visitor)
       visitor.to_sql.should eq("DATETIME(?)")
       visitor.parameters.should eq([time])
@@ -56,7 +56,7 @@ describe Focus::SQLite::Dsl::Types do
     it "supports separate args" do
       time = Focus::SQLite.time(10, 25, 30)
 
-      visitor = Focus::SQLiteFormatter.new
+      visitor = Focus::SQLite::Formatter.new
       time.accept(visitor)
       visitor.to_sql.should eq("TIME(?)")
       visitor.parameters.should eq(["10:25:30"])
@@ -65,7 +65,7 @@ describe Focus::SQLite::Dsl::Types do
     it "supports separate args with nanoseconds" do
       time = Focus::SQLite.time(10, 25, 30, nanoseconds: 100)
 
-      visitor = Focus::SQLiteFormatter.new
+      visitor = Focus::SQLite::Formatter.new
       time.accept(visitor)
       visitor.to_sql.should eq("TIME(?)")
       visitor.parameters.should eq(["10:25:30.0000001"])

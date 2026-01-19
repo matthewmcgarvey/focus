@@ -1,5 +1,5 @@
 module Tables
-  class AircraftsTable < Focus::SQLiteTable
+  class AircraftsTable < Focus::SQLite::Table
     getter id : Focus::IntColumn(Int32)
     getter tail_number : Focus::StringColumn
     getter model : Focus::StringColumn

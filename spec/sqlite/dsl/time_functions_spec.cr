@@ -5,7 +5,7 @@ describe Focus::SQLite::Dsl::TimeFunctions do
     it "does not include parenthesis" do
       expr = Focus::SQLite.current_date
 
-      visitor = Focus::SQLiteFormatter.new
+      visitor = Focus::SQLite::Formatter.new
       expr.accept(visitor)
       visitor.to_sql.should eq("CURRENT_DATE")
     end
@@ -15,7 +15,7 @@ describe Focus::SQLite::Dsl::TimeFunctions do
     it "does not include parenthesis" do
       expr = Focus::SQLite.current_time
 
-      visitor = Focus::SQLiteFormatter.new
+      visitor = Focus::SQLite::Formatter.new
       expr.accept(visitor)
       visitor.to_sql.should eq("CURRENT_TIME")
     end
@@ -25,7 +25,7 @@ describe Focus::SQLite::Dsl::TimeFunctions do
     it "does not include parenthesis" do
       expr = Focus::SQLite.current_timestamp
 
-      visitor = Focus::SQLiteFormatter.new
+      visitor = Focus::SQLite::Formatter.new
       expr.accept(visitor)
       visitor.to_sql.should eq("CURRENT_TIMESTAMP")
     end

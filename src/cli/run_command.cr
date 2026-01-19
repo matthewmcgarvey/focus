@@ -27,7 +27,7 @@ class RunCommand < Cling::Command
               when "postgres"
                 Focus::PG::Dialect.new
               when "sqlite"
-                Focus::SQLiteDialect.new
+                Focus::SQLite::Dialect.new
               else
                 stderr.puts "Invalid source '#{source}'"
                 exit_program
@@ -37,8 +37,8 @@ class RunCommand < Cling::Command
     generator = case dialect
                 when Focus::PG::Dialect
                   Focus::PG::Generator.new(db.not_nil!, output_dir, template, schema)
-                when Focus::SQLiteDialect
-                  Focus::SQLiteGenerator.new(db.not_nil!, output_dir, template, schema)
+                when Focus::SQLite::Dialect
+                  Focus::SQLite::Generator.new(db.not_nil!, output_dir, template, schema)
                 else
                   stderr.puts "Error: unknown dialect #{dialect.class}"
                   exit_program

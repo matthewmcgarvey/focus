@@ -1,5 +1,5 @@
 module Focus::SQLite::Statement
   def dialect : Focus::Dialect
-    Focus::SQLiteDialect.new
+    Focus::SQLite::Dialect.new
   end
 end
