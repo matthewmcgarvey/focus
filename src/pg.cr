@@ -12,6 +12,7 @@ module Focus::PG
   extend Focus::Dsl::MathFunctions
   extend Focus::Dsl::StringFunctions
   extend Focus::Dsl::ConditionalFunctions
+  extend Focus::Dsl::WhereHelpers
   extend Focus::PG::Dsl::Types
   extend Focus::PG::Dsl::TimeFunctions
   extend Focus::PG::Dsl::UuidFunctions

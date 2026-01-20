@@ -11,6 +11,7 @@ module Focus::SQLite
   extend Focus::Dsl::MathFunctions
   extend Focus::Dsl::StringFunctions
   extend Focus::Dsl::ConditionalFunctions
+  extend Focus::Dsl::WhereHelpers
   extend Focus::SQLite::Dsl::Types
   extend Focus::SQLite::Dsl::TimeFunctions
 

@@ -80,8 +80,10 @@ describe "PG JSONB Select" do
     json_value = JSON.parse(%({"seat": "window"}))
     stmt = Passengers.select(Passengers.first_name)
       .where(
-        Passengers.preferences.contains(Focus::PG.jsonb(json_value))
-          .and(Passengers.preferences.has_key(Focus::PG.string("loyalty_tier")))
+        Focus::PG.and(
+          Passengers.preferences.contains(Focus::PG.jsonb(json_value)),
+          Passengers.preferences.has_key(Focus::PG.string("loyalty_tier"))
+        )
       )
       .order_by(Passengers.id.asc)
 
