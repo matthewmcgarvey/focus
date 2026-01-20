@@ -12,10 +12,10 @@ module <%= module_name %>::<%= table_type_module_name %>
       columns = [<%= column_list %>].select(Focus::Expression)
 
       super(
-       schema_name: schema_name,
-       table_name: table_name,
-       table_alias: table_alias,
-       columns: columns
+        schema_name: schema_name,
+        table_name: table_name,
+        table_alias: table_alias,
+        columns: columns
       )
     end
   end

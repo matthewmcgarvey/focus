@@ -21,10 +21,10 @@ module Gen::Test::Tables
       columns = [@id, @name, @job, @manager_id, @hire_date, @salary, @department_id, @is_remote].select(Focus::Expression)
 
       super(
-       schema_name: schema_name,
-       table_name: table_name,
-       table_alias: table_alias,
-       columns: columns
+        schema_name: schema_name,
+        table_name: table_name,
+        table_alias: table_alias,
+        columns: columns
       )
     end
   end

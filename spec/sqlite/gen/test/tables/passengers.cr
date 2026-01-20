@@ -15,10 +15,10 @@ module Gen::Test::Tables
       columns = [@id, @first_name, @last_name, @email, @birth_date].select(Focus::Expression)
 
       super(
-       schema_name: schema_name,
-       table_name: table_name,
-       table_alias: table_alias,
-       columns: columns
+        schema_name: schema_name,
+        table_name: table_name,
+        table_alias: table_alias,
+        columns: columns
       )
     end
   end

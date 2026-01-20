@@ -17,10 +17,10 @@ module Gen::Test::Tables
       columns = [@id, @booking_id, @passenger_id, @issued_at, @status, @is_refundable].select(Focus::Expression)
 
       super(
-       schema_name: schema_name,
-       table_name: table_name,
-       table_alias: table_alias,
-       columns: columns
+        schema_name: schema_name,
+        table_name: table_name,
+        table_alias: table_alias,
+        columns: columns
       )
     end
   end

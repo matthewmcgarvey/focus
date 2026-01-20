@@ -21,10 +21,10 @@ module Gen::Test::Inventory::Tables
       columns = [@id, @sku, @name, @description, @price, @quantity, @is_active, @created_at].select(Focus::Expression)
 
       super(
-       schema_name: schema_name,
-       table_name: table_name,
-       table_alias: table_alias,
-       columns: columns
+        schema_name: schema_name,
+        table_name: table_name,
+        table_alias: table_alias,
+        columns: columns
       )
     end
   end

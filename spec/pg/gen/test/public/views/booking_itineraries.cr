@@ -33,10 +33,10 @@ module Gen::Test::Public::Views
       columns = [@booking_id, @passenger_id, @first_name, @last_name, @flight_id, @flight_number, @depart_airport_code, @arrive_airport_code, @depart_time, @arrive_time, @service_class, @seat, @price, @booking_status].select(Focus::Expression)
 
       super(
-       schema_name: schema_name,
-       table_name: table_name,
-       table_alias: table_alias,
-       columns: columns
+        schema_name: schema_name,
+        table_name: table_name,
+        table_alias: table_alias,
+        columns: columns
       )
     end
   end

@@ -21,10 +21,10 @@ module Gen::Test::Tables
       columns = [@id, @flight_number, @aircraft_id, @depart_airport_id, @arrive_airport_id, @depart_time, @arrive_time, @status].select(Focus::Expression)
 
       super(
-       schema_name: schema_name,
-       table_name: table_name,
-       table_alias: table_alias,
-       columns: columns
+        schema_name: schema_name,
+        table_name: table_name,
+        table_alias: table_alias,
+        columns: columns
       )
     end
   end
