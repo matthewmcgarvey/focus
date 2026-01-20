@@ -8,7 +8,7 @@ module Gen::Test::Public::Tables
     getter status : Focus::StringColumn
     getter is_refundable : Focus::BoolColumn
 
-    def initialize(table_name : String = "tickets", table_alias : String? = nil)
+    def initialize(schema_name : String? = nil, table_name : String = "tickets", table_alias : String? = nil)
       @id = Focus::IntColumn(Int32).new("id", table_name)
       @booking_id = Focus::IntColumn(Int32).new("booking_id", table_name)
       @passenger_id = Focus::IntColumn(Int32).new("passenger_id", table_name)
@@ -18,7 +18,12 @@ module Gen::Test::Public::Tables
       @is_refundable = Focus::BoolColumn.new("is_refundable", table_name)
       columns = [@id, @booking_id, @passenger_id, @issued_at, @uuid, @status, @is_refundable].select(Focus::Expression)
 
-      super(table_name, table_alias, columns)
+      super(
+       schema_name: schema_name,
+       table_name: table_name,
+       table_alias: table_alias,
+       columns: columns
+      )
     end
   end
 

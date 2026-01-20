@@ -6,7 +6,7 @@ module Gen::Test::Public::Tables
     getter city : Focus::StringColumn
     getter country : Focus::StringColumn
 
-    def initialize(table_name : String = "airports", table_alias : String? = nil)
+    def initialize(schema_name : String? = nil, table_name : String = "airports", table_alias : String? = nil)
       @id = Focus::IntColumn(Int32).new("id", table_name)
       @code = Focus::StringColumn.new("code", table_name)
       @name = Focus::StringColumn.new("name", table_name)
@@ -14,7 +14,12 @@ module Gen::Test::Public::Tables
       @country = Focus::StringColumn.new("country", table_name)
       columns = [@id, @code, @name, @city, @country].select(Focus::Expression)
 
-      super(table_name, table_alias, columns)
+      super(
+       schema_name: schema_name,
+       table_name: table_name,
+       table_alias: table_alias,
+       columns: columns
+      )
     end
   end
 

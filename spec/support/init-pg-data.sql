@@ -70,7 +70,7 @@ create table bookings(
   id serial primary key,
   passenger_id int not null,
   booked_at timestamp not null,
-  total_amount numeric(10, 2) not null,
+  total_amount double precision not null,
   status varchar(16) not null
 );
 
@@ -80,7 +80,7 @@ create table booking_flights(
   flight_id int not null,
   seat varchar(6) null,
   service_class varchar(16) not null,
-  price numeric(10, 2) not null
+  price double precision not null
 );
 
 create table tickets(
@@ -282,3 +282,23 @@ join aircrafts a on a.id = f.aircraft_id
 join airports da on da.id = f.depart_airport_id
 join airports aa on aa.id = f.arrive_airport_id;
 
+-- Inventory schema for product management
+create schema inventory;
+
+create table inventory.products(
+  id serial primary key,
+  sku varchar(32) not null unique,
+  name varchar(255) not null,
+  description text,
+  price double precision not null,
+  quantity int not null default 0,
+  is_active boolean default true,
+  created_at timestamp not null default now()
+);
+
+insert into inventory.products(sku, name, description, price, quantity)
+values ('SKU-001', 'Wireless Mouse', 'Ergonomic wireless mouse with USB receiver', 29.99, 150);
+insert into inventory.products(sku, name, description, price, quantity)
+values ('SKU-002', 'Mechanical Keyboard', 'RGB mechanical keyboard with Cherry MX switches', 89.99, 75);
+insert into inventory.products(sku, name, description, price, quantity, is_active)
+values ('SKU-003', 'USB-C Hub', '7-port USB-C hub with HDMI output', 49.99, 0, false);

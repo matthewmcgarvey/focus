@@ -4,14 +4,19 @@ module <%= module_name %>::<%= table_type_module_name %>
     getter <%= column.name %> : Focus::<%= column.column_type %>
     <%- end -%>
 
-    def initialize(table_name : String = "<%= table_name %>", table_alias : String? = nil)
+    def initialize(schema_name : String? = <%= schema_name_str %>, table_name : String = "<%= table_name %>", table_alias : String? = nil)
       <%- columns.each do |column| -%>
       @<%= column.name %> = Focus::<%= column.column_type %>.new("<%= column.name %>", table_name)
       <%- end -%>
       <%- column_list = columns.map { |col| "@#{col.name}" }.join(", ") -%>
       columns = [<%= column_list %>].select(Focus::Expression)
 
-      super(table_name, table_alias, columns)
+      super(
+       schema_name: schema_name,
+       table_name: table_name,
+       table_alias: table_alias,
+       columns: columns
+      )
     end
   end
 

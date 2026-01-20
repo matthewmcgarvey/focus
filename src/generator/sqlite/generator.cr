@@ -3,7 +3,12 @@ class Focus::SQLite::Generator
     uri = URI.parse(url)
     db_name = uri.path.split('/').last.rstrip(".db")
 
-    new(DB.open(url), File.join(dest_dir, db_name), db_name, template)
+    new(
+      db: DB.open(url),
+      dest_dir: File.join(dest_dir, db_name),
+      db_name: db_name,
+      template: template
+    )
   end
 
   private getter db : Focus::DBConn

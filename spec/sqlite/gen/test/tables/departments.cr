@@ -5,14 +5,19 @@ module Gen::Test::Tables
     getter location : Focus::StringColumn
     getter mixedCase : Focus::StringColumn
 
-    def initialize(table_name : String = "departments", table_alias : String? = nil)
+    def initialize(schema_name : String? = nil, table_name : String = "departments", table_alias : String? = nil)
       @id = Focus::IntColumn(Int32).new("id", table_name)
       @name = Focus::StringColumn.new("name", table_name)
       @location = Focus::StringColumn.new("location", table_name)
       @mixedCase = Focus::StringColumn.new("mixedCase", table_name)
       columns = [@id, @name, @location, @mixedCase].select(Focus::Expression)
 
-      super(table_name, table_alias, columns)
+      super(
+       schema_name: schema_name,
+       table_name: table_name,
+       table_alias: table_alias,
+       columns: columns
+      )
     end
   end
 

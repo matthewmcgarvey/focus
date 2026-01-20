@@ -27,12 +27,12 @@ class Focus::Template
     FileUtils.rm_rf(schema_path)
 
     module_name = ["Gen", db_name.camelcase, schema.name.try(&.camelcase)].compact.join("::")
-    generate_table_models("tables", schema_path, module_name, schema.tables_metadata)
-    generate_table_models("views", schema_path, module_name, schema.views_metadata)
-    generate_enum_models(schema_path, module_name, schema.enums_metadata)
+    generate_table_models("tables", schema_path, module_name, schema.name, schema.tables_metadata)
+    generate_table_models("views", schema_path, module_name, schema.name, schema.views_metadata)
+    generate_enum_models(schema_path, module_name, schema.name, schema.enums_metadata)
   end
 
-  private def generate_table_models(name : String, schema_path : String, module_name : String, tables : Array(Metadata::Table))
+  private def generate_table_models(name : String, schema_path : String, module_name : String, schema_name : String?, tables : Array(Metadata::Table))
     return if tables.empty?
 
     puts "Generating #{name}"
@@ -42,14 +42,14 @@ class Focus::Template
       file_path = File.join(schema_path, name, "#{table.name}.cr")
       FileUtils.touch(file_path)
 
-      table_templ = Templates::TableTemplate.new(module_name, name.capitalize, dialect, table)
+      table_templ = Templates::TableTemplate.new(module_name, name.capitalize, schema_name, dialect, table)
       File.open(file_path, "w") do |file|
         table_templ.to_s(file)
       end
     end
   end
 
-  private def generate_enum_models(schema_path : String, module_name : String, enums : Array(Metadata::Enum))
+  private def generate_enum_models(schema_path : String, module_name : String, schema_name : String?, enums : Array(Metadata::Enum))
     return if enums.empty?
 
     puts "Generating enums"

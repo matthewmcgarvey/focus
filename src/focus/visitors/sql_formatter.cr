@@ -349,6 +349,10 @@ class Focus::SqlFormatter < Focus::SqlVisitor
   end
 
   def visit_table(table : Focus::Table) : Nil
+    if schema_name = table.schema_name
+      write_identifier(schema_name)
+      write "."
+    end
     write_identifier(table.table_name)
     write " "
     if table_alias = table.table_alias

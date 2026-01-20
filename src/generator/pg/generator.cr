@@ -3,7 +3,13 @@ class Focus::PG::Generator
     uri = URI.parse(url)
     db_name = uri.path.split('/').last
 
-    new(DB.open(url), File.join(dest_dir, db_name), db_name, template, schema)
+    new(
+      db: DB.open(url),
+      dest_dir: File.join(dest_dir, db_name),
+      db_name: db_name,
+      template: template,
+      schema: schema
+    )
   end
 
   private getter db : Focus::DBConn

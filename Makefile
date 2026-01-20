@@ -13,6 +13,7 @@ test-sqlite:
 
 gen-pg:
 	crystal run src/cli.cr -- run -s postgres -d postgres://postgres:postgres@localhost:5432/test -o spec/pg/gen/
+	crystal run src/cli.cr -- run -s postgres -d postgres://postgres:postgres@localhost:5432/test -o spec/pg/gen/ --schema=inventory
 
 gen-sqlite:
 	crystal run src/cli.cr -- run -s sqlite -d sqlite3://spec/support/test.db -o spec/sqlite/gen/

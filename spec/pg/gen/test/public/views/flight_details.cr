@@ -15,7 +15,7 @@ module Gen::Test::Public::Views
     getter arrive_time : Focus::TimestampColumn
     getter status : Focus::StringColumn
 
-    def initialize(table_name : String = "flight_details", table_alias : String? = nil)
+    def initialize(schema_name : String? = nil, table_name : String = "flight_details", table_alias : String? = nil)
       @flight_id = Focus::IntColumn(Int32).new("flight_id", table_name)
       @flight_number = Focus::StringColumn.new("flight_number", table_name)
       @tail_number = Focus::StringColumn.new("tail_number", table_name)
@@ -32,7 +32,12 @@ module Gen::Test::Public::Views
       @status = Focus::StringColumn.new("status", table_name)
       columns = [@flight_id, @flight_number, @tail_number, @aircraft_model, @seat_capacity, @depart_code, @depart_airport, @depart_city, @arrive_code, @arrive_airport, @arrive_city, @depart_time, @arrive_time, @status].select(Focus::Expression)
 
-      super(table_name, table_alias, columns)
+      super(
+       schema_name: schema_name,
+       table_name: table_name,
+       table_alias: table_alias,
+       columns: columns
+      )
     end
   end
 

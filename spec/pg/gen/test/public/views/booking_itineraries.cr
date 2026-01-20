@@ -15,7 +15,7 @@ module Gen::Test::Public::Views
     getter price : Focus::FloatColumn(Float64)
     getter booking_status : Focus::StringColumn
 
-    def initialize(table_name : String = "booking_itineraries", table_alias : String? = nil)
+    def initialize(schema_name : String? = nil, table_name : String = "booking_itineraries", table_alias : String? = nil)
       @booking_id = Focus::IntColumn(Int32).new("booking_id", table_name)
       @passenger_id = Focus::IntColumn(Int32).new("passenger_id", table_name)
       @first_name = Focus::StringColumn.new("first_name", table_name)
@@ -32,7 +32,12 @@ module Gen::Test::Public::Views
       @booking_status = Focus::StringColumn.new("booking_status", table_name)
       columns = [@booking_id, @passenger_id, @first_name, @last_name, @flight_id, @flight_number, @depart_airport_code, @arrive_airport_code, @depart_time, @arrive_time, @service_class, @seat, @price, @booking_status].select(Focus::Expression)
 
-      super(table_name, table_alias, columns)
+      super(
+       schema_name: schema_name,
+       table_name: table_name,
+       table_alias: table_alias,
+       columns: columns
+      )
     end
   end
 

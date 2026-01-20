@@ -6,7 +6,7 @@ module Gen::Test::Tables
     getter total_amount : Focus::FloatColumn(Float64)
     getter status : Focus::StringColumn
 
-    def initialize(table_name : String = "bookings", table_alias : String? = nil)
+    def initialize(schema_name : String? = nil, table_name : String = "bookings", table_alias : String? = nil)
       @id = Focus::IntColumn(Int32).new("id", table_name)
       @passenger_id = Focus::IntColumn(Int32).new("passenger_id", table_name)
       @booked_at = Focus::StringColumn.new("booked_at", table_name)
@@ -14,7 +14,12 @@ module Gen::Test::Tables
       @status = Focus::StringColumn.new("status", table_name)
       columns = [@id, @passenger_id, @booked_at, @total_amount, @status].select(Focus::Expression)
 
-      super(table_name, table_alias, columns)
+      super(
+       schema_name: schema_name,
+       table_name: table_name,
+       table_alias: table_alias,
+       columns: columns
+      )
     end
   end
 

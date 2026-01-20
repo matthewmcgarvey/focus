@@ -23,25 +23,37 @@ class RunCommand < Cling::Command
     output_dir = options.get("output").as_s
     schema = options.get("schema").as_s
 
-    dialect = case source
-              when "postgres"
-                Focus::PG::Dialect.new
-              when "sqlite"
-                Focus::SQLite::Dialect.new
-              else
-                stderr.puts "Invalid source '#{source}'"
-                exit_program
-              end
+    case source
+    when "postgres"
+      generate_pg(db_url: db_url, output_dir: output_dir, schema: schema)
+    when "sqlite"
+      generate_sqlite(db_url: db_url, output_dir: output_dir)
+    else
+      stderr.puts "Invalid source '#{source}'"
+      exit_program
+    end
+  end
+
+  private def generate_pg(db_url : String, output_dir : String, schema : String)
+    dialect = Focus::PG::Dialect.new
     template = Focus::Template.dialect(dialect)
-    generator = case dialect
-                when Focus::PG::Dialect
-                  Focus::PG::Generator.from_url(db_url, output_dir, template, schema)
-                when Focus::SQLite::Dialect
-                  Focus::SQLite::Generator.from_url(db_url, output_dir, template)
-                else
-                  stderr.puts "Error: unknown dialect #{dialect.class}"
-                  exit_program
-                end
+    generator = Focus::PG::Generator.from_url(
+      url: db_url,
+      dest_dir: output_dir,
+      template: template,
+      schema: schema
+    )
+    generator.generate
+  end
+
+  private def generate_sqlite(db_url : String, output_dir : String)
+    dialect = Focus::SQLite::Dialect.new
+    template = Focus::Template.dialect(dialect)
+    generator = Focus::SQLite::Generator.from_url(
+      url: db_url,
+      dest_dir: output_dir,
+      template: template
+    )
     generator.generate
   end
 end

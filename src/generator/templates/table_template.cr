@@ -6,10 +6,17 @@ class Focus::Templates::TableTemplate
   getter title_name : String
   getter columns : Array(ColumnTemplate)
 
-  def initialize(@module_name : String, @table_type_module_name : String, @dialect : Focus::Dialect, table : Metadata::Table)
+  def initialize(@module_name : String, @table_type_module_name : String, @schema_name : String?, @dialect : Focus::Dialect, table : Metadata::Table)
     @table_name = table.name
     @title_name = table.name.camelcase
     @columns = table.columns.try(&.map { |column| ColumnTemplate.new(dialect, column) }) || [] of ColumnTemplate
+  end
+
+  def schema_name_str : String
+    case @schema_name
+    when nil, "public" then "nil"
+    else                    %["#{@schema_name}"]
+    end
   end
 
   class ColumnTemplate

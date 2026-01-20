@@ -9,7 +9,7 @@ module Gen::Test::Public::Tables
     getter department_id : Focus::IntColumn(Int32)
     getter is_remote : Focus::BoolColumn
 
-    def initialize(table_name : String = "employees", table_alias : String? = nil)
+    def initialize(schema_name : String? = nil, table_name : String = "employees", table_alias : String? = nil)
       @id = Focus::IntColumn(Int32).new("id", table_name)
       @name = Focus::StringColumn.new("name", table_name)
       @job = Focus::StringColumn.new("job", table_name)
@@ -20,7 +20,12 @@ module Gen::Test::Public::Tables
       @is_remote = Focus::BoolColumn.new("is_remote", table_name)
       columns = [@id, @name, @job, @manager_id, @hire_date, @salary, @department_id, @is_remote].select(Focus::Expression)
 
-      super(table_name, table_alias, columns)
+      super(
+       schema_name: schema_name,
+       table_name: table_name,
+       table_alias: table_alias,
+       columns: columns
+      )
     end
   end
 
