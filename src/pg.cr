@@ -1,6 +1,7 @@
 require "pg"
 require "uuid"
 require "./pg/*"
+require "./pg/statements/dsl/*"
 require "./pg/statements/*"
 require "./pg/dsl/*"
 

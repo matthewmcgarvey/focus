@@ -1,5 +1,6 @@
 require "sqlite3"
 require "./sqlite/*"
+require "./sqlite/statements/dsl/*"
 require "./sqlite/statements/*"
 require "./sqlite/dsl/*"
 

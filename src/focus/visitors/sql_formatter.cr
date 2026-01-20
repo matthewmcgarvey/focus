@@ -23,6 +23,16 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     statement.primary_statement.try(&.accept(self))
   end
 
+  def visit_statement(statement : Focus::SetStatement) : Nil
+    self.statement_type = statement.statement_type
+    statement.lhs.accept(self)
+    write "#{statement.operator.to_s.sub('_', ' ')} "
+    statement.rhs.accept(self)
+    statement.order_by_clauses.try(&.accept(self))
+    statement.limit_clause.try(&.accept(self))
+    statement.offset_clause.try(&.accept(self))
+  end
+
   def visit_statement(statement : Focus::Statement) : Nil
     self.statement_type = statement.statement_type
     statement.ordered_clauses.each(&.accept(self))

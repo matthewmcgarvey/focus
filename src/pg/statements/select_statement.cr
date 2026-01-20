@@ -1,5 +1,6 @@
 class Focus::PG::SelectStatement < Focus::SelectStatement
   include Focus::PG::Statement
+  include Focus::PG::Statements::Dsl::SetOperators
 
   property for_clause : Focus::ForClause?
 
