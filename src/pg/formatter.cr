@@ -1,6 +1,15 @@
 class Focus::PG::Formatter < Focus::SqlFormatter
   property argument_counter = 1
 
+  def visit_statement(statement : Focus::PG::LockStatement) : Nil
+    write "LOCK TABLE "
+    statement.table.accept(self)
+    write "IN "
+    write "#{statement.lock_mode.to_s.gsub('_', ' ')} "
+    write "MODE "
+    write "NOWAIT" if statement.no_wait?
+  end
+
   protected def write_placeholder
     write "$#{argument_counter} "
     self.argument_counter += 1

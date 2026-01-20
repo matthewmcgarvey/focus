@@ -6,6 +6,10 @@ module Focus::PG::ReadableTable
   def select : Focus::PG::SelectStatement
     Focus::PG.select.from(self)
   end
+
+  def lock : Focus::PG::LockStatement
+    Focus::PG::LockStatement.new(self)
+  end
 end
 
 module Focus::ReadableTable
