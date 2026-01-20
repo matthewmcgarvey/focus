@@ -15,6 +15,7 @@ module Focus::PG
   extend Focus::PG::Dsl::Types
   extend Focus::PG::Dsl::TimeFunctions
   extend Focus::PG::Dsl::UuidFunctions
+  extend Focus::PG::Dsl::AdvisoryLockFunctions
 
   def self.select(expressions : Array(Focus::Expression)) : Focus::PG::SelectStatement
     select_clause = Focus::SelectClause.new(expressions.select(Focus::Expression))
