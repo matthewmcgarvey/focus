@@ -85,8 +85,9 @@ src/
 │   ├── table.cr          # Table abstract base class
 │   ├── token.cr
 │   ├── updateable_table.cr
-│   ├── clauses/          # SQL clause types (16 types)
+│   ├── clauses/          # SQL clause types
 │   │   ├── delete_clause.cr
+│   │   ├── for_clause.cr
 │   │   ├── from_clause.cr
 │   │   ├── group_by_clause.cr
 │   │   ├── having_clause.cr
@@ -102,37 +103,62 @@ src/
 │   │   ├── update_clause.cr
 │   │   ├── values_clause.cr
 │   │   └── where_clause.cr
-│   ├── columns/          # Column types (5 types)
+│   ├── columns/          # Column types
+│   │   ├── array_column.cr
 │   │   ├── bool_column.cr
+│   │   ├── date_column.cr
 │   │   ├── float_column.cr
 │   │   ├── int_column.cr
+│   │   ├── interval_column.cr
+│   │   ├── jsonb_column.cr
 │   │   ├── string_column.cr
-│   │   └── time_column.cr
+│   │   ├── time_column.cr
+│   │   ├── timestamp_column.cr
+│   │   └── timestamp_tz_column.cr
 │   ├── dsl/              # DSL helpers
-│   │   ├── aggregation.cr  # count, sum, avg, min, max
-│   │   ├── columns.cr      # int32_column, string_column, etc.
-│   │   └── types.cr        # int32, string, bool, etc. literal helpers
-│   ├── expressions/      # SQL expression types (22 types)
+│   │   ├── aggregation.cr        # count, sum, avg, min, max
+│   │   ├── columns.cr            # int32_column, string_column, etc.
+│   │   ├── conditional_functions.cr
+│   │   ├── math_functions.cr
+│   │   ├── string_functions.cr
+│   │   ├── types.cr              # int32, string, bool, etc. literal helpers
+│   │   └── where_helpers.cr
+│   ├── expressions/      # SQL expression types
 │   │   ├── aggregate_expression.cr
 │   │   ├── aliased_expression.cr
+│   │   ├── array_expression.cr
+│   │   ├── array_literal.cr
 │   │   ├── between_operator_expression.cr
 │   │   ├── binary_expression.cr
 │   │   ├── bool_expression.cr
 │   │   ├── bool_literal.cr
 │   │   ├── cast_expression.cr
 │   │   ├── column_reference_expression.cr
+│   │   ├── complex_expression.cr
+│   │   ├── date_expression.cr
+│   │   ├── date_literal.cr
 │   │   ├── float_expression.cr
 │   │   ├── float_literal.cr
 │   │   ├── function_expression.cr
 │   │   ├── int_expression.cr
 │   │   ├── int_literal.cr
+│   │   ├── interval_expression.cr
+│   │   ├── interval_literal.cr
+│   │   ├── jsonb_expression.cr
+│   │   ├── jsonb_literal.cr
+│   │   ├── literal_expression.cr
 │   │   ├── null_literal.cr
 │   │   ├── numeric_expression.cr
 │   │   ├── postfix_operator_expression.cr
+│   │   ├── prefix_operator_expression.cr
 │   │   ├── string_expression.cr
 │   │   ├── string_literal.cr
 │   │   ├── time_expression.cr
 │   │   ├── time_literal.cr
+│   │   ├── timestamp_expression.cr
+│   │   ├── timestamp_literal.cr
+│   │   ├── timestamp_tz_expression.cr
+│   │   ├── timestamp_tz_literal.cr
 │   │   ├── value_expression.cr
 │   │   └── wildcard_expression.cr
 │   ├── statements/       # Base statement types (5 types)
@@ -162,11 +188,11 @@ src/
 │       ├── table_template.cr
 │       └── table_template.ecr
 ├── sqlite/               # SQLite-specific code
+│   ├── dialect.cr
+│   ├── formatter.cr
 │   ├── readable_table.cr
-│   ├── sqlite_dialect.cr
-│   ├── sqlite_formatter.cr
-│   ├── sqlite_table.cr   # SQLiteTable class
 │   ├── statement.cr
+│   ├── table.cr          # SQLite::Table class
 │   └── statements/       # SQLite statement builders
 │       ├── delete_statement.cr
 │       ├── insert_statement.cr
@@ -174,13 +200,23 @@ src/
 │       ├── update_statement.cr
 │       └── with_statement.cr
 ├── pg/                   # PostgreSQL-specific code
+│   ├── dialect.cr
+│   ├── formatter.cr
 │   ├── i_like.cr         # iLIKE expression support
 │   ├── insert_returning_expression.cr
-│   ├── pg_dialect.cr
-│   ├── pg_formatter.cr
-│   ├── pg_table.cr       # PGTable class
 │   ├── readable_table.cr
 │   ├── statement.cr
+│   ├── table.cr          # PG::Table class
+│   ├── dsl/              # PostgreSQL-specific DSL helpers
+│   │   ├── advisory_lock_functions.cr
+│   │   ├── aggregation.cr
+│   │   ├── array_types.cr
+│   │   ├── columns.cr
+│   │   ├── time_functions.cr
+│   │   ├── types.cr
+│   │   └── uuid_functions.cr
+│   ├── expressions/      # PostgreSQL-specific expressions
+│   │   └── cast_expression.cr
 │   └── statements/       # PostgreSQL statement builders
 │       ├── delete_statement.cr
 │       ├── insert_statement.cr
@@ -198,26 +234,38 @@ spec/
 ├── sqlite_spec_helper.cr # SQLite spec helper with database connection
 ├── focus/                # Unit tests for focus module
 │   ├── column_spec.cr
-│   └── columns/
-│       └── string_column_spec.cr
+│   ├── columns/
+│   │   ├── jsonb_column_spec.cr
+│   │   └── string_column_spec.cr
+│   └── dsl/
+│       ├── conditional_functions_spec.cr
+│       ├── math_functions_spec.cr
+│       └── string_functions_spec.cr
 ├── pg/                   # PostgreSQL integration specs
-│   ├── gen/table/        # Generated PostgreSQL table definitions
-│   │   ├── departments.cr
-│   │   └── employees.cr
+│   ├── gen/              # Generated PostgreSQL definitions (do not edit)
+│   │   └── test/
+│   │       ├── public/
+│   │       │   ├── tables/
+│   │       │   ├── views/
+│   │       │   └── enums/
+│   │       └── inventory/
+│   │           └── tables/
+│   ├── array_spec.cr
 │   ├── cte_spec.cr       # Common Table Expression tests
-│   ├── select_spec.cr
+│   ├── delete_spec.cr
 │   ├── insert_spec.cr
-│   ├── update_spec.cr
-│   └── delete_spec.cr
+│   ├── select_spec.cr
+│   └── update_spec.cr
 ├── sqlite/               # SQLite integration specs
-│   ├── gen/table/        # Generated SQLite table definitions
-│   │   ├── departments.cr
-│   │   └── employees.cr
+│   ├── gen/              # Generated SQLite definitions (do not edit)
+│   │   └── test/
+│   │       ├── tables/
+│   │       └── views/
 │   ├── cte_spec.cr       # Common Table Expression tests
-│   ├── select_spec.cr
+│   ├── delete_spec.cr
 │   ├── insert_spec.cr
-│   ├── update_spec.cr
-│   └── delete_spec.cr
+│   ├── select_spec.cr
+│   └── update_spec.cr
 └── support/              # SQL scripts
     ├── drop-pg-data.sql
     ├── drop-sqlite-data.sql
@@ -231,8 +279,8 @@ spec/
 |--------------|----------|-------------|
 | `Focus` | `src/focus.cr` | Main module, defines VERSION and DBConn alias |
 | `Focus::Table` | `src/focus/table.cr` | Abstract base class for tables |
-| `Focus::SQLite::Table` | `src/sqlite/sqlite_table.cr` | SQLite table class |
-| `Focus::PG::Table` | `src/pg/pg_table.cr` | PostgreSQL table class |
+| `Focus::SQLite::Table` | `src/sqlite/table.cr` | SQLite table class |
+| `Focus::PG::Table` | `src/pg/table.cr` | PostgreSQL table class |
 | `Focus::Expression` | `src/focus/expression.cr` | Abstract base for all expressions |
 | `Focus::Column` | `src/focus/column.cr` | Module included by column types |
 | `Focus::Statement` | `src/focus/statement.cr` | Abstract base for statements |
@@ -256,7 +304,7 @@ spec/
 - `PascalCase` for types, classes, modules
 - Table classes: `{Name}Table` suffix (e.g., `EmployeesTable`)
 - Table instances: Constant without suffix (e.g., `Employees = EmployeesTable.new`)
-- Column classes: `{Type}Column` (e.g., `IntColumn`, `StringColumn`, `BoolColumn`, `FloatColumn`, `TimeColumn`)
+- Column classes: `{Type}Column` (e.g., `IntColumn`, `StringColumn`, `BoolColumn`, `FloatColumn`, `TimeColumn`, `DateColumn`, `ArrayColumn`, `JsonbColumn`)
 - Spec files: `*_spec.cr`
 
 ### Imports/Requires
@@ -355,7 +403,7 @@ Users.with(
 ## Important Notes
 
 ### Generated Files - Do Not Edit
-Files in `spec/pg/gen/table/` and `spec/sqlite/gen/table/` are **auto-generated** from the database schema. Never edit these files manually - they will be overwritten when regenerating tables with `make gen-pg` or `make gen-sqlite`.
+Files in `spec/pg/gen/` and `spec/sqlite/gen/` are **auto-generated** from the database schema. Never edit these files manually - they will be overwritten when regenerating tables with `make gen-pg` or `make gen-sqlite`.
 
 If you need a table with custom columns for testing, define the table class directly in your spec file instead.
 
