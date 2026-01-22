@@ -5,6 +5,7 @@ class Focus::AggregateExpression < Focus::Expression
     AVG
     SUM
     COUNT
+    ARRAY_AGG
   end
 
   getter type : AggregateType

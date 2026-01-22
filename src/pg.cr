@@ -3,6 +3,7 @@ require "uuid"
 require "./pg/*"
 require "./pg/statements/dsl/*"
 require "./pg/statements/*"
+require "./pg/expressions/*"
 require "./pg/dsl/*"
 
 module Focus::PG
@@ -14,9 +15,12 @@ module Focus::PG
   extend Focus::Dsl::ConditionalFunctions
   extend Focus::Dsl::WhereHelpers
   extend Focus::PG::Dsl::Types
+  extend Focus::PG::Dsl::ArrayTypes
   extend Focus::PG::Dsl::TimeFunctions
   extend Focus::PG::Dsl::UuidFunctions
   extend Focus::PG::Dsl::AdvisoryLockFunctions
+  extend Focus::PG::Dsl::Columns
+  extend Focus::PG::Dsl::Aggregation
 
   def self.select(expressions : Array(Focus::Expression)) : Focus::PG::SelectStatement
     select_clause = Focus::SelectClause.new(expressions.select(Focus::Expression))
@@ -36,8 +40,8 @@ module Focus::PG
     Focus::PG::WithStatement.new(ctes.to_a)
   end
 
-  def self.cast(expression : Focus::Expression) : Focus::CastExpression
-    Focus::CastExpression.new(expression)
+  def self.cast(expression : Focus::Expression) : Focus::PG::CastExpression
+    Focus::PG::CastExpression.new(expression)
   end
 
   def self.sql(&)

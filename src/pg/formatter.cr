@@ -10,6 +10,17 @@ class Focus::PG::Formatter < Focus::SqlFormatter
     write "NOWAIT" if statement.no_wait?
   end
 
+  def visit_expression(expression : Focus::ArrayExpression(T)) : Nil forall T
+    expression.inner.try(&.accept(self))
+  end
+
+  def visit_literal(literal : Focus::ArrayLiteral(T)) : Nil forall T
+    write "ARRAY["
+    visit_list literal.value
+    remove_last_blank
+    write "] "
+  end
+
   protected def write_placeholder
     write "$#{argument_counter} "
     self.argument_counter += 1

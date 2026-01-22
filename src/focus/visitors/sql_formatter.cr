@@ -244,21 +244,7 @@ class Focus::SqlFormatter < Focus::SqlVisitor
   end
 
   def visit_expression(expression : Focus::AggregateExpression) : Nil
-    method = case expression.type
-             when Focus::AggregateExpression::AggregateType::MIN
-               "MIN"
-             when Focus::AggregateExpression::AggregateType::MAX
-               "MAX"
-             when Focus::AggregateExpression::AggregateType::AVG
-               "AVG"
-             when Focus::AggregateExpression::AggregateType::SUM
-               "SUM"
-             when Focus::AggregateExpression::AggregateType::COUNT
-               "COUNT"
-             else
-               raise "unexpected aggregate expression method '#{expression.type}'"
-             end
-    write method
+    write expression.type.to_s
     wrap_in_parens { expression.argument.accept(self) }
   end
 
@@ -304,8 +290,10 @@ class Focus::SqlFormatter < Focus::SqlVisitor
   end
 
   def visit_literal(literal : Focus::Parameter) : Nil
-    write_placeholder
-    parameters << literal.value
+    if !literal.is_a?(Focus::ArrayLiteral)
+      write_placeholder
+      parameters << literal.value
+    end
   end
 
   def visit_column(column : Focus::Column) : Nil
