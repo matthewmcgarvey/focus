@@ -30,7 +30,7 @@ describe "PG Queries with schema" do
     it "selects product by sku" do
       query = Products.select
         .where(Products.sku.eq(Focus::PG.string("SKU-002")))
-      query.to_sql.should eq("SELECT * FROM inventory.products WHERE (products.sku = $1)")
+      query.to_sql.should eq("SELECT * FROM inventory.products WHERE products.sku = $1")
       product = query.query_one(PG_DATABASE, as: Product)
 
       product.name.should eq("Mechanical Keyboard")
@@ -77,7 +77,7 @@ describe "PG Queries with schema" do
 
       expected_sql = formatted(<<-SQL)
         SELECT p.name, p.price FROM inventory.products p
-        WHERE (p.is_active = $1)
+        WHERE p.is_active = $1
         ORDER BY p.price ASC
       SQL
       stmt.to_sql.should eq(expected_sql)

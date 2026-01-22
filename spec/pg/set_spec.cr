@@ -6,9 +6,9 @@ describe Focus::PG::SetStatement do
       query = Departments.select(Departments.name).where(Departments.name.eq(Focus::PG.string("tech")))
         .union(Departments.select(Departments.name).where(Departments.name.eq(Focus::PG.string("finance"))))
       query.to_sql.should eq(formatted(<<-SQL))
-        SELECT departments.name FROM departments WHERE (departments.name = $1)
+        SELECT departments.name FROM departments WHERE departments.name = $1
         UNION
-        SELECT departments.name FROM departments WHERE (departments.name = $2)
+        SELECT departments.name FROM departments WHERE departments.name = $2
       SQL
       names = query.query_all(PG_DATABASE, as: String)
       names.sort.should eq(["tech", "finance"].sort)
@@ -21,9 +21,9 @@ describe Focus::PG::SetStatement do
         .limit(1)
         .offset(1)
       query.to_sql.should eq(formatted(<<-SQL))
-        SELECT departments.name FROM departments WHERE (departments.name = $1)
+        SELECT departments.name FROM departments WHERE departments.name = $1
         UNION
-        SELECT departments.name FROM departments WHERE (departments.name = $2)
+        SELECT departments.name FROM departments WHERE departments.name = $2
         ORDER BY name DESC
         LIMIT $3
         OFFSET $4
@@ -62,13 +62,13 @@ describe Focus::PG::SetStatement do
       sql.should eq(formatted(<<-SQL))
         SELECT aircrafts.tail_number
         FROM flights
-        INNER JOIN aircrafts ON (aircrafts.id = flights.aircraft_id)
-        WHERE (flights.status = $1)
+        INNER JOIN aircrafts ON aircrafts.id = flights.aircraft_id
+        WHERE flights.status = $1
         INTERSECT
         SELECT aircrafts.tail_number
         FROM flights
-        INNER JOIN aircrafts ON (aircrafts.id = flights.aircraft_id)
-        WHERE (flights.status = $2)
+        INNER JOIN aircrafts ON aircrafts.id = flights.aircraft_id
+        WHERE flights.status = $2
       SQL
       args.should eq(["delayed", "scheduled"])
       tail_numbers = query.query_all(PG_DATABASE, as: String)
@@ -91,7 +91,7 @@ describe Focus::PG::SetStatement do
         EXCEPT
         SELECT employees.id
         FROM employees
-        WHERE (employees.salary > $1)
+        WHERE employees.salary > $1
       SQL
       ids = query.query_all(PG_DATABASE, as: Int32)
       ids.should eq([1])

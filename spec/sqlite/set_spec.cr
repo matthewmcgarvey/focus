@@ -6,9 +6,9 @@ describe Focus::SQLite::SetStatement do
       query = Departments.select(Departments.name).where(Departments.name.eq(Focus::SQLite.string("tech")))
         .union(Departments.select(Departments.name).where(Departments.name.eq(Focus::SQLite.string("finance"))))
       query.to_sql.should eq(formatted(<<-SQL))
-        SELECT departments.name FROM departments WHERE (departments.name = ?)
+        SELECT departments.name FROM departments WHERE departments.name = ?
         UNION
-        SELECT departments.name FROM departments WHERE (departments.name = ?)
+        SELECT departments.name FROM departments WHERE departments.name = ?
       SQL
       names = query.query_all(SQLITE_DATABASE, as: String)
       names.sort.should eq(["tech", "finance"].sort)
@@ -21,9 +21,9 @@ describe Focus::SQLite::SetStatement do
         .limit(1)
         .offset(1)
       query.to_sql.should eq(formatted(<<-SQL))
-        SELECT departments.name FROM departments WHERE (departments.name = ?)
+        SELECT departments.name FROM departments WHERE departments.name = ?
         UNION
-        SELECT departments.name FROM departments WHERE (departments.name = ?)
+        SELECT departments.name FROM departments WHERE departments.name = ?
         ORDER BY name DESC
         LIMIT ?
         OFFSET ?
@@ -62,13 +62,13 @@ describe Focus::SQLite::SetStatement do
       sql.should eq(formatted(<<-SQL))
         SELECT aircrafts.tail_number
         FROM flights
-        INNER JOIN aircrafts ON (aircrafts.id = flights.aircraft_id)
-        WHERE (flights.status = ?)
+        INNER JOIN aircrafts ON aircrafts.id = flights.aircraft_id
+        WHERE flights.status = ?
         INTERSECT
         SELECT aircrafts.tail_number
         FROM flights
-        INNER JOIN aircrafts ON (aircrafts.id = flights.aircraft_id)
-        WHERE (flights.status = ?)
+        INNER JOIN aircrafts ON aircrafts.id = flights.aircraft_id
+        WHERE flights.status = ?
       SQL
       args.should eq(["delayed", "scheduled"])
       tail_numbers = query.query_all(SQLITE_DATABASE, as: String)
@@ -91,7 +91,7 @@ describe Focus::SQLite::SetStatement do
         EXCEPT
         SELECT employees.id
         FROM employees
-        WHERE (employees.salary > ?)
+        WHERE employees.salary > ?
       SQL
       ids = query.query_all(SQLITE_DATABASE, as: Int32)
       ids.should eq([1])

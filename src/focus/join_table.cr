@@ -12,7 +12,7 @@ class Focus::JoinTable
   getter lhs : Focus::ReadableTable
   getter rhs : Focus::ReadableTable
   getter join_type : JoinType
-  getter condition : Expression?
+  getter condition : BoolExpression?
 
   def initialize(@lhs, @rhs, @join_type, @condition)
   end

@@ -124,7 +124,7 @@ describe "SQLite Select" do
       Employees.cross_join(Departments, on: Employees.department_id.eq(Departments.id))
     )
 
-    stmt.to_sql.should eq("SELECT * FROM employees CROSS JOIN departments ON (employees.department_id = departments.id)")
+    stmt.to_sql.should eq("SELECT * FROM employees CROSS JOIN departments ON employees.department_id = departments.id")
   end
 
   it "inner joins tables" do
@@ -132,7 +132,7 @@ describe "SQLite Select" do
       Employees.inner_join(Departments, on: Employees.department_id.eq(Departments.id))
     )
 
-    stmt.to_sql.should eq("SELECT * FROM employees INNER JOIN departments ON (employees.department_id = departments.id)")
+    stmt.to_sql.should eq("SELECT * FROM employees INNER JOIN departments ON employees.department_id = departments.id")
   end
 
   it "left joins tables" do
@@ -140,7 +140,7 @@ describe "SQLite Select" do
       Employees.left_join(Departments, on: Employees.department_id.eq(Departments.id))
     )
 
-    stmt.to_sql.should eq("SELECT * FROM employees LEFT JOIN departments ON (employees.department_id = departments.id)")
+    stmt.to_sql.should eq("SELECT * FROM employees LEFT JOIN departments ON employees.department_id = departments.id")
   end
 
   it "right joins tables" do
@@ -148,7 +148,7 @@ describe "SQLite Select" do
       Employees.right_join(Departments, on: Employees.department_id.eq(Departments.id))
     )
 
-    stmt.to_sql.should eq("SELECT * FROM employees RIGHT JOIN departments ON (employees.department_id = departments.id)")
+    stmt.to_sql.should eq("SELECT * FROM employees RIGHT JOIN departments ON employees.department_id = departments.id")
   end
 
   it "uses subselect in where clause" do
@@ -160,7 +160,7 @@ describe "SQLite Select" do
 
     expected_sql = formatted(<<-SQL)
       SELECT * FROM departments WHERE departments.id IN
-      (SELECT employees.department_id FROM employees WHERE (employees.salary > ?))
+      (SELECT employees.department_id FROM employees WHERE employees.salary > ?)
       ORDER BY departments.id ASC
     SQL
     departments.to_sql.should eq(expected_sql)
@@ -175,7 +175,7 @@ describe "SQLite Select" do
 
     expected_sql = formatted(<<-SQL)
       SELECT e.name FROM employees e
-      WHERE (e.salary > ?)
+      WHERE e.salary > ?
       ORDER BY e.id ASC
     SQL
     sql.to_sql.should eq(expected_sql)
@@ -195,7 +195,7 @@ describe "SQLite Select" do
       (SELECT employees.department_id, COUNT(employees.id) AS employee_count
         FROM employees
         GROUP BY employees.department_id
-        HAVING (employee_count > ?)) dept_counts
+        HAVING employee_count > ?) dept_counts
       ORDER BY dept_counts.employee_count DESC
     SQL
     query.to_sql.should eq(expected_sql)
@@ -235,7 +235,7 @@ describe "SQLite Select" do
              SUM(e.salary) AS total_salary,
              AVG(e.salary) AS avg_salary
       FROM departments d
-      LEFT JOIN employees e ON (d.id = e.department_id)
+      LEFT JOIN employees e ON d.id = e.department_id
       GROUP BY d.id, d.name
       ORDER BY total_salary DESC
     SQL

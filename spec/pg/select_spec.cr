@@ -116,7 +116,7 @@ describe "PG Select" do
       Employees.cross_join(Departments, on: Employees.department_id.eq(Departments.id))
     )
 
-    stmt.to_sql.should eq("SELECT * FROM employees CROSS JOIN departments ON (employees.department_id = departments.id)")
+    stmt.to_sql.should eq("SELECT * FROM employees CROSS JOIN departments ON employees.department_id = departments.id")
   end
 
   it "inner joins tables" do
@@ -124,7 +124,7 @@ describe "PG Select" do
       Employees.inner_join(Departments, on: Employees.department_id.eq(Departments.id))
     )
 
-    stmt.to_sql.should eq("SELECT * FROM employees INNER JOIN departments ON (employees.department_id = departments.id)")
+    stmt.to_sql.should eq("SELECT * FROM employees INNER JOIN departments ON employees.department_id = departments.id")
   end
 
   it "left joins tables" do
@@ -132,7 +132,7 @@ describe "PG Select" do
       Employees.left_join(Departments, on: Employees.department_id.eq(Departments.id))
     )
 
-    stmt.to_sql.should eq("SELECT * FROM employees LEFT JOIN departments ON (employees.department_id = departments.id)")
+    stmt.to_sql.should eq("SELECT * FROM employees LEFT JOIN departments ON employees.department_id = departments.id")
   end
 
   it "right joins tables" do
@@ -140,7 +140,7 @@ describe "PG Select" do
       Employees.right_join(Departments, on: Employees.department_id.eq(Departments.id))
     )
 
-    stmt.to_sql.should eq("SELECT * FROM employees RIGHT JOIN departments ON (employees.department_id = departments.id)")
+    stmt.to_sql.should eq("SELECT * FROM employees RIGHT JOIN departments ON employees.department_id = departments.id")
   end
 
   it "uses subselect in where clause" do
@@ -152,7 +152,7 @@ describe "PG Select" do
 
     expected_sql = formatted(<<-SQL)
       SELECT * FROM departments WHERE departments.id IN
-      (SELECT employees.department_id FROM employees WHERE (employees.salary > $1))
+      (SELECT employees.department_id FROM employees WHERE employees.salary > $1)
       ORDER BY departments.id ASC
     SQL
     departments.to_sql.should eq(expected_sql)
@@ -167,7 +167,7 @@ describe "PG Select" do
 
     expected_sql = formatted(<<-SQL)
       SELECT e.name FROM employees e
-      WHERE (e.salary > $1)
+      WHERE e.salary > $1
       ORDER BY e.id ASC
     SQL
     sql.to_sql.should eq(expected_sql)
@@ -187,7 +187,7 @@ describe "PG Select" do
       (SELECT employees.department_id, COUNT(employees.id) AS employee_count
         FROM employees
         GROUP BY employees.department_id
-        HAVING (employee_count > $1)) dept_counts
+        HAVING employee_count > $1) dept_counts
       ORDER BY dept_counts.employee_count DESC
     SQL
     query.to_sql.should eq(expected_sql)
@@ -243,7 +243,7 @@ describe "PG Select" do
 
   it "generates FOR UPDATE OF multiple tables clause" do
     stmt = Employees.join(Departments, on: Departments.id.eq(Employees.department_id)).select(Employees.name).for(:update, of: [Employees, Departments])
-    stmt.to_sql.should eq("SELECT employees.name FROM employees INNER JOIN departments ON (departments.id = employees.department_id) FOR UPDATE OF employees, departments")
+    stmt.to_sql.should eq("SELECT employees.name FROM employees INNER JOIN departments ON departments.id = employees.department_id FOR UPDATE OF employees, departments")
     stmt.query_all(PG_DATABASE, as: String).size.should eq(4)
   end
 
@@ -253,7 +253,7 @@ describe "PG Select" do
     stmt = Focus::PG.sql do
       Focus::PG.select(bool(false).and(bool(false).or(bool(true))))
     end
-    stmt.to_sql.should eq("SELECT ($1 AND ($2 OR $3))")
+    stmt.to_sql.should eq("SELECT $1 AND ($2 OR $3)")
     stmt.query_one(PG_DATABASE, as: Bool).should eq(false)
   end
 end

@@ -14,7 +14,7 @@ describe "common table expressions" do
         (SELECT employees.id, employees.name FROM employees)
       SELECT employees.name, managers.name AS manager_name
       FROM employees
-      INNER JOIN managers ON (managers.id = employees.manager_id)
+      INNER JOIN managers ON managers.id = employees.manager_id
     SQL
     query.to_sql.should eq(formatted(expected_sql))
     results = query.query_all(SQLITE_DATABASE, {String, String})

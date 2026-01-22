@@ -51,7 +51,7 @@ class Focus::SqlFormatter < Focus::SqlVisitor
 
   def visit_clause(clause : Focus::WhereClause) : Nil
     write "WHERE "
-    clause.expression.accept(self)
+    render_unwrapped(clause.expression)
   end
 
   def visit_clause(clause : Focus::OrderByListClause) : Nil
@@ -91,7 +91,7 @@ class Focus::SqlFormatter < Focus::SqlVisitor
 
   def visit_clause(clause : Focus::HavingClause) : Nil
     write "HAVING "
-    clause.expression.accept(self)
+    render_unwrapped(clause.expression)
   end
 
   def visit_clause(clause : Focus::InsertClause) : Nil
@@ -194,6 +194,21 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     expression.inner.accept(self)
     remove_last_blank
     write ") "
+  end
+
+  # Renders a BoolExpression without outer parentheses (for top-level contexts)
+  private def render_unwrapped(expression : Focus::BoolExpression) : Nil
+    if inner = expression.inner
+      if inner.is_a?(Focus::ComplexExpression)
+        # Skip the ComplexExpression's parentheses, render its inner directly
+        inner.inner.accept(self)
+      else
+        inner.accept(self)
+      end
+    else
+      # No inner expression (e.g., BoolColumn), render normally
+      expression.accept(self)
+    end
   end
 
   def visit_expression(expression : Focus::BoolExpression) : Nil
@@ -349,7 +364,7 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     table.rhs.accept(self)
     if condition = table.condition
       write "ON "
-      condition.accept(self)
+      render_unwrapped(condition)
     end
   end
 
@@ -390,7 +405,11 @@ class Focus::SqlFormatter < Focus::SqlVisitor
         write ", "
       end
 
-      expression.accept(self)
+      if expression.is_a?(Focus::BoolExpression)
+        render_unwrapped(expression)
+      else
+        expression.accept(self)
+      end
     end
   end
 
