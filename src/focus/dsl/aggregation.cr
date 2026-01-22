@@ -1,7 +1,8 @@
 module Focus::Dsl::Aggregation
-  def count(expr : Focus::Expression? = nil) : AggregateExpression
+  def count(expr : Focus::Expression? = nil) : IntExpression(Int32)
     arg = expr || Focus::WildcardExpression.new
-    AggregateExpression.new("COUNT", arg)
+    agg = AggregateExpression.new("COUNT", arg)
+    IntExpression(Int32).new(agg)
   end
 
   def sum(expr : Focus::Expression) : AggregateExpression
