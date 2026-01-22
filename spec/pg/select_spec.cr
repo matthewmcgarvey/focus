@@ -247,8 +247,6 @@ describe "PG Select" do
     stmt.query_all(PG_DATABASE, as: String).size.should eq(4)
   end
 
-  false || true && false
-
   it "handles &&/|| grouping properly" do
     stmt = Focus::PG.sql do
       Focus::PG.select(bool(false).and(bool(false).or(bool(true))))
