@@ -30,7 +30,17 @@ class Focus::Templates::TableTemplate
     end
 
     private def to_column_type(data_type : Metadata::Column::DataType) : String
-      case data_type.name.upcase
+      column_type = data_type.enum? ? "StringColumn" : name_to_column_type(data_type.name)
+
+      if data_type.is_array?
+        column_type = "ArrayColumn(Focus::#{column_type.gsub("Column", "Expression")})"
+      end
+
+      column_type
+    end
+
+    private def name_to_column_type(name : String)
+      case name.upcase
       when "BOOLEAN", "BOOL"
         "BoolColumn"
       when "INTEGER", "INT4"
@@ -54,7 +64,7 @@ class Focus::Templates::TableTemplate
       when "JSONB"
         "JsonbColumn"
       else
-        puts "unhandled type #{data_type.name}. defaulting to string"
+        puts "unhandled type #{name}. defaulting to string"
         "StringColumn"
       end
     end

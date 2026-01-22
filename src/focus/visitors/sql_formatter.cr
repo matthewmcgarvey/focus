@@ -189,6 +189,13 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     expression.max.accept(self)
   end
 
+  def visit_expression(expression : Focus::ComplexExpression) : Nil
+    write "("
+    expression.inner.accept(self)
+    remove_last_blank
+    write ") "
+  end
+
   def visit_expression(expression : Focus::BoolExpression) : Nil
     expression.inner.try(&.accept(self))
   end

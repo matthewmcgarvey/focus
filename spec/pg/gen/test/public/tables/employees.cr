@@ -8,6 +8,7 @@ module Gen::Test::Public::Tables
     getter salary : Focus::IntColumn(Int64)
     getter department_id : Focus::IntColumn(Int32)
     getter is_remote : Focus::BoolColumn
+    getter skills : Focus::ArrayColumn(Focus::StringExpression)
 
     def initialize(schema_name : String? = nil, table_name : String = "employees", table_alias : String? = nil)
       @id = Focus::IntColumn(Int32).new("id", table_name)
@@ -18,7 +19,8 @@ module Gen::Test::Public::Tables
       @salary = Focus::IntColumn(Int64).new("salary", table_name)
       @department_id = Focus::IntColumn(Int32).new("department_id", table_name)
       @is_remote = Focus::BoolColumn.new("is_remote", table_name)
-      columns = [@id, @name, @job, @manager_id, @hire_date, @salary, @department_id, @is_remote].select(Focus::Expression)
+      @skills = Focus::ArrayColumn(Focus::StringExpression).new("skills", table_name)
+      columns = [@id, @name, @job, @manager_id, @hire_date, @salary, @department_id, @is_remote, @skills].select(Focus::Expression)
 
       super(
         schema_name: schema_name,

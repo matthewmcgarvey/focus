@@ -11,6 +11,7 @@ class Employee
   property salary : Int64
   property department_id : Int32
   property is_remote : Bool
+  property skills : Array(String)?
 end
 
 class Department

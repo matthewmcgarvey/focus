@@ -91,7 +91,7 @@ class Focus::PG::QuerySet < Focus::QuerySet
         is_generated: rs.read(Bool),
         has_default: rs.read(Bool),
         data_type: Metadata::Column::DataType.new(
-          dimensions: rs.read(Int32?),
+          dimensions: rs.read(Int32),
           kind: rs.read(String),
           name: rs.read(String),
           is_unsigned: rs.read(Bool)

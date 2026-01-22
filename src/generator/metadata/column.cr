@@ -3,9 +3,17 @@ class Focus::Metadata::Column
     getter name : String
     getter kind : String
     getter is_unsigned : Bool
-    getter dimensions : Int32?
+    getter dimensions : Int32
 
-    def initialize(@name, @kind, @is_unsigned, @dimensions = nil)
+    def initialize(@name, @kind, @is_unsigned, @dimensions = 0)
+    end
+
+    def is_array? : Bool
+      dimensions > 0
+    end
+
+    def enum? : Bool
+      kind == "enum"
     end
   end
 

@@ -13,21 +13,22 @@ create table employees(
   hire_date date not null,
   salary bigint not null,
   department_id int not null,
-  is_remote boolean default false
+  is_remote boolean default false,
+  skills text[]
 );
 
 insert into departments(name, location) values ('tech', 'Guangzhou');
 insert into departments(name, location) values ('finance', 'Beijing');
 
-insert into employees(name, job, manager_id, hire_date, salary, department_id)
-values ('vince', 'engineer', null, '2018-01-01', 100, 1);
-insert into employees(name, job, manager_id, hire_date, salary, department_id)
-values ('marry', 'trainee', 1, '2019-01-01', 50, 1);
+insert into employees(name, job, manager_id, hire_date, salary, department_id, skills)
+values ('vince', 'engineer', null, '2018-01-01', 100, 1, '{"crystal", "sql", "ruby"}');
+insert into employees(name, job, manager_id, hire_date, salary, department_id, skills)
+values ('marry', 'trainee', 1, '2019-01-01', 50, 1, '{"python"}');
 
-insert into employees(name, job, manager_id, hire_date, salary, department_id)
-values ('tom', 'director', null, '2018-01-01', 200, 2);
-insert into employees(name, job, manager_id, hire_date, salary, department_id, is_remote)
-values ('penny', 'assistant', 3, '2019-01-01', 100, 2, true);
+insert into employees(name, job, manager_id, hire_date, salary, department_id, skills)
+values ('tom', 'director', null, '2018-01-01', 200, 2, '{"management", "accounting"}');
+insert into employees(name, job, manager_id, hire_date, salary, department_id, is_remote, skills)
+values ('penny', 'assistant', 3, '2019-01-01', 100, 2, true, '{"excel", "scheduling"}');
 
 create table airports(
   id serial primary key,
