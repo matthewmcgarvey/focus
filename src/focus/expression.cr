@@ -88,9 +88,9 @@ abstract class Focus::Expression
     )
   end
 
-  # Helper to build simple binary boolean expressions for this column.
+  # Helper to build binary boolean expressions for this column.
   private def binary_op(operator : String, rhs : Focus::Expression) : Focus::BoolExpression
     expression = Focus::BinaryExpression.new(left: self, right: rhs, operator: operator)
-    Focus::BoolExpression.new(expression)
+    Focus::BoolExpression.new(Focus::ComplexExpression.new(expression))
   end
 end

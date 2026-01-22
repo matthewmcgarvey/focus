@@ -7,7 +7,7 @@ describe "PG JSONB Select" do
       .where(Passengers.preferences.contains(Focus::PG.jsonb(json_value)))
       .order_by(Passengers.id.asc)
 
-    stmt.to_sql.should eq(%(SELECT passengers.first_name FROM passengers WHERE passengers.preferences @> $1 ORDER BY passengers.id ASC))
+    stmt.to_sql.should eq(%(SELECT passengers.first_name FROM passengers WHERE (passengers.preferences @> $1) ORDER BY passengers.id ASC))
     stmt.query_all(PG_DATABASE, as: String).should eq(["Avery", "Nora", "Isla", "Jun"])
   end
 
@@ -17,7 +17,7 @@ describe "PG JSONB Select" do
       .where(Passengers.preferences.contained_by(Focus::PG.jsonb(json_value)))
       .order_by(Passengers.id.asc)
 
-    stmt.to_sql.should eq(%(SELECT passengers.first_name FROM passengers WHERE passengers.preferences <@ $1 ORDER BY passengers.id ASC))
+    stmt.to_sql.should eq(%(SELECT passengers.first_name FROM passengers WHERE (passengers.preferences <@ $1) ORDER BY passengers.id ASC))
     stmt.query_all(PG_DATABASE, as: String).should eq(["Theo"])
   end
 
@@ -26,7 +26,7 @@ describe "PG JSONB Select" do
       .where(Passengers.preferences.has_key(Focus::PG.string("loyalty_tier")))
       .order_by(Passengers.id.asc)
 
-    stmt.to_sql.should eq(%(SELECT passengers.first_name FROM passengers WHERE passengers.preferences ? $1 ORDER BY passengers.id ASC))
+    stmt.to_sql.should eq(%(SELECT passengers.first_name FROM passengers WHERE (passengers.preferences ? $1) ORDER BY passengers.id ASC))
     stmt.query_all(PG_DATABASE, as: String).should eq(["Nora", "Isla", "Jun"])
   end
 
@@ -34,7 +34,7 @@ describe "PG JSONB Select" do
     stmt = Passengers.select(Passengers.preferences.get_text(Focus::PG.string("meal")))
       .where(Passengers.first_name.eq(Focus::PG.string("Avery")))
 
-    stmt.to_sql.should eq(%(SELECT passengers.preferences ->> $1 FROM passengers WHERE passengers.first_name = $2))
+    stmt.to_sql.should eq(%(SELECT passengers.preferences ->> $1 FROM passengers WHERE (passengers.first_name = $2)))
     stmt.query_one(PG_DATABASE, as: String).should eq("vegetarian")
   end
 
@@ -42,7 +42,7 @@ describe "PG JSONB Select" do
     stmt = Passengers.select(Passengers.preferences.get(Focus::PG.string("notifications")))
       .where(Passengers.first_name.eq(Focus::PG.string("Avery")))
 
-    stmt.to_sql.should eq(%(SELECT passengers.preferences -> $1 FROM passengers WHERE passengers.first_name = $2))
+    stmt.to_sql.should eq(%(SELECT passengers.preferences -> $1 FROM passengers WHERE (passengers.first_name = $2)))
     # -> returns jsonb, which PG driver returns as JSON::PullParser or string representation
     result = stmt.query_one(PG_DATABASE, as: JSON::Any)
     result.as_bool.should eq(true)
@@ -72,7 +72,7 @@ describe "PG JSONB Select" do
       .where(Passengers.preferences.contains(Focus::PG.jsonb(json_value)))
       .order_by(Passengers.id.asc)
 
-    stmt.to_sql.should eq(%(SELECT passengers.first_name FROM passengers WHERE passengers.preferences @> $1 ORDER BY passengers.id ASC))
+    stmt.to_sql.should eq(%(SELECT passengers.first_name FROM passengers WHERE (passengers.preferences @> $1) ORDER BY passengers.id ASC))
     stmt.query_all(PG_DATABASE, as: String).should eq(["Theo"])
   end
 
@@ -87,7 +87,7 @@ describe "PG JSONB Select" do
       )
       .order_by(Passengers.id.asc)
 
-    stmt.to_sql.should eq(%(SELECT passengers.first_name FROM passengers WHERE passengers.preferences @> $1 AND passengers.preferences ? $2 ORDER BY passengers.id ASC))
+    stmt.to_sql.should eq(%(SELECT passengers.first_name FROM passengers WHERE ((passengers.preferences @> $1) AND (passengers.preferences ? $2)) ORDER BY passengers.id ASC))
     stmt.query_all(PG_DATABASE, as: String).should eq(["Nora", "Isla", "Jun"])
   end
 
@@ -97,7 +97,7 @@ describe "PG JSONB Select" do
       .where(Passengers.preferences.has_key(Focus::PG.string("loyalty_tier")))
       .order_by(Passengers.id.asc)
 
-    stmt.to_sql.should eq(%(SELECT passengers.first_name, passengers.preferences ->> $1 FROM passengers WHERE passengers.preferences ? $2 ORDER BY passengers.id ASC))
+    stmt.to_sql.should eq(%(SELECT passengers.first_name, passengers.preferences ->> $1 FROM passengers WHERE (passengers.preferences ? $2) ORDER BY passengers.id ASC))
     result = stmt.query_all(PG_DATABASE, as: {String, String})
     result.should eq([{"Nora", "gold"}, {"Isla", "platinum"}, {"Jun", "silver"}])
   end

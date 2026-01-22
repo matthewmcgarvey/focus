@@ -237,7 +237,7 @@ describe Focus::Dsl::ConditionalFunctions do
 
       visitor = Focus::SqlFormatter.new
       comparison.accept(visitor)
-      visitor.to_sql.should eq("COALESCE(a, b) > ?")
+      visitor.to_sql.should eq("(COALESCE(a, b) > ?)")
     end
 
     it "can nest conditional function calls" do

@@ -10,7 +10,7 @@ describe Focus::JsonbColumn do
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)
-      visitor.to_sql.should eq("data = ?")
+      visitor.to_sql.should eq("(data = ?)")
     end
   end
 
@@ -23,7 +23,7 @@ describe Focus::JsonbColumn do
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)
-      visitor.to_sql.should eq("data != ?")
+      visitor.to_sql.should eq("(data != ?)")
     end
   end
 
@@ -36,7 +36,7 @@ describe Focus::JsonbColumn do
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)
-      visitor.to_sql.should eq("data @> ?")
+      visitor.to_sql.should eq("(data @> ?)")
     end
   end
 
@@ -49,7 +49,7 @@ describe Focus::JsonbColumn do
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)
-      visitor.to_sql.should eq("data <@ ?")
+      visitor.to_sql.should eq("(data <@ ?)")
     end
   end
 
@@ -61,7 +61,7 @@ describe Focus::JsonbColumn do
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)
-      visitor.to_sql.should eq("data ? ?")
+      visitor.to_sql.should eq("(data ? ?)")
     end
   end
 

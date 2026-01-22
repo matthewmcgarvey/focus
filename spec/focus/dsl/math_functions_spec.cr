@@ -196,7 +196,7 @@ describe Focus::Dsl::MathFunctions do
 
       visitor = Focus::SqlFormatter.new
       comparison.accept(visitor)
-      visitor.to_sql.should eq("ABS(price) > ?")
+      visitor.to_sql.should eq("(ABS(price) > ?)")
     end
 
     it "can nest function calls" do

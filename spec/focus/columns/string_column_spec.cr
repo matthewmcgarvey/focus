@@ -36,7 +36,7 @@ describe Focus::StringColumn do
 
       visitor = Focus::SqlFormatter.new
       result.accept(visitor)
-      visitor.to_sql.should eq("foo LIKE ?")
+      visitor.to_sql.should eq("(foo LIKE ?)")
     end
   end
 

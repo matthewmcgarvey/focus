@@ -7,7 +7,7 @@ describe "Focus::SQLite.sql DSL" do
         .where(Employees.id.eq(int32(1)))
     end
 
-    stmt.to_sql.should eq(%(SELECT employees.name FROM employees WHERE employees.id = ?))
+    stmt.to_sql.should eq(%(SELECT employees.name FROM employees WHERE (employees.id = ?)))
     stmt.query_one(SQLITE_DATABASE, as: String).should eq("vince")
   end
 
@@ -17,7 +17,7 @@ describe "Focus::SQLite.sql DSL" do
         .where(Employees.name.eq(string("vince")))
     end
 
-    stmt.to_sql.should eq(%(SELECT employees.name FROM employees WHERE employees.name = ?))
+    stmt.to_sql.should eq(%(SELECT employees.name FROM employees WHERE (employees.name = ?)))
     stmt.query_one(SQLITE_DATABASE, as: String).should eq("vince")
   end
 
@@ -36,7 +36,7 @@ describe "Focus::SQLite.sql DSL" do
         .where(Employees.id.eq(cast(string("1")).as_integer))
     end
 
-    stmt.to_sql.should eq(%(SELECT employees.name FROM employees WHERE employees.id = CAST(? AS INTEGER)))
+    stmt.to_sql.should eq(%(SELECT employees.name FROM employees WHERE (employees.id = CAST(? AS INTEGER))))
     stmt.query_one(SQLITE_DATABASE, as: String).should eq("vince")
   end
 end

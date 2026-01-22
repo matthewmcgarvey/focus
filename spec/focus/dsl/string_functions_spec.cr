@@ -195,7 +195,7 @@ describe Focus::Dsl::StringFunctions do
 
       visitor = Focus::SqlFormatter.new
       comparison.accept(visitor)
-      visitor.to_sql.should eq("LOWER(name) = ?")
+      visitor.to_sql.should eq("(LOWER(name) = ?)")
     end
 
     it "can nest function calls" do
@@ -214,7 +214,7 @@ describe Focus::Dsl::StringFunctions do
 
       visitor = Focus::SqlFormatter.new
       comparison.accept(visitor)
-      visitor.to_sql.should eq("LENGTH(name) > ?")
+      visitor.to_sql.should eq("(LENGTH(name) > ?)")
     end
   end
 end
