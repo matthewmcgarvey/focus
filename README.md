@@ -1,9 +1,9 @@
 # Focus
 
-SQL query builder for multiple databases. Heavily inspired by Kotlin's [Ktorm](https://www.ktorm.org).
+SQL query builder for multiple databases. Heavily inspired by Kotlin's [Ktorm](https://www.ktorm.org) and Golang's [Jet](https://github.com/go-jet/jet).
 Do you want to learn an ORM or do you want to be able to focus?
 
-Not at all ready for real use. (There's not even any tests, so don't be crazy and try to use it for real.)
+Not ready for production, yet.
 
 ## Goals
 
@@ -13,13 +13,8 @@ I don't want this library to take 10 months to feel like you know how to do ever
 I want it to be made in a way that's not only easy to use, but easy to dig into internally.
 That means two things:
 
-1. This will be a clean, well documented DSL
-2. There will be minimal macro usages
-
-I want to avoid macro usages because, while they can make code simpler to write, it can cause confusion for maintainers and developers when they run into bugs.
-By trying to avoid macros, I also have to think about how I can use regular Crystal to make a pleasant API rather than fall back to macros.
-As of right now, I only have one macro which is `Stealth::Table.column`. It's only used when defining tables and I believe it's necessary to avoid users immediately running into hand cramps when defining tables.
-Maybe one day this library could have no macros?
+1. This will feel and look like regular SQL
+2. There will be minimal or no macros
 
 ### Separate data models from database tables
 
@@ -133,6 +128,8 @@ TODO: Write development instructions here
 
 ## TODO
 
+- window expression (`COUNT(...) OVER ...`)
+- DISTINCT ON multiple columns
 - Int32 vs Int64 primary keys
   - Error when using Int32 keys is very confusing, solution is to switch to Int64 but you wouldn't know it
 - Write good tests
