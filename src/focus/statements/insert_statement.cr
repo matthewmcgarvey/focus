@@ -53,7 +53,7 @@ abstract class Focus::InsertStatement < Focus::Statement
     self
   end
 
-  def set(column : Focus::Column, expr : Focus::Expression) : self
+  def set(column : Focus::Column, expr : Focus::Expression | Focus::SelectStatement) : self
     @set_clause ||= Focus::SetClause.new
     col_token = Focus::ColumnToken.new(column.column_name)
     @set_clause.try(&.add_column(col_token, expr))

@@ -24,6 +24,15 @@ abstract class Focus::Expression
     Focus::BoolExpression.new(binary)
   end
 
+  def in_list(statement : Focus::SelectStatement) : Focus::BoolExpression
+    binary = Focus::BinaryExpression.new(
+      left: self,
+      right: Focus::StatementExpression.new(statement),
+      operator: "IN"
+    )
+    Focus::BoolExpression.new(binary)
+  end
+
   def not_in_list(*expressions : Focus::Expression) : Focus::BoolExpression
     not_in_list(expressions.to_a)
   end
@@ -32,6 +41,15 @@ abstract class Focus::Expression
     binary = Focus::BinaryExpression.new(
       left: self,
       right: Focus::FunctionExpression.new(name: "", parameters: expressions.select(Focus::Expression)),
+      operator: "NOT IN"
+    )
+    Focus::BoolExpression.new(binary)
+  end
+
+  def not_in_list(statement : Focus::SelectStatement) : Focus::BoolExpression
+    binary = Focus::BinaryExpression.new(
+      left: self,
+      right: Focus::StatementExpression.new(statement),
       operator: "NOT IN"
     )
     Focus::BoolExpression.new(binary)

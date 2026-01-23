@@ -8,7 +8,7 @@ abstract class Focus::UpdateStatement < Focus::Statement
   def initialize(@update_clause : Focus::UpdateClause)
   end
 
-  def set(column : Focus::Column, expr : Focus::Expression) : self
+  def set(column : Focus::Column, expr : Focus::Expression | Focus::SelectStatement) : self
     @set_clause ||= Focus::SetClause.new
     clause = self.set_clause
     raise "unreachable" if clause.nil?

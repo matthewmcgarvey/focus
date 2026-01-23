@@ -1,4 +1,4 @@
-abstract class Focus::Statement < Focus::Expression
+abstract class Focus::Statement
   include Focus::Queryable
 
   abstract def ordered_clauses : Array(Focus::Clause)

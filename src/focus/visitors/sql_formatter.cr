@@ -151,7 +151,7 @@ class Focus::SqlFormatter < Focus::SqlVisitor
   def visit_clause(clause : Focus::SetClause::Column) : Nil
     clause.column.accept(self)
     write "= "
-    if clause.value.is_a?(Focus::Statement)
+    if clause.value.is_a?(Focus::SelectStatement)
       wrap_in_parens { clause.value.accept(self) }
     else
       clause.value.accept(self)
@@ -297,6 +297,10 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     if !expression.no_brackets
       wrap_in_parens { visit_list(expression.parameters) }
     end
+  end
+
+  def visit_expression(expression : Focus::StatementExpression) : Nil
+    wrap_in_parens { expression.statement.accept(self) }
   end
 
   def visit_expression(expression : Focus::CastExpression) : Nil
