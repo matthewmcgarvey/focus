@@ -40,7 +40,14 @@ class Focus::SqlFormatter < Focus::SqlVisitor
 
   def visit_clause(clause : Focus::SelectClause) : Nil
     write "SELECT "
-    write "DISTINCT " if clause.distinct?
+    if clause.distinct?
+      write "DISTINCT "
+      distinct_on_columns = clause.distinct_on_columns
+      if distinct_on_columns && !distinct_on_columns.empty?
+        write "ON "
+        wrap_in_parens { visit_list distinct_on_columns }
+      end
+    end
     visit_list(clause.projections)
   end
 

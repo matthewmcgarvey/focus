@@ -4,6 +4,12 @@ class Focus::PG::SelectStatement < Focus::SelectStatement
 
   property for_clause : Focus::ForClause?
 
+  def distinct(*columns : Focus::Column) : self
+    select_clause.distinct = true
+    select_clause.distinct_on_columns = columns.to_a(&.as(Focus::Column))
+    self
+  end
+
   def for(
     strength : Focus::ForClause::LockStrength,
     wait_policy : Focus::ForClause::WaitPolicy? = nil,

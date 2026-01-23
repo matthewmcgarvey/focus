@@ -103,12 +103,29 @@ describe "PG Select" do
   end
 
   it "selects distinct values" do
-    dept_ids = Employees.select(Employees.department_id)
+    stmt = Employees.select(Employees.department_id)
       .distinct
       .order_by(Employees.department_id.asc)
-      .query_all(PG_DATABASE, Int32)
+    stmt.to_sql.should eq("SELECT DISTINCT employees.department_id FROM employees ORDER BY employees.department_id ASC")
+    dept_ids = stmt.query_all(PG_DATABASE, Int32)
 
     dept_ids.should eq([1, 2])
+  end
+
+  it "selects distinct on" do
+    stmt = Employees.select(Employees.department_id, Employees.name)
+      .distinct(Employees.department_id)
+      .order_by(Employees.department_id.asc, Employees.id.asc)
+
+    expected_sql = formatted(<<-SQL)
+      SELECT DISTINCT ON (employees.department_id) employees.department_id, employees.name
+      FROM employees
+      ORDER BY employees.department_id ASC, employees.id ASC
+    SQL
+    stmt.to_sql.should eq(expected_sql)
+
+    result = stmt.query_all(PG_DATABASE, as: {Int32, String})
+    result.should eq([{1, "vince"}, {2, "tom"}])
   end
 
   it "cross joins tables" do
