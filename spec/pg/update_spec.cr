@@ -44,4 +44,22 @@ describe "PG Update" do
       result.should eq(Time.utc(2026, 1, 10))
     end
   end
+
+  it "updates with from clause" do
+    in_transaction do |conn|
+      stmt = Employees.update
+        .set(Employees.job, Departments.name)
+        .from(Departments)
+        .where(Employees.department_id.eq(Departments.id).and(Employees.id.eq(Focus::PG.int32(1))))
+
+      stmt.to_sql.should eq(formatted(<<-SQL))
+        UPDATE employees SET job = departments.name
+        FROM departments
+        WHERE (employees.department_id = departments.id) AND (employees.id = $1)
+      SQL
+      stmt.exec(conn)
+
+      Employees.select(Employees.job).where(Employees.id.eq(Focus::PG.int32(1))).query_one(conn, String).should eq("tech")
+    end
+  end
 end

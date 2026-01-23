@@ -1,6 +1,7 @@
 abstract class Focus::UpdateStatement < Focus::Statement
   getter update : Focus::UpdateClause
   getter set : Focus::SetClause?
+  getter from_clause : Focus::FromClause?
   getter where : Focus::WhereClause?
   getter returning : Focus::ReturningClause?
 
@@ -22,6 +23,11 @@ abstract class Focus::UpdateStatement < Focus::Statement
     set(column, expr)
   end
 
+  def from(table : Focus::ReadableTable) : self
+    @from_clause = Focus::FromClause.new(table)
+    self
+  end
+
   def where(expression : Focus::BoolExpression) : self
     @where = Focus::WhereClause.new(expression)
     self
@@ -40,6 +46,7 @@ abstract class Focus::UpdateStatement < Focus::Statement
     [
       update,
       set,
+      from_clause,
       where,
       returning,
     ].compact
