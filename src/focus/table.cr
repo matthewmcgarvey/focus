@@ -18,7 +18,11 @@ abstract class Focus::Table
     end
   end
 
-  def aliased(table_alias : String? = nil) : Focus::Table
+  def aliased(table_alias : String? = nil) : self
     self.class.new(schema_name, table_name, table_alias)
+  end
+
+  def excluded : self
+    self.class.new(nil, "excluded", nil)
   end
 end

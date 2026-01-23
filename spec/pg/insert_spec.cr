@@ -94,4 +94,67 @@ describe "PG Insert" do
       result.should eq("issued")
     end
   end
+
+  context "on conflict" do
+    it "can do update" do
+      in_transaction do |conn|
+        stmt = Departments.insert(Departments.id, Departments.name, Departments.location)
+          .values(1, "marketing", "Hong Kong")
+          .on_conflict(Departments.id)
+          .do_update
+          .set(Departments.name, "hr")
+          .returning(Departments.name)
+        stmt.to_sql.should eq(formatted(<<-SQL))
+          INSERT INTO departments (id, name, location)
+          VALUES ($1, $2, $3)
+          ON CONFLICT (id) DO UPDATE
+          SET name = $4
+          RETURNING departments.name
+        SQL
+
+        name = stmt.query_one(conn, String)
+        name.should eq("hr")
+      end
+    end
+
+    it "can do update using excluded" do
+      in_transaction do |conn|
+        stmt = Departments.insert(Departments.id, Departments.name, Departments.location)
+          .values(1, "marketing", "Hong Kong")
+          .on_conflict(Departments.id)
+          .do_update
+          .set(Departments.name, Departments.excluded.name)
+          .returning(Departments.name)
+        stmt.to_sql.should eq(formatted(<<-SQL))
+          INSERT INTO departments (id, name, location)
+          VALUES ($1, $2, $3)
+          ON CONFLICT (id) DO UPDATE
+          SET name = excluded.name
+          RETURNING departments.name
+        SQL
+
+        name = stmt.query_one(conn, String)
+        name.should eq("marketing")
+      end
+    end
+
+    it "can do nothing" do
+      in_transaction do |conn|
+        stmt = Departments.insert(Departments.id, Departments.name, Departments.location)
+          .values(1, "marketing", "Hong Kong")
+          .on_conflict(Departments.id)
+          .do_nothing
+          .returning(Departments.name)
+        stmt.to_sql.should eq(formatted(<<-SQL))
+          INSERT INTO departments (id, name, location)
+          VALUES ($1, $2, $3)
+          ON CONFLICT (id) DO NOTHING
+          RETURNING departments.name
+        SQL
+
+        name = stmt.query_one?(conn, String)
+        name.should eq(nil)
+      end
+    end
+  end
 end

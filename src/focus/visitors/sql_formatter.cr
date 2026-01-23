@@ -109,6 +109,12 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     wrap_in_parens { visit_list(clause.values) }
   end
 
+  def visit_clause(clause : Focus::OnConflictClause) : Nil
+    write "ON CONFLICT "
+    wrap_in_parens { visit_list(clause.columns) }
+    write "#{clause.action} "
+  end
+
   def visit_clause(clause : Focus::QueryClause) : Nil
     clause.query.accept(self)
   end
