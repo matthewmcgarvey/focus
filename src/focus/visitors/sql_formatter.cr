@@ -326,6 +326,19 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     expression.expression.accept(self)
   end
 
+  def visit_expression(expression : Focus::NullLiteral)
+    write "NULL "
+  end
+
+  def visit_expression(expression : Focus::ColumnReferenceExpression)
+    if table_name = expression.table_name
+      write_identifier table_name
+      write "."
+    end
+    write_identifier(expression.column_name)
+    write " "
+  end
+
   def visit_expression(expression : Focus::Expression) : Nil
     raise "shouldn't get here. implement visit_expression for #{expression.class}"
   end
