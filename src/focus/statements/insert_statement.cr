@@ -2,7 +2,7 @@ abstract class Focus::InsertStatement < Focus::Statement
   getter insert_clause : Focus::InsertClause
   getter values_clause : Focus::ValuesClause?
   getter query : Focus::QueryClause?
-  getter on_conflict : Focus::OnConflictClause?
+  getter conflict_clause : Focus::OnConflictClause?
   getter set : Focus::SetClause?
   getter returning : Focus::ReturningClause?
 
@@ -33,17 +33,23 @@ abstract class Focus::InsertStatement < Focus::Statement
 
   def on_conflict(*columns : Focus::Column) : self
     column_names = columns.map { |column| Focus::ColumnToken.new(column.as(Focus::Column).column_name) }
-    @on_conflict = Focus::OnConflictClause.new(column_names.to_a)
+    @conflict_clause = Focus::OnConflictClause.new(column_names.to_a)
+    self
+  end
+
+  def on_conflict : self
+    column_names = [] of Focus::ColumnToken
+    @conflict_clause = Focus::OnConflictClause.new(column_names)
     self
   end
 
   def do_update : self
-    @on_conflict.try(&.do_update)
+    @conflict_clause.try(&.do_update)
     self
   end
 
   def do_nothing : self
-    @on_conflict.try(&.do_nothing)
+    @conflict_clause.try(&.do_nothing)
     self
   end
 
@@ -73,7 +79,7 @@ abstract class Focus::InsertStatement < Focus::Statement
       insert_clause,
       values_clause,
       query,
-      on_conflict,
+      conflict_clause,
       set,
       returning,
     ].compact

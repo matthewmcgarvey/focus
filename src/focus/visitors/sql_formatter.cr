@@ -111,7 +111,9 @@ class Focus::SqlFormatter < Focus::SqlVisitor
 
   def visit_clause(clause : Focus::OnConflictClause) : Nil
     write "ON CONFLICT "
-    wrap_in_parens { visit_list(clause.columns) }
+    if !clause.columns.empty?
+      wrap_in_parens { visit_list(clause.columns) }
+    end
     write "#{clause.action} "
   end
 

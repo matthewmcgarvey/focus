@@ -27,4 +27,24 @@ describe "SQLite Insert" do
       result.should eq(2)
     end
   end
+
+  context "on conflict" do
+    it "works with no passed columns" do
+      in_transaction do |conn|
+        stmt = Departments.insert(Departments.id, Departments.name, Departments.location)
+          .values(1, "marketing", "Hong Kong")
+          .on_conflict
+          .do_nothing
+        stmt.to_sql.should eq(formatted(<<-SQL))
+          INSERT INTO departments (id, name, location)
+          VALUES (?, ?, ?)
+          ON CONFLICT DO NOTHING
+        SQL
+        stmt.exec(conn)
+
+        department_names = Departments.select(Departments.name).query_all(conn, as: String)
+        department_names.sort.should eq(["tech", "finance"].sort)
+      end
+    end
+  end
 end
