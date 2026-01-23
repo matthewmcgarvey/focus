@@ -7,11 +7,6 @@ abstract class Focus::DeleteStatement < Focus::Statement
   def initialize(@delete : Focus::DeleteClause)
   end
 
-  def using(table : Focus::ReadableTable) : self
-    @using = Focus::UsingClause.new(table)
-    self
-  end
-
   def where(expression : Focus::BoolExpression) : self
     @where = Focus::WhereClause.new(expression)
     self
