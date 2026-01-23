@@ -1,20 +1,20 @@
 abstract class Focus::UpdateStatement < Focus::Statement
-  getter update : Focus::UpdateClause
-  getter set : Focus::SetClause?
+  getter update_clause : Focus::UpdateClause
+  getter set_clause : Focus::SetClause?
   getter from_clause : Focus::FromClause?
-  getter where : Focus::WhereClause?
-  getter returning : Focus::ReturningClause?
+  getter where_clause : Focus::WhereClause?
+  getter returning_clause : Focus::ReturningClause?
 
-  def initialize(@update : Focus::UpdateClause)
+  def initialize(@update_clause : Focus::UpdateClause)
   end
 
   def set(column : Focus::Column, expr : Focus::Expression) : self
-    @set ||= Focus::SetClause.new
-    set_clause = self.set
-    raise "unreachable" if set_clause.nil?
+    @set_clause ||= Focus::SetClause.new
+    clause = self.set_clause
+    raise "unreachable" if clause.nil?
 
     col_token = Focus::ColumnToken.new(column.column_name)
-    set_clause.add_column(col_token, expr)
+    clause.add_column(col_token, expr)
     self
   end
 
@@ -29,12 +29,12 @@ abstract class Focus::UpdateStatement < Focus::Statement
   end
 
   def where(expression : Focus::BoolExpression) : self
-    @where = Focus::WhereClause.new(expression)
+    @where_clause = Focus::WhereClause.new(expression)
     self
   end
 
   def returning(*returning_vals : Focus::Expression) : self
-    @returning = Focus::ReturningClause.new(returning_vals.select(Focus::Expression))
+    @returning_clause = Focus::ReturningClause.new(returning_vals.select(Focus::Expression))
     self
   end
 
@@ -44,11 +44,11 @@ abstract class Focus::UpdateStatement < Focus::Statement
 
   def ordered_clauses : Array(Focus::Clause)
     [
-      update,
-      set,
+      update_clause,
+      set_clause,
       from_clause,
-      where,
-      returning,
+      where_clause,
+      returning_clause,
     ].compact
   end
 end

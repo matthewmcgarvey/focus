@@ -8,12 +8,12 @@ class Focus::PG::Table < Focus::Table
   end
 
   def update : Focus::PG::UpdateStatement
-    update = Focus::UpdateClause.new(self)
-    Focus::PG::UpdateStatement.new(update: update)
+    update_clause = Focus::UpdateClause.new(self)
+    Focus::PG::UpdateStatement.new(update_clause)
   end
 
   def delete : Focus::PG::DeleteStatement
-    delete = Focus::DeleteClause.new(self)
-    Focus::PG::DeleteStatement.new(delete)
+    delete_clause = Focus::DeleteClause.new(self)
+    Focus::PG::DeleteStatement.new(delete_clause)
   end
 end

@@ -1,10 +1,10 @@
 abstract class Focus::InsertStatement < Focus::Statement
   getter insert_clause : Focus::InsertClause
   getter values_clause : Focus::ValuesClause?
-  getter query : Focus::QueryClause?
+  getter query_clause : Focus::QueryClause?
   getter conflict_clause : Focus::OnConflictClause?
-  getter set : Focus::SetClause?
-  getter returning : Focus::ReturningClause?
+  getter set_clause : Focus::SetClause?
+  getter returning_clause : Focus::ReturningClause?
 
   def initialize(@insert_clause : Focus::InsertClause)
   end
@@ -27,7 +27,7 @@ abstract class Focus::InsertStatement < Focus::Statement
   end
 
   def query(query : Focus::SelectStatement) : self
-    @query = Focus::QueryClause.new(query)
+    @query_clause = Focus::QueryClause.new(query)
     self
   end
 
@@ -54,9 +54,9 @@ abstract class Focus::InsertStatement < Focus::Statement
   end
 
   def set(column : Focus::Column, expr : Focus::Expression) : self
-    @set ||= Focus::SetClause.new
+    @set_clause ||= Focus::SetClause.new
     col_token = Focus::ColumnToken.new(column.column_name)
-    @set.try(&.add_column(col_token, expr))
+    @set_clause.try(&.add_column(col_token, expr))
     self
   end
 
@@ -66,7 +66,7 @@ abstract class Focus::InsertStatement < Focus::Statement
   end
 
   def returning(*returning_vals : Focus::Expression) : self
-    @returning = Focus::ReturningClause.new(returning_vals.select(Focus::Expression))
+    @returning_clause = Focus::ReturningClause.new(returning_vals.select(Focus::Expression))
     self
   end
 
@@ -78,10 +78,10 @@ abstract class Focus::InsertStatement < Focus::Statement
     [
       insert_clause,
       values_clause,
-      query,
+      query_clause,
       conflict_clause,
-      set,
-      returning,
+      set_clause,
+      returning_clause,
     ].compact
   end
 end

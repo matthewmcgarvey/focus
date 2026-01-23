@@ -1,19 +1,19 @@
 abstract class Focus::DeleteStatement < Focus::Statement
-  getter delete : Focus::DeleteClause
-  getter using : Focus::UsingClause?
-  getter where : Focus::WhereClause?
-  getter returning : Focus::ReturningClause?
+  getter delete_clause : Focus::DeleteClause
+  getter using_clause : Focus::UsingClause?
+  getter where_clause : Focus::WhereClause?
+  getter returning_clause : Focus::ReturningClause?
 
-  def initialize(@delete : Focus::DeleteClause)
+  def initialize(@delete_clause : Focus::DeleteClause)
   end
 
   def where(expression : Focus::BoolExpression) : self
-    @where = Focus::WhereClause.new(expression)
+    @where_clause = Focus::WhereClause.new(expression)
     self
   end
 
   def returning(*returning_vals : Focus::Expression) : self
-    @returning = Focus::ReturningClause.new(returning_vals.select(Focus::Expression))
+    @returning_clause = Focus::ReturningClause.new(returning_vals.select(Focus::Expression))
     self
   end
 
@@ -23,10 +23,10 @@ abstract class Focus::DeleteStatement < Focus::Statement
 
   def ordered_clauses : Array(Focus::Clause)
     [
-      delete,
-      using,
-      where,
-      returning,
+      delete_clause,
+      using_clause,
+      where_clause,
+      returning_clause,
     ].compact
   end
 end

@@ -8,12 +8,12 @@ class Focus::SQLite::Table < Focus::Table
   end
 
   def update : Focus::SQLite::UpdateStatement
-    update = Focus::UpdateClause.new(self)
-    Focus::SQLite::UpdateStatement.new(update: update)
+    update_clause = Focus::UpdateClause.new(self)
+    Focus::SQLite::UpdateStatement.new(update_clause)
   end
 
   def delete : Focus::SQLite::DeleteStatement
-    delete = Focus::DeleteClause.new(self)
-    Focus::SQLite::DeleteStatement.new(delete)
+    delete_clause = Focus::DeleteClause.new(self)
+    Focus::SQLite::DeleteStatement.new(delete_clause)
   end
 end
