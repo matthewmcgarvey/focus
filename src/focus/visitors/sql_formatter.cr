@@ -44,6 +44,11 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     visit_list(clause.projections)
   end
 
+  def visit_clause(clause : Focus::UsingClause) : Nil
+    write "USING "
+    clause.table.accept(self)
+  end
+
   def visit_clause(clause : Focus::FromClause) : Nil
     write "FROM "
     clause.table.accept(self)

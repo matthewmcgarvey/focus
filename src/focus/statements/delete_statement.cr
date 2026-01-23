@@ -1,9 +1,15 @@
 abstract class Focus::DeleteStatement < Focus::Statement
   getter delete : Focus::DeleteClause
+  getter using : Focus::UsingClause?
   getter where : Focus::WhereClause?
   getter returning : Focus::ReturningClause?
 
   def initialize(@delete : Focus::DeleteClause)
+  end
+
+  def using(table : Focus::ReadableTable) : self
+    @using = Focus::UsingClause.new(table)
+    self
   end
 
   def where(expression : Focus::BoolExpression) : self
@@ -23,6 +29,7 @@ abstract class Focus::DeleteStatement < Focus::Statement
   def ordered_clauses : Array(Focus::Clause)
     [
       delete,
+      using,
       where,
       returning,
     ].compact
