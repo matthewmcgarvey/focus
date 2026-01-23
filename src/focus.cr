@@ -16,6 +16,7 @@ require "./focus/clauses/*"
 require "./focus/statements/*"
 require "./focus/columns/*"
 require "./focus/dsl/*"
+require "./focus/sql/*"
 require "./focus/visitors/*"
 
 module Focus

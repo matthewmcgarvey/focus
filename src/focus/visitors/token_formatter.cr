@@ -1,24 +1,23 @@
-class Focus::SqlFormatter < Focus::SqlVisitor
-  WHITESPACE_BYTE = 32_u8
-
-  enum StatementType
-    SELECT_STMT_TYPE
-    INSERT_STMT_TYPE
-    UPDATE_STMT_TYPE
-    DELETE_STMT_TYPE
-    SET_STMT_TYPE
-    LOCK_STMT_TYPE
-    UNLOCK_STMT_TYPE
-    WITH_STMT_TYPE
-  end
+# Token-based SQL formatter - emits tokens then renders them to SQL string.
+# Separates structure decisions (what tokens to emit) from formatting (how to render).
+class Focus::TokenFormatter < Focus::SqlVisitor
+  # Reuse SqlFormatter's StatementType for compatibility
+  alias StatementType = SqlFormatter::StatementType
 
   private property statement_type : StatementType?
-  private getter sql_string_builder = String::Builder.new
   getter parameters : Array(DB::Any) = [] of DB::Any
+  getter tokens = [] of Sql::Token
+  private property skip_outer_parens : Bool = false
+
+  protected def emit(token : Sql::Token)
+    tokens << token
+  end
+
+  # --- Statement visitors ---
 
   def visit_statement(statement : Focus::WithStatement) : Nil
     self.statement_type = statement.statement_type
-    write "WITH "
+    emit Sql::Keyword.new("WITH")
     visit_list statement.ctes
     statement.primary_statement.try(&.accept(self))
   end
@@ -26,7 +25,7 @@ class Focus::SqlFormatter < Focus::SqlVisitor
   def visit_statement(statement : Focus::SetStatement) : Nil
     self.statement_type = statement.statement_type
     statement.lhs.accept(self)
-    write "#{statement.operator.to_s.sub('_', ' ')} "
+    emit Sql::Keyword.new(statement.operator.to_s.gsub('_', ' '))
     statement.rhs.accept(self)
     statement.order_by_clauses.try(&.accept(self))
     statement.limit_clause.try(&.accept(self))
@@ -38,36 +37,40 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     statement.ordered_clauses.each(&.accept(self))
   end
 
+  # --- Clause visitors ---
+
   def visit_clause(clause : Focus::SelectClause) : Nil
-    write "SELECT "
+    emit Sql::Keyword.new("SELECT")
     if clause.distinct?
-      write "DISTINCT "
+      emit Sql::Keyword.new("DISTINCT")
       distinct_on_columns = clause.distinct_on_columns
       if distinct_on_columns && !distinct_on_columns.empty?
-        write "ON "
-        wrap_in_parens { visit_list distinct_on_columns }
+        emit Sql::Keyword.new("ON")
+        emit Sql::GroupStart.new
+        visit_list distinct_on_columns
+        emit Sql::GroupEnd.new
       end
     end
     visit_list(clause.projections)
   end
 
   def visit_clause(clause : Focus::UsingClause) : Nil
-    write "USING "
+    emit Sql::Keyword.new("USING")
     clause.table.accept(self)
   end
 
   def visit_clause(clause : Focus::FromClause) : Nil
-    write "FROM "
+    emit Sql::Keyword.new("FROM")
     clause.table.accept(self)
   end
 
   def visit_clause(clause : Focus::WhereClause) : Nil
-    write "WHERE "
-    render_unwrapped(clause.expression)
+    emit Sql::Keyword.new("WHERE")
+    visit_unwrapped(clause.expression)
   end
 
   def visit_clause(clause : Focus::OrderByListClause) : Nil
-    write "ORDER BY "
+    emit Sql::Keyword.new("ORDER BY")
     visit_list clause.order_bys
   end
 
@@ -75,58 +78,65 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     clause.expression.accept(self)
     case clause.order_type
     when Focus::OrderByClause::OrderType::ASCENDING
-      write "ASC "
+      emit Sql::Keyword.new("ASC")
     when Focus::OrderByClause::OrderType::DESCENDING
-      write "DESC "
+      emit Sql::Keyword.new("DESC")
     end
     clause.is_nulls_first.try do |nulls_first|
-      write "NULLS #{nulls_first ? "FIRST" : "LAST"} "
+      emit Sql::Keyword.new("NULLS")
+      emit Sql::Keyword.new(nulls_first ? "FIRST" : "LAST")
     end
   end
 
   def visit_clause(clause : Focus::LimitClause) : Nil
-    write "LIMIT "
-    write_placeholder
+    emit Sql::Keyword.new("LIMIT")
+    emit Sql::Placeholder.new(clause.limit)
     parameters << clause.limit
   end
 
   def visit_clause(clause : Focus::OffsetClause) : Nil
-    write "OFFSET "
-    write_placeholder
+    emit Sql::Keyword.new("OFFSET")
+    emit Sql::Placeholder.new(clause.offset)
     parameters << clause.offset
   end
 
   def visit_clause(clause : Focus::GroupByClause) : Nil
-    write "GROUP BY "
+    emit Sql::Keyword.new("GROUP BY")
     visit_list clause.group_bys
   end
 
   def visit_clause(clause : Focus::HavingClause) : Nil
-    write "HAVING "
-    render_unwrapped(clause.expression)
+    emit Sql::Keyword.new("HAVING")
+    visit_unwrapped(clause.expression)
   end
 
   def visit_clause(clause : Focus::InsertClause) : Nil
-    write "INSERT INTO "
+    emit Sql::Keyword.new("INSERT INTO")
     clause.table.accept(self)
-    wrap_in_parens { visit_list(clause.columns) }
+    emit Sql::GroupStart.new
+    visit_list(clause.columns)
+    emit Sql::GroupEnd.new
   end
 
   def visit_clause(clause : Focus::ValuesClause) : Nil
-    write "VALUES "
+    emit Sql::Keyword.new("VALUES")
     visit_list clause.rows
   end
 
   def visit_clause(clause : Focus::ValuesClause::Row) : Nil
-    wrap_in_parens { visit_list(clause.values) }
+    emit Sql::GroupStart.new
+    visit_list(clause.values)
+    emit Sql::GroupEnd.new
   end
 
   def visit_clause(clause : Focus::OnConflictClause) : Nil
-    write "ON CONFLICT "
+    emit Sql::Keyword.new("ON CONFLICT")
     if !clause.columns.empty?
-      wrap_in_parens { visit_list(clause.columns) }
+      emit Sql::GroupStart.new
+      visit_list(clause.columns)
+      emit Sql::GroupEnd.new
     end
-    write "#{clause.action} "
+    emit Sql::Keyword.new(clause.action.to_s)
   end
 
   def visit_clause(clause : Focus::QueryClause) : Nil
@@ -134,48 +144,49 @@ class Focus::SqlFormatter < Focus::SqlVisitor
   end
 
   def visit_clause(clause : Focus::ReturningClause) : Nil
-    write "RETURNING "
+    emit Sql::Keyword.new("RETURNING")
     visit_list clause.columns
   end
 
   def visit_clause(clause : Focus::UpdateClause) : Nil
-    write "UPDATE "
+    emit Sql::Keyword.new("UPDATE")
     clause.table.accept(self)
   end
 
   def visit_clause(clause : Focus::SetClause) : Nil
-    write "SET "
+    emit Sql::Keyword.new("SET")
     visit_list clause.set_columns
   end
 
   def visit_clause(clause : Focus::SetClause::Column) : Nil
     clause.column.accept(self)
-    write "= "
+    emit Sql::Operator.new("=")
     if clause.value.is_a?(Focus::Statement)
-      wrap_in_parens { clause.value.accept(self) }
+      emit Sql::GroupStart.new
+      clause.value.accept(self)
+      emit Sql::GroupEnd.new
     else
       clause.value.accept(self)
     end
   end
 
   def visit_clause(clause : Focus::DeleteClause) : Nil
-    write "DELETE FROM "
+    emit Sql::Keyword.new("DELETE FROM")
     clause.table.accept(self)
   end
 
   def visit_clause(clause : Focus::ForClause) : Nil
-    write "FOR "
+    emit Sql::Keyword.new("FOR")
     case clause.strength
-    when .update?        then write "UPDATE "
-    when .no_key_update? then write "NO KEY UPDATE "
-    when .share?         then write "SHARE "
-    when .key_share?     then write "KEY SHARE "
+    when .update?        then emit Sql::Keyword.new("UPDATE")
+    when .no_key_update? then emit Sql::Keyword.new("NO KEY UPDATE")
+    when .share?         then emit Sql::Keyword.new("SHARE")
+    when .key_share?     then emit Sql::Keyword.new("KEY SHARE")
     end
 
     tables = clause.tables
     if tables && !tables.empty?
-      remove_last_blank
-      write " OF "
+      emit Sql::Keyword.new("OF")
       visit_list tables
     end
 
@@ -183,9 +194,9 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     when .nil?
       # do nothing
     when .nowait?
-      write "NOWAIT "
+      emit Sql::Keyword.new("NOWAIT")
     when .skip_locked?
-      write "SKIP LOCKED "
+      emit Sql::Keyword.new("SKIP LOCKED")
     end
   end
 
@@ -193,41 +204,31 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     raise "shouldn't get here. implement #{clause.class} handling"
   end
 
+  # --- Expression visitors ---
+
   def visit_expression(expression : Focus::AliasedExpression) : Nil
     expression.inner.accept(self)
-    write "AS "
-    write_identifier(expression.alias)
-    write " "
+    emit Sql::Keyword.new("AS")
+    emit Sql::Identifier.new(expression.alias)
   end
 
   def visit_expression(expression : Focus::BetweenOperatorExpression) : Nil
     expression.expression.accept(self)
-    write "NOT " if expression.negated
-    write "BETWEEN "
+    emit Sql::Keyword.new("NOT") if expression.negated
+    emit Sql::Keyword.new("BETWEEN")
     expression.min.accept(self)
-    write "AND "
+    emit Sql::Keyword.new("AND")
     expression.max.accept(self)
   end
 
   def visit_expression(expression : Focus::ComplexExpression) : Nil
-    write "("
-    expression.inner.accept(self)
-    remove_last_blank
-    write ") "
-  end
-
-  # Renders a BoolExpression without outer parentheses (for top-level contexts)
-  private def render_unwrapped(expression : Focus::BoolExpression) : Nil
-    if inner = expression.inner
-      if inner.is_a?(Focus::ComplexExpression)
-        # Skip the ComplexExpression's parentheses, render its inner directly
-        inner.inner.accept(self)
-      else
-        inner.accept(self)
-      end
+    if skip_outer_parens
+      self.skip_outer_parens = false
+      expression.inner.accept(self)
     else
-      # No inner expression (e.g., BoolColumn), render normally
-      expression.accept(self)
+      emit Sql::GroupStart.new
+      expression.inner.accept(self)
+      emit Sql::GroupEnd.new
     end
   end
 
@@ -237,7 +238,7 @@ class Focus::SqlFormatter < Focus::SqlVisitor
 
   def visit_expression(expression : Focus::BinaryExpression) : Nil
     expression.left.accept(self)
-    write "#{expression.operator} "
+    emit Sql::Operator.new(expression.operator)
     expression.right.accept(self)
   end
 
@@ -279,46 +280,51 @@ class Focus::SqlFormatter < Focus::SqlVisitor
 
   def visit_expression(expression : Focus::WildcardExpression) : Nil
     if table_name = expression.table_name
-      write_identifier(table_name)
-      write "."
+      emit Sql::Identifier.new("*", table: table_name)
+    else
+      emit Sql::Literal.new("*")
     end
-    write "* "
   end
 
   def visit_expression(expression : Focus::AggregateExpression) : Nil
-    write expression.type.to_s
-    wrap_in_parens { expression.argument.accept(self) }
+    emit Sql::Literal.new(expression.type.to_s)
+    emit Sql::GroupStart.new
+    expression.argument.accept(self)
+    emit Sql::GroupEnd.new
   end
 
   def visit_expression(expression : Focus::FunctionExpression) : Nil
     name = expression.name.presence
-    write name if name
+    emit Sql::Literal.new(name) if name
 
     if !expression.no_brackets
-      wrap_in_parens { visit_list(expression.parameters) }
+      emit Sql::GroupStart.new
+      visit_list(expression.parameters)
+      emit Sql::GroupEnd.new
     end
   end
 
   def visit_expression(expression : Focus::CastExpression) : Nil
-    write "CAST("
+    emit Sql::Literal.new("CAST")
+    emit Sql::GroupStart.new
     expression.expression.accept(self)
-    write "AS "
-    write expression.cast_type
-    write ") "
+    emit Sql::Keyword.new("AS")
+    emit Sql::Literal.new(expression.cast_type)
+    emit Sql::GroupEnd.new
   end
 
   def visit_expression(expression : Focus::ValueExpression) : Nil
-    write_placeholder
+    emit Sql::Placeholder.new(expression.value)
     parameters << expression.value
   end
 
   def visit_expression(expression : Focus::PostfixOperatorExpression)
     expression.expression.accept(self)
-    write "#{expression.operator} "
+    emit Sql::Operator.new(expression.operator)
   end
 
   def visit_expression(expression : Focus::PrefixOperatorExpression)
-    write "#{expression.operator} "
+    emit Sql::Operator.new(expression.operator)
     expression.expression.accept(self)
   end
 
@@ -326,45 +332,51 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     raise "shouldn't get here. implement visit_expression for #{expression.class}"
   end
 
+  # --- Literal visitors ---
+
   def visit_literal(literal : Focus::JsonbLiteral) : Nil
-    write_placeholder
+    emit Sql::Placeholder.new(literal.value.to_json)
     parameters << literal.value.to_json
   end
 
   def visit_literal(literal : Focus::Parameter) : Nil
     if !literal.is_a?(Focus::ArrayLiteral)
-      write_placeholder
+      emit Sql::Placeholder.new(literal.value)
       parameters << literal.value
     end
   end
 
+  # --- Column visitor ---
+
   def visit_column(column : Focus::Column) : Nil
     if subquery = column.subquery
-      write_identifier(subquery.alias)
-      write "."
+      emit Sql::Identifier.new(column.column_name, table: subquery.alias)
     elsif table_name = column.table_name
-      write_identifier(table_name)
-      write "."
+      emit Sql::Identifier.new(column.column_name, table: table_name)
+    else
+      emit Sql::Identifier.new(column.column_name)
     end
-    write_identifier(column.column_name)
-    write " "
   end
+
+  # --- Table visitors ---
 
   def visit_table(table : Focus::CommonTableExpression) : Nil
     if statement_type == StatementType::WITH_STMT_TYPE
-      write_identifier table.alias
-      write " AS "
-      wrap_in_parens { table.statement.accept(self) }
+      emit Sql::Identifier.new(table.alias)
+      emit Sql::Keyword.new("AS")
+      emit Sql::GroupStart.new
+      table.statement.accept(self)
+      emit Sql::GroupEnd.new
     else
-      write_identifier table.alias
-      write " "
+      emit Sql::Identifier.new(table.alias)
     end
   end
 
   def visit_table(table : Focus::SelectTable) : Nil
-    wrap_in_parens { table.statement.accept(self) }
-    write_identifier table.alias
-    write " "
+    emit Sql::GroupStart.new
+    table.statement.accept(self)
+    emit Sql::GroupEnd.new
+    emit Sql::Identifier.new(table.alias)
   end
 
   def visit_table(table : Focus::JoinTable) : Nil
@@ -372,32 +384,30 @@ class Focus::SqlFormatter < Focus::SqlVisitor
 
     case table.join_type
     when Focus::JoinTable::JoinType::INNER
-      write "INNER JOIN "
+      emit Sql::Keyword.new("INNER JOIN")
     when Focus::JoinTable::JoinType::LEFT
-      write "LEFT JOIN "
+      emit Sql::Keyword.new("LEFT JOIN")
     when Focus::JoinTable::JoinType::RIGHT
-      write "RIGHT JOIN "
+      emit Sql::Keyword.new("RIGHT JOIN")
     when Focus::JoinTable::JoinType::CROSS
-      write "CROSS JOIN "
+      emit Sql::Keyword.new("CROSS JOIN")
     end
 
     table.rhs.accept(self)
     if condition = table.condition
-      write "ON "
-      render_unwrapped(condition)
+      emit Sql::Keyword.new("ON")
+      visit_unwrapped(condition)
     end
   end
 
   def visit_table(table : Focus::Table) : Nil
     if schema_name = table.schema_name
-      write_identifier(schema_name)
-      write "."
+      emit Sql::Identifier.new(table.table_name, schema: schema_name)
+    else
+      emit Sql::Identifier.new(table.table_name)
     end
-    write_identifier(table.table_name)
-    write " "
     if table_alias = table.table_alias
-      write_identifier(table_alias)
-      write " "
+      emit Sql::Identifier.new(table_alias)
     end
   end
 
@@ -405,55 +415,111 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     raise "shouldn't get here. implement #{table.class} handling"
   end
 
+  # --- Token visitors ---
+
   def visit_token(token : Focus::ColumnToken) : Nil
-    write_identifier(token.column)
-    write " "
+    emit Sql::Identifier.new(token.column)
   end
 
   def visit_token(token : Focus::Token) : Nil
-    raise "should get here. implement #{token.class} handling"
+    raise "shouldn't get here. implement #{token.class} handling"
   end
 
+  # --- Output ---
+
   def to_sql : String
-    sql_string_builder.to_s.strip
+    String.build do |io|
+      tokens.each_with_index do |token, idx|
+        render_token(io, token, tokens[idx + 1]?)
+      end
+    end.strip
+  end
+
+  # --- Helper methods ---
+
+  # Visit a BoolExpression without outer parentheses (for top-level contexts)
+  private def visit_unwrapped(expression : Focus::BoolExpression) : Nil
+    if inner = expression.inner
+      if inner.is_a?(Focus::ComplexExpression)
+        # Skip the ComplexExpression's parentheses
+        self.skip_outer_parens = true
+      end
+      inner.accept(self)
+    else
+      expression.accept(self)
+    end
   end
 
   protected def visit_list(expressions : Array)
     expressions.each_with_index do |expression, idx|
-      if idx > 0
-        remove_last_blank
-        write ", "
-      end
+      emit Sql::ListSeparator.new if idx > 0
 
       if expression.is_a?(Focus::BoolExpression)
-        render_unwrapped(expression)
+        visit_unwrapped(expression)
       else
         expression.accept(self)
       end
     end
   end
 
-  protected def remove_last_blank
-    sql_string_builder.chomp!(WHITESPACE_BYTE)
-  end
+  # --- Token rendering ---
 
-  protected def write_placeholder
-    write "? "
-  end
-
-  protected def write_identifier(name : String)
-    if should_quote?(name)
-      write quoted(name)
-    else
-      write name
+  protected def render_token(io : IO, token : Sql::Token, next_token : Sql::Token?) : Nil
+    case token
+    in Sql::Keyword
+      io << token.text
+      skip_space = next_token.is_a?(Sql::ListSeparator) ||
+        (next_token.is_a?(Sql::GroupStart) && next_token.char == '[')
+      io << " " unless skip_space
+    in Sql::Identifier
+      render_identifier(io, token)
+      io << " " unless next_token.is_a?(Sql::GroupEnd) || next_token.is_a?(Sql::ListSeparator)
+    in Sql::Operator
+      io << token.text
+      io << " "
+    in Sql::Placeholder
+      render_placeholder(io, next_token)
+    in Sql::Literal
+      io << token.text
+      io << " " unless next_token.is_a?(Sql::GroupStart) || next_token.is_a?(Sql::GroupEnd) || next_token.is_a?(Sql::ListSeparator)
+    in Sql::GroupStart
+      io << token.char
+    in Sql::GroupEnd
+      io << token.char
+      io << " " unless next_token.is_a?(Sql::GroupEnd) || next_token.is_a?(Sql::ListSeparator) || next_token.nil?
+    in Sql::ListSeparator
+      io << ", "
+    in Sql::Token
+      # Abstract base - shouldn't happen
     end
   end
 
-  protected def write(str : String)
-    sql_string_builder << str
+  protected def render_identifier(io : IO, token : Sql::Identifier) : Nil
+    if schema = token.schema
+      write_identifier(io, schema)
+      io << "."
+    end
+    if table = token.table
+      write_identifier(io, table)
+      io << "."
+    end
+    write_identifier(io, token.name)
   end
 
-  protected def should_quote?(str : String)
+  protected def render_placeholder(io : IO, next_token : Sql::Token?) : Nil
+    io << "?"
+    io << " " unless next_token.is_a?(Sql::GroupEnd) || next_token.is_a?(Sql::ListSeparator)
+  end
+
+  protected def write_identifier(io : IO, name : String) : Nil
+    if should_quote?(name)
+      io << quoted(name)
+    else
+      io << name
+    end
+  end
+
+  protected def should_quote?(str : String) : Bool
     str.each_char_with_index do |char, idx|
       next if (char.number? && idx > 0) || char == '_'
       return true if !char.letter? || char.uppercase?
@@ -461,14 +527,7 @@ class Focus::SqlFormatter < Focus::SqlVisitor
     false
   end
 
-  protected def quoted(str : String)
+  protected def quoted(str : String) : String
     %["#{str}"]
-  end
-
-  protected def wrap_in_parens(&)
-    write "("
-    yield
-    remove_last_blank
-    write ") "
   end
 end
